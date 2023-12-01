@@ -722,107 +722,119 @@ export const colorMap = [
   {
     "id": 121,
     "color": "#F5F7F7",
-    "phase": "",
-    "hue": "W"
+    "phase": "红",
+    "hue": "N"
   },
   {
     "id": 122,
     "color": "#EAECE6",
-    "phase": "",
-    "hue": "W"
+    "phase": "橙",
+    "hue": "N"
   },
   {
     "id": 123,
     "color": "#C8C9C6",
-    "phase": "",
-    "hue": "W"
+    "phase": "黄",
+    "hue": "N"
   },
   {
     "id": 124,
     "color": "#A6ABA8",
-    "phase": "",
-    "hue": "W"
+    "phase": "黄绿",
+    "hue": "N"
   },
   {
     "id": 125,
     "color": "#969C9A",
-    "phase": "",
-    "hue": "W"
+    "phase": "绿",
+    "hue": "N"
   },
   {
     "id": 126,
     "color": "#8A8F8D",
-    "phase": "",
-    "hue": "W"
+    "phase": "蓝绿",
+    "hue": "N"
   },
   {
     "id": 127,
     "color": "#777E7B",
-    "phase": "",
-    "hue": "W"
+    "phase": "蓝",
+    "hue": "N"
   },
   {
     "id": 128,
     "color": "#5C6460",
-    "phase": "",
-    "hue": "W"
+    "phase": "青紫",
+    "hue": "N"
   },
   {
     "id": 129,
     "color": "#3E4742",
-    "phase": "",
-    "hue": "W"
+    "phase": "紫",
+    "hue": "N"
   },
   {
     "id": 130,
     "color": "#231F20",
-    "phase": "",
-    "hue": "W"
+    "phase": "红紫",
+    "hue": "N"
   }
 ]
 
 export const stripeMap = [
-  { id: 1, },
-  { id: 2, },
-  { id: 3, },
-  { id: 4, },
-  { id: 5, },
-  { id: 6, },
-  { id: 7, },
-  { id: 8, },
-  { id: 9, },
-  { id: 10, },
-  { id: 11, },
-  { id: 12, },
-  { id: 13, },
-  { id: 14, },
-  { id: 15, },
-  { id: 16, },
-  { id: 17, },
-  { id: 18, },
-  { id: 19, },
-  { id: 20, },
-  { id: 21, },
-  { id: 22, },
-  { id: 23, },
-  { id: 24, },
-  { id: 25, },
-  { id: 26, },
-  { id: 27, },
-  { id: 28, },
-  { id: 29, },
-  { id: 30, },
-  { id: 31, },
-  { id: 32, },
-  { id: 33, },
-  { id: 34, },
-  { id: 35, },
-  { id: 36, },
-  { id: 37, },
-  { id: 38, },
-  { id: 39, },
-  { id: 40, },
-  { id: 41, },
-  { id: 42, },
-  { id: 43, },
-]
+  { id: 1, name: '可爱的' },
+  { id: 2, name: '细致的' },
+  { id: 3, name: '安静的' },
+  { id: 4, name: '清冽的' },
+  { id: 5, name: '知性的' },
+  { id: 6, name: '锋利的' },
+  { id: 7, name: '质朴寡言的' },
+  { id: 8, name: '华丽的' },
+  { id: 9, name: '古典的' },
+  { id: 10, name: '健壮的' },
+  { id: 11, name: '刺激的' },
+  { id: 12, name: '自然的' },
+  { id: 13, name: '高贵的' },
+  { id: 14, name: '知性优雅的' },
+  { id: 15, name: '清净的' },
+  { id: 16, name: '楚楚动人的' },
+  { id: 17, name: '温润的' },
+  { id: 18, name: '轻松的' },
+  { id: 19, name: '热闹的' },
+  { id: 20, name: '高兴的' },
+  { id: 21, name: '青春洋溢的' },
+  { id: 22, name: '风流的' },
+  { id: 23, name: '安宁的' },
+  { id: 24, name: '乡土气息的' },
+  { id: 25, name: '厚重的' },
+  { id: 26, name: '丰富的' },
+  { id: 27, name: '闲适的' },
+  { id: 28, name: '敏锐的' },
+  { id: 29, name: '动感的' },
+  { id: 30, name: '有格调的' },
+  { id: 31, name: '优雅的' },
+  { id: 32, name: '浪漫的' },
+  { id: 33, name: '新鲜的' },
+  { id: 34, name: '自然的' },
+  { id: 35, name: '有品味的' },
+  { id: 36, name: '凛然的' },
+  { id: 37, name: '考究的' },
+  { id: 38, name: '豪华的' },
+  { id: 39, name: '跃动的' },
+  { id: 40, name: '合理的' },
+  { id: 41, name: '清雅的' },
+  { id: 42, name: '简朴的' },
+  { id: 43, name: '优美的' },
+];
+
+export const shuffleNumbers = (numbers) => {
+  const shuffledNumbers = [...numbers];
+  for (let i = shuffledNumbers.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledNumbers[i], shuffledNumbers[j]] = [shuffledNumbers[j], shuffledNumbers[i]];
+  }
+  return shuffledNumbers;
+}
+
+export const shuffleColor = shuffleNumbers(colorMap);
+export const shuffleStripe = shuffleNumbers(stripeMap);

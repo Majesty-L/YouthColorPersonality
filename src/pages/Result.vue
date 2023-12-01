@@ -1,412 +1,218 @@
 <template>
-  <div class="container">
+  <div>
+    <div class="banner">
+      <div class="banner-img">
+        <img class="logo point" src="@/assets/banner.png" alt="" @click="backAdmin">
+      </div>
+    </div>
     <a-page-header
-      :title="quesId?'管理页':'问卷页'"
+      title="返回问卷列表"
+      class="back-btn"
       @back="back"
     />
-    <h1>结果页</h1>
-    <div v-if="!([4,6].includes(row.type))">
-      <div id="normalPie" style="width: 600px; height: 400px;"></div>
+    <div class="operation">
+      <!-- <h1>结果页</h1> -->
+      <div class="search-container">
+        <img class="search-title" src="@/assets/result.png" alt="">
+        <a-form-model :mode="searchForm" class="form" @submit="getData" @submit.native.prevent>
+          <div v-for="question,index of questionData" :key="question.id" class="form_item">
+            <a-form-model-item :label="question.name" v-if="(showAll||index<3)&&question.type===0">
+              <a-input v-model="searchForm[question.id]"></a-input>
+            </a-form-model-item>
+            <a-form-model-item :label="question.name" v-if="(showAll||index<3)&&[1,3,8].includes(question.type)">
+              <a-select v-model="searchForm[question.id]" allowClear>
+                <a-select-option v-for="option in selectOptions[question.id]" :key="option.id" :value="option.code">{{ option.code }}、{{ option.answer }}</a-select-option>
+              </a-select>
+            </a-form-model-item>
+            <a-form-model-item :label="question.name" v-if="(showAll||index<3)&&[7].includes(question.type)">
+              <a-select v-model="searchForm[question.id]" allowClear>
+                <a-select-option v-for="(option,index) in sort(selectOptions[question.id]||[],question.number)" :key="index" :value="option.join('')">{{ option.join('') }}</a-select-option>
+              </a-select>
+            </a-form-model-item>
+            <a-form-model-item :label="question.name" v-if="(showAll||index<3)&&[4,5].includes(question.type)">
+              <a-select v-model="searchForm[question.id]" allowClear>
+                <a-select-option v-for="(option,index) in colorMap" :key="index" :value="String(option.id)">{{ option.id }}、{{ option.color }}</a-select-option>
+              </a-select>
+            </a-form-model-item>
+            <a-form-model-item :label="question.name" v-if="(showAll||index<3)&&[6].includes(question.type)">
+              <a-select v-model="searchForm[question.id]" allowClear>
+                <a-select-option v-for="(option,index) in stripeMap" :key="index" :value="String(option.id)">{{ option.id }}、{{ option.name }}</a-select-option>
+              </a-select>
+            </a-form-model-item>
+          </div>
+          <a-form-model-item class="form_btn">
+            <div
+              class="text-btn"
+              @click="showAll=!showAll"
+            >
+              {{ showAll == true ? '收起筛选' : '更多筛选'}}
+            </div>
+            <a-button
+              class="theme-btn"
+              type="primary"
+              html-type="submit"
+            >
+              筛选
+            </a-button>
+            <a-button 
+              class="theme-btn"
+              @click="download" 
+              :loading="downloadLoading"
+            >导出报告</a-button>
+          </a-form-model-item>
+        </a-form-model>
+      </div>
     </div>
-    <div v-else-if="row.type==4">
-      <div style="display: flex;flex-wrap: wrap;">
-        <div id="phasePie" style="width: 600px; height: 400px;"></div>
-        <div id="huePie" style="width: 600px; height: 400px;"></div>
-      </div>
-      <div style="display: flex;flex-wrap: wrap;">
-        <div id="phaseLike" style="width: 600px; height: 400px;"></div>
-        <div id="phaseDislike" style="width: 600px; height: 400px;"></div>
-      </div>
-      <div style="display: flex;flex-wrap: wrap;justify-content: space-around;">
-        <canvas id="hueLike" width="400" height="400">
-        Your browser does not support the HTML5 canvas tag.
-        </canvas>
-        <canvas id="hueDislike" width="400" height="400">
-        Your browser does not support the HTML5 canvas tag.
-        </canvas>
-      </div>
-      <div style="display: flex;flex-wrap: wrap;justify-content: space-between;">
-        <div style="width: 600px;">
-          <a-button @click="download('phase')">导出</a-button>
-          <a-table rowKey="phase" :columns="phaseTableCol" :data-source="phaseTable" :pagination="false"></a-table>
+    <div class="container">
+      <a-spin :spinning="!loadingFinish || !optionFinish">
+        <div v-if="loadingFinish && optionFinish">
+          <div v-for="question,index of questionData" :key="question.id">
+            <h3>{{ index+1 }}、{{ question.name }}</h3>
+            <inputChart :row="question" :index="index" :selectedData="selectedData[question.id]||[]" @downloadPart="downloadPart" v-if="question.type===0"></inputChart>
+            <selectChart :row="question" :index="index" :selectedData="selectedData[question.id]||[]" :option="selectOptions[question.id]" @downloadPart="downloadPart" v-if="[1,3].includes(question.type)"></selectChart>
+            <hueLikeChart :row="question" :index="index" :selectedData="selectedData[question.id]||[]" @downloadPart="downloadPart" v-if="[4,5].includes(question.type)"></hueLikeChart>
+            <stripeChart :row="question" :index="index" :selectedData="selectedData[question.id]||[]" @downloadPart="downloadPart" v-if="question.type===6"></stripeChart>
+            <sortChart :row="question" :index="index" :selectedData="selectedData[question.id]||[]" :option="selectOptions[question.id]" @downloadPart="downloadPart" v-if="question.type===7"></sortChart>
+            <inputSelectChart :row="question" :index="index" :selectedData="selectedData[question.id]||[]" :option="selectOptions[question.id]" @downloadPart="downloadPart" v-if="question.type===8"></inputSelectChart>
+          </div>
         </div>
-        <div style="width: 600px;">
-          <a-button @click="download('hue')">导出</a-button>
-          <a-table rowKey="hue" :columns="hueTableCol" :data-source="hueTable" :pagination="false"></a-table>
-        </div>
-      </div>
-    </div>
-    <div v-else-if="row.type===6">
-      <div style="display: flex;flex-wrap: wrap;justify-content: space-around;">
-        <canvas id="stripeLike" width="950" height="850">
-        Your browser does not support the HTML5 canvas tag.
-        </canvas>
-        <div>
-          <a-button @click="download('stripe')">导出</a-button>
-          <a-table rowKey="id" :columns="stripeTableCol" :data-source="stripeTable" :pagination="false"></a-table>
-        </div>
-      </div>
+      </a-spin>
     </div>
   </div>
 </template>
 
 <script>
-import * as echarts from 'echarts';
-import {colorMap} from '@/assets/data.js'
+import inputChart from '@/components/inputChart.vue';
+import selectChart from '@/components/selectChart.vue';
+import hueLikeChart from '@/components/hueLikeChart.vue';
+import stripeChart from '@/components/stripeChart.vue';
+import sortChart from '@/components/sortChart.vue';
+import inputSelectChart from '@/components/inputSelectChart.vue';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import hue from '@/assets/hue.png'
-import stripe from '@/assets/stripe.png'
+import {convertTo26Base, getCombinations} from '@/utils/common';
+import { colorMap,stripeMap } from '@/assets/data.js';
+
 export default {
   name: 'ResultAnalyse',
+  components: {
+    inputChart,
+    selectChart,
+    hueLikeChart,
+    stripeChart,
+    sortChart,
+    inputSelectChart,
+  },
   props: {
     msg: String
   },
   data() {
     return {
       paperId: this.$route.params.paper_id,
-      quesId: Number(this.$route.params.question_id),
-      chartType: this.$route.query.chart,
-      row: this.$route.query.row,
-      myChart: '',
-      chartData: [],
-      phaseTableCol: [{title: '色相',dataIndex: 'phase'},{title: '数量',dataIndex: 'count'},{title: '占比',dataIndex: 'percent'}],
-      phaseTable: [],
-      hueTableCol: [{title: '色调',dataIndex: 'hue'},{title: '数量',dataIndex: 'count'},{title: '占比',dataIndex: 'percent'}],
-      hueTable: [],
-      stripeTableCol: [{title: '序号',dataIndex: 'id'},{title: '数量',dataIndex: 'count'},{title: '占比',dataIndex: 'percent'}],
-      stripeTable: [],
+      questionData: [],
+      searchForm: {},
+      selectedData: [],
+      downloadData: {},
+      downloadLoading: false,
+      loadingFinish: false,
+      selectOptions: {},
+      optionFinish: false,
+      colorMap,
+      stripeMap,
+      showAll: false,
     }
   },
   mounted() {
-    this.initChart();
+    this.getQueData();
+    this.getData();
   },
   methods: {
+    backAdmin() {
+      this.$router.push({
+        name: 'admin',
+      })
+    },
     back() {
       this.$router.go(-1);
     },
-    create() {
-      console.log('create');
-    },
-    initChart() {
-      this.$axios.getChartData({question_id:this.quesId, type:this.row.type}).then(({data})=>{
-        this.chartData = data.data;
-        this.initByType(this.row.type);
+    getQueData() {
+      this.$axios.getPaperAllQuestions({paperId:this.paperId}).then((data) => {
+        this.questionData = data;
+        this.getOptions();
+      }).catch(error => {
+        this.questionData = [];
+        this.$message.error('获取问题失败！');
+        console.log(error);
       });
     },
-    initByType(type) {
-      if (!([4,6].includes(type))) {
-        this.myChart = echarts.init(document.getElementById('normalPie'));
-        const seriesData = this.chartData.map((item) => ({name: item.option.answer, value: item.count}))
-        const option = {
-          series: [{
-            name: '偏好程度',
-            type: 'pie',
-            data: seriesData,
-          }]
-        }
-        this.myChart.setOption(option);
-      } else if (type === 4) {
-        const phaseData = {};
-        const hueData = {};
-        const dataLen = this.chartData.length;
-        for (const item of this.chartData) {
-          for (const obj of colorMap) {
-            if (obj.id === Number(item.code)) {
-              if (!phaseData[obj.phase]) {
-                phaseData[obj.phase] = 0;
-              }
-              if (!hueData[obj.hue]) {
-                hueData[obj.hue] = 0;
-              }
-              phaseData[obj.phase]++;
-              hueData[obj.hue]++;
-            }
-          }
-        }
-        // 色相饼图
-        this.myChart = echarts.init(document.getElementById('phasePie'));
-        const phaseDataArray = [];
-        for (const key in phaseData) {
-          phaseDataArray.push({name:key,value:phaseData[key]});
-        }
-        const option1 = {
-          series: [{
-            name: '色相偏好程度',
-            type: 'pie',
-            data: phaseDataArray,
-          }]
-        }
-        this.myChart.setOption(option1);
-        // 色调饼图
-        this.myChart = echarts.init(document.getElementById('huePie'));
-        const hueDataArray = [];
-        for (const key in hueData) {
-          hueDataArray.push({name:key,value:hueData[key]});
-        }
-        const option2 = {
-          series: [{
-            name: '色调偏好程度',
-            type: 'pie',
-            data: hueDataArray,
-          }]
-        }
-        this.myChart.setOption(option2);
-        // console.log(this.chartData,phaseData,hueData,phaseDataArray,hueDataArray);
-        // 色相正偏好图
-        this.myChart = echarts.init(document.getElementById('phaseLike'));
-        const phasePrefer = phaseDataArray.map((item,index) => {
-          return [0, index, item.value];
-        });
-        // console.log(phasePrefer)
-        const option3 = {
-          title: {
-            text: '色相正偏好图'
-          },
-          polar: {},
-          angleAxis: {
-            type: 'category',
-            data: ['','','','','','','','','',''],
-            axisLine: {
-              show: false
-            },
-            axisTick: {
-              show: false 
-            }
-          },
-          radiusAxis: {
-            type: 'category',
-            data: [''],
-            axisLine: {
-              show: false
-            },
-            axisTick: {
-              show: false
-            }
-          },
-          series: [
-            {
-              name: 'Punch Card',
-              type: 'scatter',
-              coordinateSystem: 'polar',
-              symbolSize: function (item) {
-                return item[2]*50/dataLen;
-              },
-              data: phasePrefer,
-              animationDelay: function (idx) {
-                return idx * 5;
-              }
-            }
-          ]
-        };
-        this.myChart.setOption(option3);
-        // 色相负偏好图
-        this.myChart = echarts.init(document.getElementById('phaseDislike'));
-        // console.log(phasePrefer)
-        const option4 = {
-          title: {
-            text: '色相负偏好图'
-          },
-          polar: {},
-          angleAxis: {
-            type: 'category',
-            data: ['','','','','','','','','',''],
-            axisLine: {
-              show: false
-            },
-            axisTick: {
-              show: false 
-            }
-          },
-          radiusAxis: {
-            type: 'category',
-            data: [''],
-            axisLine: {
-              show: false
-            },
-            axisTick: {
-              show: false
-            }
-          },
-          series: [
-            {
-              name: 'Punch Card',
-              type: 'scatter',
-              coordinateSystem: 'polar',
-              symbolSize: function (item) {
-                return 20-item[2]*50/dataLen;
-              },
-              data: phasePrefer,
-              animationDelay: function (idx) {
-                return idx * 5;
-              }
-            }
-          ]
-        };
-        this.myChart.setOption(option4);
-        // 色调正偏好图
-        const canvasLike = document.getElementById('hueLike');
-        const contextLike = canvasLike.getContext('2d');
-        const imageLike = new Image();
-        imageLike.src = hue;
-        imageLike.onload = function() {
-          contextLike.drawImage(imageLike, 0, 0);
-          const stats = [
-              {x: 73, y: 71},  // Vp
-              {x: 73, y: 135},  // Lgr
-              {x: 73, y: 198},  // Gr
-              {x: 73, y: 262},  // Dgr
-              {x: 137, y: 72},  // P
-              {x: 137, y: 135},  // L
-              {x: 137, y: 198},  // Di
-              {x: 137, y: 262},  // Dk
-              {x: 200, y: 104},  // B
-              {x: 200, y: 166},  // S
-              {x: 200, y: 229},  // Dp
-              {x: 264, y: 166}  // V
-          ];
-          for (let i = 0; i < stats.length; i++) {
-            const stat = stats[i];
-            contextLike.beginPath();
-            contextLike.arc(stat.x, stat.y, 30, 0, 2 * Math.PI, true);
-            contextLike.stroke();
-          }
-        }
-        // 色调负偏好图
-        const canvasDislike = document.getElementById('hueDislike');
-        const contextDislike = canvasDislike.getContext('2d');
-        const imageDislike = new Image();
-        imageDislike.src = hue;
-        imageDislike.onload = function() {
-          contextDislike.drawImage(imageDislike, 0, 0);
-          const stats = [
-              {x: 73, y: 71},  // Vp
-              {x: 73, y: 135},  // Lgr
-              {x: 73, y: 198},  // Gr
-              {x: 73, y: 262},  // Dgr
-              {x: 137, y: 72},  // P
-              {x: 137, y: 135},  // L
-              {x: 137, y: 198},  // Di
-              {x: 137, y: 262},  // Dk
-              {x: 200, y: 104},  // B
-              {x: 200, y: 166},  // S
-              {x: 200, y: 229},  // Dp
-              {x: 264, y: 166}  // V
-          ];
-          for (let i = 0; i < stats.length; i++) {
-            const stat = stats[i];
-            contextDislike.beginPath();
-            contextDislike.arc(stat.x, stat.y, 30, 0, 2 * Math.PI, true);
-            contextDislike.stroke();
-          }
-        }
-        this.tableData(phaseDataArray,hueDataArray,dataLen);
-      } else if (type === 6) {
-        // 色条正偏好图
-        const canvasLike = document.getElementById('stripeLike');
-        const contextLike = canvasLike.getContext('2d');
-        const stripeLike = new Image();
-        stripeLike.src = stripe;
-        stripeLike.onload = function() {
-          contextLike.drawImage(stripeLike, 10, 10);
-          const stats = [
-              {x: 164, y: 178},  // 可爱的 1
-              {x: 470, y: 234},  // 细致的 2
-              {x: 585, y: 330},  // 安静的 3
-              {x: 751, y: 328},  // 清冽的 4
-              {x: 604, y: 514},  // 知性的 5
-              {x: 751, y: 544},  // 锋利的 6
-              {x: 318, y: 385},  // 质朴寡言的 7
-              {x: 234, y: 518},  // 华丽的 8
-              {x: 389, y: 612},  // 古典的 9
-              {x: 234, y: 720},  // 健壮的 10
-              {x: 116, y: 616},  // 刺激的 11
-              {x: 318, y: 308},  // 自然的 12
-              {x: 613, y: 690},  // 高贵的 13
-              {x: 585, y: 385},  // 知性优雅的 14
-              {x: 736, y: 128},  // 清净的 15
-              {x: 335, y: 94},   // 楚楚动人的 16
-              {x: 335, y: 178},  // 温润的 17
-              {x: 142, y: 244},  // 轻松的 18
-              {x: 126, y: 440},  // 热闹的 19
-              {x: 142, y: 300},  // 高兴的 20
-              {x: 737, y: 378},  // 青春洋溢的 21
-              {x: 482, y: 460},  // 风流的 22
-              {x: 444, y: 178},  // 安宁的 23
-              {x: 444, y: 514},  // 乡土气息的 24
-              {x: 394, y: 730},  // 厚重的 25
-              {x: 253, y: 566},  // 丰富的 26
-              {x: 138, y: 384},  // 闲适的 27
-              {x: 738, y: 612},  // 敏锐的 28
-              {x: 108, y: 680},  // 动感的 29
-              {x: 505, y: 718},  // 有格调的 30
-              {x: 471, y: 384},  // 优雅的 31
-              {x: 566, y: 86},  // 浪漫的 32
-              {x: 672, y: 276},  // 新鲜的 33
-              {x: 585, y: 212},  // 自然的 34
-              {x: 454, y: 284},  // 有品味的 35
-              {x: 604, y: 612},  // 凛然的 36
-              {x: 499, y: 612},  // 考究的 37
-              {x: 234, y: 616},  // 豪华的 38
-              {x: 108, y: 546},  // 跃动的 39
-              {x: 746, y: 664},  // 合理的 40
-              {x: 750, y: 182},  // 清雅的 41
-              {x: 585, y: 152},  // 简朴的 42
-              {x: 424, y: 342},  // 优美的 43
-          ];
-          for (let i = 0; i < stats.length; i++) {
-            const stat = stats[i];
-            contextLike.beginPath();
-            contextLike.rect(stat.x, stat.y, 102, 44);
-            contextLike.stroke();
-          }
-        }
-        const stripeLen = this.chartData.length;
-        const stripeData = {};
-        const stripeArrayData = [];
-        for (const item of this.chartData) {
-          if (!stripeData[item.code]) {
-            stripeData[item.code] = 0;
-          }
-          stripeData[item.code]++;
-        }
-        for (const key in stripeData) {
-          stripeArrayData.push({id:Number(key),count:stripeData[key],percent:(stripeData[key]/stripeLen).toFixed(2)});
-        }
-        this.stripeTable = stripeArrayData;
-      }
-    },
-    tableData(phase,hue,dataLen) {
-      this.phaseTable = phase.map(item=>({phase:item.name,count:item.value,percent:(item.value/dataLen).toFixed(2)}));
-      this.hueTable = hue.map(item=>({hue:item.name,count:item.value,percent:(item.value/dataLen).toFixed(2)}));
-      console.log(this.phaseTable,this.hueTable)
-    },
-    download(type) {
-      const dataMap = {
-        phase: this.phaseTable,
-        hue: this.hueTable,
-        stripe: this.stripeTable,
-      };
-      const colMap = {
-        phase: this.phaseTableCol,
-        hue: this.hueTableCol,
-        stripe: this.stripeTableCol,
-      };
-      const tableData = dataMap[type];
-      const tableColumns = colMap[type];
-      const data = tableData.map(row => {
-        const rowData = {};
-        tableColumns.forEach(column => {
-          rowData[column.title] = row[column.dataIndex];
-        });
-        return rowData;
+    getOptions() {
+      this.optionFinish = false;
+      const questionIds = this.questionData.filter(item=>[1,3,7,8].includes(item.type)).map(item=>item.id);
+      this.$axios.getAllOneQuesOptions({questionIds}).then((data) => {
+        const options = {};
+        questionIds.forEach((item,index) => {
+          options[item] = data[index];
+        })
+        this.selectOptions = options;
+        this.optionFinish = true;
+        // console.log(this.selectOptions)
+      }).catch(error => {
+        this.selectOptions = [];
+        this.optionFinish = true;
+        this.$message.error('获取下拉项失败！');
+        console.log(error);
       });
-      const worksheet = XLSX.utils.json_to_sheet(data);
+    },
+    getData() {
+      this.loadingFinish = false;
+      const params = {
+        ...this.searchForm,
+        pid: this.paperId,
+      };
+      this.$axios.selectedChartData(params).then((data) => {
+        this.selectedData = data;
+        this.loadingFinish  = true;
+      }).catch(error => {
+        this.selectedData = [];
+        this.loadingFinish  = true;
+        this.$message.error('获取数据失败！');
+        console.log(error);
+      });
+    },
+    downloadPart([id,...arg]) {
+      this.downloadData[id] = arg;
+      // console.log(arg,this.downloadData);
+    },
+    download() {
+      this.downloadLoading = true;
+      const worksheet = XLSX.utils.json_to_sheet([]);
+      // 根据downloadData有序导出全部数据
+      let y = 1;
+      Object.values(this.downloadData).forEach((tableDataList,index) => {
+        // console.log(tableDataList);
+        if (tableDataList.length === 1) {
+          XLSX.utils.sheet_add_json(worksheet, [[`${index+1}、${this.questionData[index].name}`]], { origin: `${convertTo26Base(y)}1`, skipHeader: true });
+          XLSX.utils.sheet_add_json(worksheet, tableDataList[0], { origin: `${convertTo26Base(y)}2` });
+          y = y + ((tableDataList.length > 0 && tableDataList[0].length > 0)?Object.keys(tableDataList[0][0]).length:1) + 1;
+        } else {
+          XLSX.utils.sheet_add_json(worksheet, [[`${index+1}、${this.questionData[index].name}`]], { origin: `${convertTo26Base(y)}1`, skipHeader: true });
+          XLSX.utils.sheet_add_json(worksheet, tableDataList[0], { origin: `${convertTo26Base(y)}2` });
+          XLSX.utils.sheet_add_json(worksheet, tableDataList[1], { origin: `${convertTo26Base(y)}${2 + tableDataList[0].length + 2}` });
+          y = y + Math.max(((tableDataList.length > 0 && tableDataList[0].length > 0)?Object.keys(tableDataList[0][0]).length:1),((tableDataList.length > 0 && tableDataList[1].length > 0)?Object.keys(tableDataList[1][0]).length:1)) + 1;
+        }
+      });
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
       const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
       const excelBlob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      saveAs(excelBlob, `${type}.xlsx`);
+      saveAs(excelBlob, `total.xlsx`);
+      this.downloadLoading = false;
+    },
+    sort(option, number) {
+      // 根据option的code，获取number个为一组的所有组合
+      const optionCode = option.map(item=>item.code);
+      const allSort = getCombinations(optionCode,number);
+      return allSort;
     },
   },
 }
@@ -415,5 +221,44 @@ export default {
 <style scoped>
 .container {
   margin: 36px;
+}
+.search-container {
+  padding: 16px 36px 10px;
+  background-color: #FAFAFA;
+}
+.search-title {
+  height: 30px;
+  margin-bottom: 10px;
+}
+/* .form {
+  display: flex;
+  flex-wrap: wrap;
+} */
+/* .form_item {
+  flex: 1;
+} */
+.form_item >>>.ant-form-item {
+  margin-bottom: 6px;
+}
+.form_item >>>.ant-form-item-control-wrapper {
+  display: inline-block;
+  margin-right: 64px;
+  width: 200px;
+}
+.form_btn {
+  width: 100%;
+}
+.text-btn {
+  display:inline;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.text-btn, .theme-btn {
+  margin-right: 8px;
+}
+.back-btn >>> .ant-page-header-heading-title {
+  color: #868686;
+  font-weight: bold;
+  font-size: 12px;
 }
 </style>

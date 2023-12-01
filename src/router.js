@@ -22,7 +22,7 @@ const router = new VueRouter({
     },
     {
       name: 'result',
-      path: '/color_web/result/:paper_id/:question_id',
+      path: '/color_web/result/:paper_id',
       component: () => import('@/pages/Result'),
     },
     {
@@ -35,11 +35,17 @@ const router = new VueRouter({
       path: '/color_web/view/:paper_id',
       component: () => import('@/pages/View'),
     },
+    {
+      name: 'preview',
+      path: '/color_web/preview/:paper_id',
+      component: () => import('@/pages/Preview'),
+    },
   ],
 });
 
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = !!localStorage.getItem('colorAuth'); // 判断用户是否已登录过
+  // next();
+  const isAuthenticated = !!localStorage.getItem('color_name'); // 判断用户是否已登录过
 
   if (to.name === 'view') {
     next(); // 填写页面不需要登陆
