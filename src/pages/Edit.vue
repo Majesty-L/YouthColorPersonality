@@ -16,9 +16,9 @@
     </div>
     <div class="list">
       <p>问题列表（{{ data.length }}）</p>
-      <a-table :row-key="(record)=>record.id||record.pre_id" :columns="columns" :data-source="data" :scroll= "{x: 'max-content'}">
+      <a-table :row-key="(record)=>record.id||record.pre_id" :columns="columns" :data-source="data" :scroll= "{x: 'max-content'}" @change="pageChange">
         <template slot="index" slot-scope="text, row, index">
-          {{ index + 1 }}
+          {{ indexBegin + index + 1 }}
         </template>
         <!-- <template slot="name" slot-scope="text, row">
           <a @click="result(row)">{{ text }}</a>
@@ -37,6 +37,123 @@
           <a-popconfirm title="确认删除？" @confirm="remove(row)">
             <a>删除</a>
           </a-popconfirm>
+        </template>
+        <template slot="expandedRowRender" slot-scope="record, index">
+          <a-form-model ref="ruleForm" layout="vertical" :model="model" style="margin-top:12px">
+            <!-- 填空题 -->
+            <a-form-model-item v-if="record.type===0" :prop="String(record.id)"
+              :rules="[{ required: Boolean(record.necessary), message: '该项为必填项！' }]"
+            >
+              <template #label>
+                {{index+1}}.{{record.name}}
+                <img class="title_img" v-if="record.img" :src="record.img" />
+              </template>
+              <a-input v-model="model[record.id]"></a-input>
+            </a-form-model-item>
+            <!-- 所有单选题 -->
+            <a-form-model-item v-if="[1,2].includes(record.type)" :prop="String(record.id)"
+              :rules="[{ required: Boolean(record.necessary), message: '该项为必填项！' }]"
+            >
+              <template #label>
+                {{index+1}}.{{record.name}}
+                <img class="title_img" v-if="record.img" :src="record.img" />
+              </template>
+              <a-radio-group v-model="model[record.id]">
+                <a-radio v-for="item in options[record.id||record.pre_id]" :value="item.code" :key="item.id">
+                  {{ item.code }}：{{ item.answer }}<img class="option_img" v-if="item.imageUrl" :src="item.imageUrl" />
+                </a-radio>
+              </a-radio-group>
+            </a-form-model-item>
+            <!-- 所有多选题 -->
+            <a-form-model-item v-if="[3].includes(record.type)" :prop="String(record.id)"
+              :rules="[{ required: Boolean(record.necessary), type: 'array', message: `该项为必填项！` }]"
+            >
+              <template #label>
+                {{index+1}}.{{record.name}}
+                <img class="title_img" v-if="record.img" :src="record.img" />
+              </template>
+              <a-checkbox-group v-model="model[record.id]">
+                <a-row>
+                  <a-col v-for="item in options[record.id||record.pre_id]" :key="item.id">
+                    <a-checkbox :value="item.code">
+                      {{ item.code }}：{{ item.answer }}<img class="option_img" v-if="item.imageUrl" :src="item.imageUrl" />
+                    </a-checkbox>
+                  </a-col>
+                </a-row>
+              </a-checkbox-group>
+            </a-form-model-item>
+            <!-- 色彩多选题 -->
+            <a-form-model-item v-if="[4,5].includes(record.type)" :prop="String(record.id)"
+              :rules="[{ required: Boolean(record.necessary), type: 'array', max: record.number, min: Boolean(record.necessary)?record.number:0, message: `请选中${record.number}项` }]"
+            >
+              <template #label>
+                {{index+1}}.{{record.name}}（{{record.number}}个）
+                <img class="title_img" v-if="record.img" :src="record.img" />
+              </template>
+              <a-checkbox-group v-model="model[record.id]" class="color_back">
+                <div v-for="item in record.sort==='normal'?colorMap:shuffleColor" :key="item.id" class="display_check hue_class">
+                    <a-checkbox :value="String(item.id)">
+                      <p :style="{backgroundColor:item.color}" />
+                    </a-checkbox>
+                  </div>
+              </a-checkbox-group>
+            </a-form-model-item>
+            <!-- 色条多选题 -->
+            <a-form-model-item v-if="record.type===6" :prop="String(record.id)"
+              :rules="[{ required: Boolean(record.necessary), type: 'array', max: record.number, min: Boolean(record.necessary)?record.number:0, message: `请选中${record.number}项` }]"
+            >
+              <template #label>
+                {{index+1}}.{{record.name}}（{{record.number}}个）
+                <img class="title_img" v-if="record.img" :src="record.img" />
+              </template>
+              <a-checkbox-group v-model="model[record.id]" class="color_back" >
+                <div v-for="item in record.sort==='normal'?stripeMap:shuffleStripe" :key="item.id" class="display_check stripe_class">
+                    <a-checkbox :value="String(item.id)">
+                      <img :src="stripes[`stripe${item.id}`]"/>
+                      <!-- <span>{{ item.id }}</span> -->
+                    </a-checkbox>
+                  </div>
+              </a-checkbox-group>
+            </a-form-model-item>
+            <!-- 所有排序题 -->
+            <a-form-model-item v-if="[7].includes(record.type)" :prop="String(record.id)"
+              :rules="[{ required: Boolean(record.necessary), type: 'array', max: record.number, min: Boolean(record.necessary)?record.number:0, message: `请选中${record.number}项` }]"
+            >
+              <template #label>
+                {{index+1}}.{{record.name}}
+                <img class="title_img" v-if="record.img" :src="record.img" />
+              </template>
+              <a-checkbox-group v-model="model[record.id]">
+                <a-row>
+                  <a-col v-for="item in options[record.id||record.pre_id]" :key="item.id">
+                    <div class="sort_no">{{ model[record.id]?.indexOf(item.code)+1 || ' ' }}</div>
+                    <a-checkbox :value="item.code">
+                      {{ item.code }}：{{ item.answer }}<img class="option_img" v-if="item.imageUrl" :src="item.imageUrl" />
+                    </a-checkbox>
+                  </a-col>
+                </a-row>
+              </a-checkbox-group>
+              <!-- <p>{{ model[record.id] }}</p> -->
+            </a-form-model-item>
+            <!-- 所有选填题 -->
+            <a-form-model-item v-if="[8].includes(record.type)" :prop="String(record.id)"
+              :rules="[{ required: Boolean(record.necessary), message: '该项为必填项！' }]"
+            >
+              <template #label>
+                {{index+1}}.{{record.name}}
+                <img class="title_img" v-if="record.img" :src="record.img" />
+              </template>
+              <a-radio-group v-model="model[record.id]" class="vertical">
+                <a-radio v-for="item in options[record.id||record.pre_id]" :value="item.code" :key="item.id" class="height_normal">
+                  {{ item.code }}：{{ item.answer }}<img class="option_img" v-if="item.imageUrl" :src="item.imageUrl" />
+                </a-radio>
+                <a-radio value="etcValue" class="height_normal">
+                  {{ convertToLetter(Object.keys(options[record.id||record.pre_id] || {})?.length || 0) }}：其他 <a-input class="single-line-input" @change="selectInputChange($event, record.id)" size="small"/>
+                </a-radio>
+              </a-radio-group>
+              <!-- <p>{{ model }}:{{ record.id }} ：{{ etcValue[record.id] }}</p> -->
+            </a-form-model-item>
+        </a-form-model>
         </template>
       </a-table>
     </div>
@@ -186,7 +303,7 @@
 </template>
 
 <script>
-import { colorMap, stripeMap } from '@/assets/data.js'
+import { colorMap, stripeMap,shuffleColor,shuffleStripe } from '@/assets/data.js'
 import * as stripes from '@/assets/stripes'
 import { swapObjects, convertToLetter } from '@/utils/common'
 const columns = [
@@ -267,7 +384,6 @@ export default {
       paperId: this.$route.params.paper_id,
       columns,
       data: [],
-      // options: {},
       createVisible: false,
       createForm: {
         title: '', // 标题
@@ -299,6 +415,8 @@ export default {
       type: 'create',
       stripeMap,
       stripes,
+      shuffleColor,
+      shuffleStripe,
       convertToLetter,
       // 预览数据
       view_data: this.$route.query.view_data ? JSON.parse(this.$route.query.view_data) : [],
@@ -307,6 +425,10 @@ export default {
       edit_data: this.$route.query.edit_data ? JSON.parse(this.$route.query.edit_data) : {},
       // 类型对应值
       typeName: ['填空', '单选', '', '多选', '130色正偏好', '130色负偏好', '色条正偏好', '排序', '选填' ],
+      // 预览单个题
+      model: {},
+      options: {},
+      indexBegin: 0,
     }
   },
   created() {
@@ -340,9 +462,51 @@ export default {
     getData() {
       if (this.view_data && this.view_data.length) {
         this.data = this.view_data;
+        const questionIds = this.data.map(item=>item.id).filter(Boolean);
+        const all_questionIds = this.data.map(item=>item.id || item.pre_id);
+        this.getOptions(questionIds, all_questionIds);
       } else {
         this.$axios.getPaperAllQuestions({ paperId: this.$route.params.paper_id }).then((data) => {
           this.data = data;
+          const ids = data.map(item=>item.id);
+          this.getInitialOptions(ids);
+        }).catch(error => {
+          console.log(error);
+        });
+      }
+    },
+    // 预览回来时要根据增删改来赋值
+    getOptions(ids, all_questionIds) {
+      if (ids&&ids.length) {
+        this.$axios.getAllOneQuesOptions({questionIds:ids}).then((data) => {
+          const queOptions = {};
+          let index = 0;
+          all_questionIds.forEach((key) => {
+            if (this.edit_data[key]) {
+              queOptions[key] = this.edit_data[key]?.options.map(item=>({id: item.fixedId, code: item.optionIndex, answer: item.optionName, imageUrl: item.optionImgUrl, qid: key}));
+              index++;
+            } else if (this.new_data[key]) {
+              queOptions[key] = this.new_data[key]?.options.map(item=>({id: item.fixedId, code: item.optionIndex, answer: item.optionName, imageUrl: item.optionImgUrl, qid: key}));
+            } else {
+              queOptions[key] = data[index];
+              index++;
+            }
+          })
+          this.options = queOptions;
+        }).catch(error => {
+          console.log(error);
+        });
+      }
+    },
+    // 全为真实数据时直接拉接口数据
+    getInitialOptions(ids) {
+      if (ids&&ids.length) {
+        this.$axios.getAllOneQuesOptions({questionIds:ids}).then((data) => {
+          const queOptions = {};
+          ids.forEach((key, index) => {
+            queOptions[key] = data[index];
+          })
+          this.options = queOptions;
         }).catch(error => {
           console.log(error);
         });
@@ -387,6 +551,7 @@ export default {
       realFormModel.pid = this.paperId;
       realFormModel.pre_id = Date.now();
       this.new_data[realFormModel.pre_id] = realFormModel;
+      this.options[realFormModel.pre_id] = realFormModel.options.map(item=>({id: item.fixedId, code: item.optionIndex, answer: item.optionName, imageUrl: item.optionImgUrl, qid: this.nowQuestionId}));
       this.data.push({
         pre_id: realFormModel.pre_id, 
         deleted: realFormModel.delete, 
@@ -468,6 +633,7 @@ export default {
       let realFormModel = JSON.parse(JSON.stringify(this.editForm));
       realFormModel.titleImgUrl = realFormModel.titleImg ? realFormModel.titleImgUrl : undefined;
       realFormModel.options = realFormModel.options.map((item, index) => ({ ...item, optionIndex: convertToLetter(index) }));
+      this.options[this.nowQuestionId] = realFormModel.options.map(item=>({id: item.fixedId, code: item.optionIndex, answer: item.optionName, imageUrl: item.optionImgUrl, qid: this.nowQuestionId}));
       this.data = this.data.map(item=>{
         if (item.id===this.nowQuestionId){
           this.edit_data[this.nowQuestionId] = realFormModel;
@@ -577,6 +743,9 @@ export default {
 
       // console.log('保存成功');
     },
+    pageChange({current=1, pageSize=10}){
+      this.indexBegin = (current-1)*pageSize;
+    }
   },
 }
 </script>
@@ -665,5 +834,78 @@ export default {
 .add-btn:disabled {
   background-color: #868686;
   color: #fff;
+}
+
+/* 预览 */
+
+.title_img {
+  display: block;
+  max-height: 200px;
+}
+
+.option_img {
+  display: inline-block;
+  max-height: 100px;
+}
+
+.color_back {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  padding: 24px 24px 12px;
+  background-color: rgb(128, 128, 128);
+}
+.display_check>>> .ant-checkbox-inner {
+  display: none;
+}
+.display_check {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hue_class {
+  height: 70px;
+}
+.hue_class p {
+  display: inline-block;
+  width:50px;
+  height:50px;
+}
+.hue_class:hover p {
+  border: red solid 2px;
+}
+.hue_class>>>.ant-checkbox-wrapper-checked p {
+  border: red solid 3px;
+}
+
+.stripe_class {
+  height: 80px;
+  vertical-align: middle;
+}
+.stripe_class img {
+  width:110px;
+  height:60px;
+}
+.stripe_class:hover img {
+  border: red solid 2px;
+}
+.stripe_class>>>.ant-checkbox-wrapper-checked img {
+  border: red solid 3px;
+}
+.single-line-input {
+  border: none;
+  border-bottom: 1px solid black;
+  outline: none;
+  width: 50%;
+}
+.vertical {
+  display: flex;
+  flex-direction: column;
+}
+.sort_no {
+  display: inline-block;
+  width: 20px;
+  color: #0c56b7;
 }
 </style>

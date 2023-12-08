@@ -51,7 +51,7 @@
             :rules="[{ required: Boolean(record.necessary), type: 'array', message: '该项为必填项！' }]"
           >
             <template #label>
-              {{index+1}}.{{record.name}}（{{record.number}}个）
+              {{index+1}}.{{record.name}}
               <img class="title_img" v-if="record.img" :src="record.img" />
             </template>
             <a-checkbox-group v-model="model[record.id]">

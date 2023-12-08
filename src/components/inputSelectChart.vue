@@ -28,6 +28,7 @@ export default {
       myChart: '',
       chartData: [],
       tableCol: [{title:'选项',dataIndex:'code'},{title:'数量',dataIndex:'count'}],
+      windowWidth: window.innerWidth,
     }
   },
   computed: {
@@ -65,10 +66,16 @@ export default {
         item.count && seriesData.push({name: item.code, value: item.count});
       })
       const option = {
+        legend:{
+          show: this.windowWidth < 500 ? true : false,
+        },
         series: [{
           name: '偏好程度',
           type: 'pie',
           data: seriesData,
+          label: {
+            show: this.windowWidth < 500 ? false : true,
+          },
         }]
       }
       this.myChart.setOption(option);

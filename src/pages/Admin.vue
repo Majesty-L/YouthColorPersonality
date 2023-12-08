@@ -41,12 +41,13 @@
             <a-popconfirm
               ok-text="下载"
               cancel-text="取消"
-              @confirm="downloadPoster"
+              @confirm="downloadPoster('poster')"
             >
               <template slot="title">
                 <div class="share-modal">
                   <p>生成分享海报</p>
                   <div id="poster" class="image-container">
+                    <img class="logo-title" src="@/assets/share.png" alt="logo-title">
                     <img class="qr-code" :src="qrCodeUrl" alt="QR Code">
                   </div>
                   <a-textarea class="url-container" :auto-size="{ minRows: 3 }" :value="shareUrl"></a-textarea>
@@ -112,6 +113,23 @@
         </a-form-model-item>
       </a-form-model>
     </a-modal>
+    <a-modal
+      :visible="shareVisible"
+      width="360px"
+      ok-text="下载"
+      cancel-text="取消"
+      @ok="downloadPoster('poster2')"
+      @cancel="shareVisible=false"
+    >
+      <template slot="title">
+        {{row.name}} 分享海报
+      </template>
+      <div id="poster2" class="image-container center">
+        <img class="logo-title" src="@/assets/share.png" alt="logo-title">
+        <img class="qr-code" :src="qrCodeUrl" alt="QR Code">
+      </div>
+      <a-textarea class="url-container" :auto-size="{ minRows: 3 }" :value="shareUrl"></a-textarea>
+    </a-modal>
   </div>
 </template>
 
@@ -151,6 +169,7 @@ export default {
       createConfirmLoading: false,
       editConfirmLoading: false,
       row: {},
+      shareVisible: false,
     }
   },
   created() {
@@ -339,6 +358,10 @@ export default {
       this.$axios.releasePaper({pid:row.id,release:row.ifRelease?0:1}).then(() => {
         this.$message.success('操作成功！');
         this.getData();
+        if(row.ifRelease){
+          this.show(row);
+          this.shareVisible = true;
+        }
       }).catch(error => {
         console.log(error);
       });
@@ -353,6 +376,7 @@ export default {
       });
     },
     show(row) {
+      this.row = row;
       // console.log('show', row);
       this.shareUrl = `${window.location.origin}/color_web/view/${row.id}`;
       this.generateQRCode(this.shareUrl);
@@ -367,19 +391,20 @@ export default {
         });
     },
     // 分享功能 下载海报
-    downloadPoster() {
-  const posterElement = document.getElementById('poster');
-  const originalDevicePixelRatio = window.devicePixelRatio;
-  window.devicePixelRatio = 1;
-  html2canvas(posterElement).then(canvas => {
-    const posterImage = canvas.toDataURL('image/png');
-    const link = document.createElement('a');
-    link.href = posterImage;
-    link.download = '分享海报.png';
-    link.click();
-    window.devicePixelRatio = originalDevicePixelRatio;
-  });
-},
+    downloadPoster(posterName='poster') {
+      // console.log(this.row)
+      const posterElement = document.getElementById(posterName);
+      const originalDevicePixelRatio = window.devicePixelRatio;
+      // window.devicePixelRatio = 4;
+      html2canvas(posterElement, { scale: window.devicePixelRatio }).then(canvas => {
+        const posterImage = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = posterImage;
+        link.download = `${this.row.name}分享海报.png`;
+        link.click();
+        window.devicePixelRatio = originalDevicePixelRatio;
+      });
+    },
     result(row) {
       // console.log('result', row, this.$router);
       this.$router.push({
@@ -402,18 +427,26 @@ export default {
 /* .container {
   margin: 6px;
 } */
+.share-modal {
+  margin-right: 12px;
+}
 .image-container {
   width: 200px;
   height: 300px;
-  background-image: url('@/assets/share.png');
+  /* background-image: url('@/assets/share.png');
   background-size: 160px;
   background-position: center 15%;
-  background-repeat: no-repeat;
+  background-repeat: no-repeat; */
   background-color: #DBEEFF;
-  padding-bottom: 20px;
+  padding: 20px;
   display: flex;
-  justify-content: center;
-  align-items: flex-end;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+.logo-title {
+  display: block;
+  width: 100%;
 }
 /* .qr-code {
   position: absolute;
@@ -517,5 +550,9 @@ export default {
     right: 0;
     /* width: 100%; */
   }
+}
+
+.center {
+  margin: 0 auto 12px;
 }
 </style>
