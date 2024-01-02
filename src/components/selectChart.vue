@@ -76,16 +76,15 @@ export default {
       })
       // console.log(seriesData)
       const option = {
-        legend:{
-          show: this.windowWidth < 500 ? true : false,
-        },
         series: [{
           name: '偏好程度',
           type: 'pie',
           data: seriesData,
-          label: {
-            show: this.windowWidth < 500 ? false : true,
-          },
+          radius: [0, '60%'],
+          labelLine: {
+            length: this.windowWidth < 500 ? 5 : 15,
+            length2: this.windowWidth < 500 ? 5 : 15,
+          }
         }]
       }
       this.myChart.setOption(option);

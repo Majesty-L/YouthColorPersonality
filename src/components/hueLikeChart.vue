@@ -128,16 +128,15 @@ export default {
         phaseDataArray.push({ name: key, value: phaseData[key], itemStyle: { color: pieColor[key] } });
       }
       const option1 = {
-        legend:{
-          show: this.windowWidth < 500 ? true : false,
-        },
         series: [{
           name: '色相偏好程度',
           type: 'pie',
           data: phaseDataArray,
-          label: {
-            show: this.windowWidth < 500 ? false : true,
-          },
+          radius: [0, '60%'],
+          labelLine: {
+            length: this.windowWidth < 500 ? 5 : 15,
+            length2: this.windowWidth < 500 ? 5 : 15,
+          }
         }]
       }
       this[`phasePie${this.row.id}`].setOption(option1,true);
@@ -153,16 +152,15 @@ export default {
         hueDataArray.push({ name: key, value: hueData[key], itemStyle: { color: HueStats[key]?.color } });
       }
       const option2 = {
-        legend:{
-          show: this.windowWidth < 500 ? true : false,
-        },
         series: [{
           name: '色调偏好程度',
           type: 'pie',
           data: hueDataArray,
-          label: {
-            show: this.windowWidth < 500 ? false : true,
-          },
+          radius: [0, '60%'],
+          labelLine: {
+            length: this.windowWidth < 500 ? 5 : 15,
+            length2: this.windowWidth < 500 ? 5 : 15,
+          }
         }]
       }
       this[`huePie${this.row.id}`].setOption(option2,true);

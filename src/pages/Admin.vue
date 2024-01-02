@@ -113,23 +113,6 @@
         </a-form-model-item>
       </a-form-model>
     </a-modal>
-    <a-modal
-      :visible="shareVisible"
-      width="360px"
-      ok-text="下载"
-      cancel-text="取消"
-      @ok="downloadPoster('poster2')"
-      @cancel="shareVisible=false"
-    >
-      <template slot="title">
-        {{row.name}} 分享海报
-      </template>
-      <div id="poster2" class="image-container center">
-        <img class="logo-title" src="@/assets/share.png" alt="logo-title">
-        <img class="qr-code" :src="qrCodeUrl" alt="QR Code">
-      </div>
-      <a-textarea class="url-container" :auto-size="{ minRows: 3 }" :value="shareUrl"></a-textarea>
-    </a-modal>
   </div>
 </template>
 
@@ -329,6 +312,7 @@ export default {
           name: 'edit',
           params: {
             paper_id: this.nowPaperId,
+            paper_name: this.row.name,
           },
         })
       } else {
@@ -358,10 +342,6 @@ export default {
       this.$axios.releasePaper({pid:row.id,release:row.ifRelease?0:1}).then(() => {
         this.$message.success('操作成功！');
         this.getData();
-        if(row.ifRelease){
-          this.show(row);
-          this.shareVisible = true;
-        }
       }).catch(error => {
         console.log(error);
       });

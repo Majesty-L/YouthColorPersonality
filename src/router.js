@@ -27,7 +27,7 @@ const router = new VueRouter({
     },
     {
       name: 'edit',
-      path: '/color_web/edit/:paper_id',
+      path: '/color_web/edit/:paper_id/:paper_name',
       component: () => import('@/pages/Edit'),
     },
     {
@@ -37,7 +37,7 @@ const router = new VueRouter({
     },
     {
       name: 'preview',
-      path: '/color_web/preview/:paper_id',
+      path: '/color_web/preview/:paper_id/:paper_name',
       component: () => import('@/pages/Preview'),
     },
   ],

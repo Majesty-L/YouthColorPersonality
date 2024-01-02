@@ -299,6 +299,23 @@
         </a-form-model-item>
       </a-form-model>
     </a-modal>
+    <a-modal
+      :visible="shareVisible"
+      width="360px"
+      ok-text="下载"
+      cancel-text="取消"
+      @ok="downloadPoster('poster2')"
+      @cancel="shareVisible=false"
+    >
+      <template slot="title">
+        {{ paperName }} 分享海报
+      </template>
+      <div id="poster2" class="image-container center">
+        <img class="logo-title" src="@/assets/share.png" alt="logo-title">
+        <img class="qr-code" :src="qrCodeUrl" alt="QR Code">
+      </div>
+      <a-textarea class="url-container" :auto-size="{ minRows: 3 }" :value="shareUrl"></a-textarea>
+    </a-modal>
   </div>
 </template>
 
@@ -306,6 +323,8 @@
 import { colorMap, stripeMap,shuffleColor,shuffleStripe } from '@/assets/data.js'
 import * as stripes from '@/assets/stripes'
 import { swapObjects, convertToLetter } from '@/utils/common'
+import QRCode from 'qrcode';
+import html2canvas from 'html2canvas';
 const columns = [
   {
     title: '问题序号',
@@ -382,6 +401,7 @@ export default {
   data() {
     return {
       paperId: this.$route.params.paper_id,
+      paperName: this.$route.params.paper_name,
       columns,
       data: [],
       createVisible: false,
@@ -429,6 +449,10 @@ export default {
       model: {},
       options: {},
       indexBegin: 0,
+      // 发布弹窗
+      shareVisible: false,
+      shareUrl: '',
+      qrCodeUrl: '',
     }
   },
   created() {
@@ -456,6 +480,7 @@ export default {
         },
         params: {
           paper_id: this.paperId,
+          paper_name: this.paperName,
         },
       })
     },
@@ -669,83 +694,101 @@ export default {
         }
       })
     },
-    commit() {
+    async commit() {
       // 未点过预览时view_data要手动赋值
       if (!this.view_data.length) {
         this.view_data = this.data;
       }
-      // 保存修改
-      // 删除操作保存
-      if (this.delete_data && this.delete_data.length) {
-        this.$axios.deleteQuestions({ qids: this.delete_data }).then(() => {
+      try {
+        // 保存修改
+        // 删除操作保存
+        if (this.delete_data && this.delete_data.length) {
+          await this.$axios.deleteQuestions({ qids: this.delete_data });
           this.$message.success('删除成功！');
           this.delete_data = [];
-        }).catch(error => {
-          console.log(error);
-        });
-      }
-      // 编辑操作保存
-      if (this.edit_data && Object.keys(this.edit_data).length) {
-        const editParams = {};
-        for (const key in this.edit_data) {
-          editParams[key] = {id:key,...this.edit_data[key]};
         }
-        this.$axios.updateQuestions(editParams).then(() => {
+        // 编辑操作保存
+        if (this.edit_data && Object.keys(this.edit_data).length) {
+          const editParams = {};
+          for (const key in this.edit_data) {
+            editParams[key] = {id:key,...this.edit_data[key]};
+          }
+          await this.$axios.updateQuestions(editParams);
           this.$message.success('编辑成功！');
           this.edit_data = {};
-        }).catch(error => {
-          console.log(error);
-        });
-      }
-      // 新增操作保存
-      if (this.new_data && Object.keys(this.new_data).length) {
-        const addParams = {};
-        for (const key in this.new_data) {
-          addParams[key] = { pid: this.new_data[key].pid, question: this.new_data[key] };
         }
-        this.$axios.addQuestions(addParams).then((data) => {
+        // 新增操作保存
+        if (this.new_data && Object.keys(this.new_data).length) {
+          const addParams = {};
+          for (const key in this.new_data) {
+            addParams[key] = { pid: this.new_data[key].pid, question: this.new_data[key] };
+          }
+          
+          const data = await this.$axios.addQuestions(addParams);
           // 顺序修改保存
           let questionIds = this.view_data.map(item => {
             if (item.id) {
               return item.id;
             } else if (item.pre_id && data[item.pre_id]) {
               return data[item.pre_id];
-            } 
+            }
           });
           const sortParams = {
             paper: { id: this.paperId },
             qids: questionIds.join(','),
           };
-          this.$axios.updatePaper(sortParams).then(() => {
-            this.$message.success('新增、顺序修改成功！');
-            this.new_data = {};
-            this.view_data = this.view_data.map(item=>({...item, id: item.id || data[item.pre_id]}));
-            this.data = this.view_data;
-          }).catch(error => {
-            console.log(error);
-          });
-        }).catch(error => {
-          console.log(error);
-        });
-      } else {
-        // 顺序修改保存
-        let questionIds = this.view_data.map(item => item.id);
-        const sortParams = {
-          paper: { id: this.paperId },
-          qids: questionIds.join(','),
-        };
-        this.$axios.updatePaper(sortParams).then(() => {
+          await this.$axios.updatePaper(sortParams);
+          this.$message.success('新增、顺序修改成功！');
+          this.new_data = {};
+          this.view_data = this.view_data.map(item => ({ ...item, id: item.id || data[item.pre_id] }));
+          this.data = this.view_data;
+        } else {
+          // 顺序修改保存
+          let questionIds = this.view_data.map(item => item.id);
+          const sortParams = {
+            paper: { id: this.paperId },
+            qids: questionIds.join(','),
+          };
+          await this.$axios.updatePaper(sortParams);
           this.$message.success('顺序修改成功！');
-        }).catch(error => {
-          console.log(error);
-        });
+        }
+        // 发布成功弹窗
+        this.shareVisible = true;
+        this.shareUrl = `${window.location.origin}/color_web/view/${this.paperId}`;
+        this.generateQRCode(this.shareUrl);
+      } catch (error) {
+        console.log(error);
       }
 
       // console.log('保存成功');
     },
     pageChange({current=1, pageSize=10}){
       this.indexBegin = (current-1)*pageSize;
-    }
+    },
+    generateQRCode(url) {
+      QRCode.toDataURL(url)
+        .then(qrCodeUrl => {
+          this.qrCodeUrl = qrCodeUrl;
+        })
+        .catch(error => {
+          console.error('Failed to generate QR code:', error);
+        });
+    },
+    // 分享功能 下载海报
+    downloadPoster(posterName='poster') {
+      // console.log(this.row)
+      const posterElement = document.getElementById(posterName);
+      const originalDevicePixelRatio = window.devicePixelRatio;
+      // window.devicePixelRatio = 4;
+      html2canvas(posterElement, { scale: window.devicePixelRatio }).then(canvas => {
+        const posterImage = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = posterImage;
+        link.download = `${this.paperName}分享海报.png`;
+        link.click();
+        window.devicePixelRatio = originalDevicePixelRatio;
+      });
+    },
   },
 }
 </script>
@@ -808,6 +851,7 @@ export default {
   color: #fff;
   height: 44px;
   width: 160px;
+  margin-right: 12px;
 }
 .operation >>> .ant-btn {
   border-radius: 0;
@@ -907,5 +951,23 @@ export default {
   display: inline-block;
   width: 20px;
   color: #0c56b7;
+}
+/* 分享海报 */
+.image-container {
+  width: 200px;
+  height: 300px;
+  background-color: #DBEEFF;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+.logo-title {
+  display: block;
+  width: 100%;
+}
+.center {
+  margin: 0 auto 12px;
 }
 </style>
