@@ -23,6 +23,3 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
-
-2023.12.01
-- 多选不限制个数，修改preview/view/edit文件
