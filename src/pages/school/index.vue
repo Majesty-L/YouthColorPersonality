@@ -57,17 +57,29 @@
     </a-layout>
     <a-modal
       :visible="uploadShow"
-    ></a-modal>
+      title="导入学生信息"
+      :confirm-loading="confirmLoading"
+      @ok="handleOk"
+      @cancel="handleCancel"
+    >
+      <a-upload ref="upload" :beforeUpload="beforeUpload" :remove="removeFile">
+        <a-button icon="upload" type="primary">点击上传</a-button>
+      </a-upload>
+    </a-modal>
   </div>
 </template>
 
 <script>
+import * as XLSX from 'xlsx';
 export default {
   name: 'AppLayout',
+  components: {
+  },
   data() {
     return {
       archiveList: [],
       uploadShow: false,
+      confirmLoading: false,
     };
   },
   created() {
@@ -113,11 +125,51 @@ export default {
           ]
         },
       ];
-      // this.archiveList = [];
+      this.archiveList = [];
     },
     importStudentList() {
       this.uploadShow = true;
-    }
+    },
+    handleOk() {
+      this.initList();
+    },
+    handleCancel() {
+
+    },
+    beforeUpload(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+          this.getExcelData(jsonData);
+          resolve(jsonData);
+        };
+        reader.onerror = (error) => {
+          reject(error);
+        };
+        reader.readAsArrayBuffer(file);
+      });
+    },
+    getExcelData(data) {
+      console.log(data)
+      const headers = data[1]; // 获取第二行的字段名
+      const dataArray = data.slice(2); // 获取第二行之后的数据
+      const processedData = dataArray.map((row) => {
+        const rowData = {};
+        row.forEach((value, index) => {
+          const header = headers[index];
+          rowData[header] = value;
+        });
+        return rowData;
+      });
+      return processedData;
+    },
+    removeFile() {
+      // 处理文件移除操作
+    },
   },
 };
 </script>
