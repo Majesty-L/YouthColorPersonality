@@ -16,16 +16,10 @@ export default {
 body {
   font-family: 'Source Han Sans CN', sans-serif !important;
   width: 100%; /* 默认情况下，body 宽度为 100% */
-  max-width: 1008px; /* 但最大宽度为 1008px */
   margin: 0 auto !important; /* 居中对齐 */
 }
-@media screen and (min-width: 1280px) {
-  body {
-    max-width: 1280px; /* 当屏幕宽度至少为 1280px 时，最大宽度变为 1280px */
-  }
-}
 /* 头部logo区域 */
-.banner {
+/* .banner {
   position: relative;
   z-index: 10;
   display: flex;
@@ -43,5 +37,5 @@ body {
 }
 .point {
   cursor: pointer;
-}
+} */
 </style>
