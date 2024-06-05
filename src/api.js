@@ -20,6 +20,38 @@ api.interceptors.response.use(
 );
 
 
+// -------------性格测试系统学校接口--------------------   
+
+// 学校登陆
+export const schoolLogin = (params) => {
+  return api.post(`school/login`, params);
+};
+
+// 学校上传学生信息
+export const schoolUpload = (params) => {
+  return api.post(`school/upload`, params);
+};
+
+// 学校获取档案层级信息（全部、全年级、全班级）
+export const schoolArchive = (params) => {
+  return api.post(`school/archive`, params);
+};
+
+// 学校获取学生信息（单个班级）
+export const schoolStudentInfo = (params) => {
+  return api.post(`school/studentInfo`, params);
+};
+
+// -------------性格测试系统学生接口--------------------   
+
+// 学生登陆
+export const studentLogin = (params) => {
+  return api.post(`student/login`, params);
+};
+
+
+
+
 // 登录后台
 export const getAuth = (params) => {
   return api.post(`admin/login`, params);

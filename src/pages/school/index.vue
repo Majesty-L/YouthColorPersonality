@@ -62,7 +62,7 @@
       @ok="handleOk"
       @cancel="handleCancel"
     >
-      <a-upload ref="upload" :beforeUpload="beforeUpload" :remove="removeFile">
+      <a-upload ref="upload" :beforeUpload="beforeUpload" :remove="removeFile" :fileList="fileList">
         <a-button icon="upload" type="primary">点击上传</a-button>
       </a-upload>
     </a-modal>
@@ -80,6 +80,8 @@ export default {
       archiveList: [],
       uploadShow: false,
       confirmLoading: false,
+      uploadData: [],
+      fileList: [],
     };
   },
   created() {
@@ -96,65 +98,66 @@ export default {
             { classId: '2-3', className: '3' },
           ]
         },
-        {
-          gradeId: 2, gradeName: '二年级', children: [
-            { classId: '2-1', className: '1' },
-            { classId: '2-2', className: '2' },
-            { classId: '2-3', className: '3' },
-          ]
-        },
-        {
-          gradeId: 2, gradeName: '二年级', children: [
-            { classId: '2-1', className: '1' },
-            { classId: '2-2', className: '2' },
-            { classId: '2-3', className: '3' },
-          ]
-        },
-        {
-          gradeId: 2, gradeName: '二年级', children: [
-            { classId: '2-1', className: '1' },
-            { classId: '2-2', className: '2' },
-            { classId: '2-3', className: '3' },
-          ]
-        },
-        {
-          gradeId: 2, gradeName: '二年级', children: [
-            { classId: '2-1', className: '1' },
-            { classId: '2-2', className: '2' },
-            { classId: '2-3', className: '3' },
-          ]
-        },
+        // {
+        //   gradeId: 2, gradeName: '二年级', children: [
+        //     { classId: '2-1', className: '1' },
+        //     { classId: '2-2', className: '2' },
+        //     { classId: '2-3', className: '3' },
+        //   ]
+        // },
+        // {
+        //   gradeId: 2, gradeName: '二年级', children: [
+        //     { classId: '2-1', className: '1' },
+        //     { classId: '2-2', className: '2' },
+        //     { classId: '2-3', className: '3' },
+        //   ]
+        // },
+        // {
+        //   gradeId: 2, gradeName: '二年级', children: [
+        //     { classId: '2-1', className: '1' },
+        //     { classId: '2-2', className: '2' },
+        //     { classId: '2-3', className: '3' },
+        //   ]
+        // },
+        // {
+        //   gradeId: 2, gradeName: '二年级', children: [
+        //     { classId: '2-1', className: '1' },
+        //     { classId: '2-2', className: '2' },
+        //     { classId: '2-3', className: '3' },
+        //   ]
+        // },
       ];
-      this.archiveList = [];
+      // this.archiveList = [];
     },
     importStudentList() {
       this.uploadShow = true;
     },
     handleOk() {
+      this.confirmLoading = true;
+      console.log(this.uploadData)
       this.initList();
+      this.confirmLoading = false;
     },
     handleCancel() {
-
+      this.uploadData = [];
+      this.uploadShow = false;
+      this.fileList = [];
     },
     beforeUpload(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, { type: 'array' });
-          const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-          const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-          this.getExcelData(jsonData);
-          resolve(jsonData);
-        };
-        reader.onerror = (error) => {
-          reject(error);
-        };
-        reader.readAsArrayBuffer(file);
-      });
+      this.fileList = [];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+        this.getExcelData(jsonData);
+        this.fileList = [file];
+      };
+      reader.readAsArrayBuffer(file);
+      return false;
     },
     getExcelData(data) {
-      console.log(data)
       const headers = data[1]; // 获取第二行的字段名
       const dataArray = data.slice(2); // 获取第二行之后的数据
       const processedData = dataArray.map((row) => {
@@ -165,10 +168,12 @@ export default {
         });
         return rowData;
       });
-      return processedData;
+      this.uploadData = processedData;
     },
     removeFile() {
       // 处理文件移除操作
+      this.uploadData = [];
+      this.fileList = [];
     },
   },
 };
