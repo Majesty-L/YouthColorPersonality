@@ -29,7 +29,7 @@ export default {
         },
         routerToClass(item) {
             this.$router.push({ path: `/school/archive?gradeId=${this.grade_id}&classId=${item.classId}` });
-        }
+        },
     },
 }
 </script>

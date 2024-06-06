@@ -51,7 +51,7 @@ export default {
                 },
                 on: {
                     click: () => {
-                        this.$router.push({ path: `/school/archive?gradeId=${this.grade_id}&classId=${this.class_id}&studentName=${record.name}` });
+                        this.$router.push({ path: `/school/archive?gradeId=${this.grade_id}&classId=${this.class_id}&studentName=${record.id}` });
                     },
                 },
             }

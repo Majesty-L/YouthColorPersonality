@@ -4,8 +4,8 @@
     <div>
       <a-breadcrumb>
         <a-breadcrumb-item><router-link to="/school/archive">档案库</router-link></a-breadcrumb-item>
-        <a-breadcrumb-item v-if="grade_id"><router-link to="/school/archive">{{ grade_id }}</router-link></a-breadcrumb-item>
-        <a-breadcrumb-item v-if="class_id"><router-link to="/school/archive">{{ class_id }}</router-link></a-breadcrumb-item>
+        <a-breadcrumb-item v-if="grade_id"><router-link :to="`/school/archive?gradeId=${grade_id}`">{{ grade_id }}</router-link></a-breadcrumb-item>
+        <a-breadcrumb-item v-if="class_id"><router-link :to="`/school/archive?gradeId=${grade_id}&classId=${class_id}`">{{ class_id }}</router-link></a-breadcrumb-item>
         <a-breadcrumb-item v-if="student_name">{{ student_name }}</a-breadcrumb-item>
       </a-breadcrumb>
     </div>
@@ -50,11 +50,14 @@ export default {
     },
   },
   watch: {
-    $route(to) {
-      this.grade_id = to.query.gradeId;
-      this.class_id = to.query.classId;
-      this.student_name = to.query.studentName;
-    },
+    $route: {
+      handler(to) {
+        this.grade_id = to.query.gradeId;
+        this.class_id = to.query.classId;
+        this.student_name = to.query.studentName;
+      },
+      immediate: true,
+    }
   },
 }
 </script>
