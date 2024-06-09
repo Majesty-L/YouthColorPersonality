@@ -47,6 +47,11 @@ export const schoolStudentInfo = (params) => {
   return api.post(`school/studentInfo`, params);
 };
 
+// 获取学校信息
+export const schoolInfo = (params) => {
+  return api.post(`school/info`, params);
+};
+
 // -------------性格测试系统学生接口--------------------   
 
 // 学生登陆

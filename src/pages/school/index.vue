@@ -39,13 +39,32 @@
             </template>
           </a-sub-menu>
           <a-menu-item key="2">
-            <router-link to="/school/archive">说明文档</router-link>
+            <router-link to="/school/archive"><a-icon type="appstore" />年度报告</router-link>
+          </a-menu-item>
+          <a-menu-item key="3">
+            <router-link to="/school/test"><a-icon type="appstore" />新的测试</router-link>
           </a-menu-item>
           <!-- 更多目录项 -->
         </a-menu>
-        <div class="login-info">
-          <!-- 登录信息 -->
-          <a-button type="primary">登录</a-button>
+        <div class="footer-info">
+          <div key="21">
+            <router-link to="/school/archive">关于测试</router-link>
+          </div>
+          <div key="22">
+            <router-link to="/school/archive">使用指南</router-link>
+          </div>
+          <div key="23">
+            <router-link to="/school/archive">常见问题</router-link>
+          </div>
+          <div key="24">
+            <router-link to="/school/archive">退出登录</router-link>
+          </div>
+          <div>
+            <router-link to="/school/intro">
+              <img src="@/assets/school/header.png" alt="avatar" />
+              <span class="title">xx小学</span>
+            </router-link>
+          </div>
         </div>
       </a-layout-sider>
       <a-layout>
@@ -208,12 +227,11 @@ export default {
     }
   }
 
-  .login-info {
+  .footer-info {
     position: absolute;
     bottom: 0;
-    width: 80%;
+    width: 100%;
     padding: 12px;
-    background-color: #1890ff;
   }
 }
 </style>

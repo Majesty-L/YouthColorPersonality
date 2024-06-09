@@ -25,7 +25,17 @@ const router = new VueRouter({
           name: 'schoolArchive',
           path: '/school/archive',
           component: () => import('@/pages/school/archive/index.vue'),
-        }
+        },
+        {
+          name: 'schoolTest',
+          path: '/school/test',
+          component: () => import('@/pages/school/test.vue'),
+        },
+        {
+          name: 'schoolIntro',
+          path: '/school/intro',
+          component: () => import('@/pages/school/intro.vue'),
+        },
       ]
     },
     {
