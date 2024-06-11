@@ -6,6 +6,11 @@ const router = new VueRouter({
   mode: 'history',
   routes: [
     {
+      name: 'schoolRegister',
+      path: '/register',
+      component: () => import('@/pages/register.vue'),
+    },
+    {
       name: 'studentLogin',
       path: '/student/login',
       component: () => import('@/pages/student/login.vue'),
@@ -77,16 +82,15 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  next();
-  // const isAuthenticated = !!localStorage.getItem('color_name'); // 判断用户是否已登录过
-
-  // if (to.name === 'view') {
-  //   next(); // 填写页面不需要登陆
-  // } else if (to.name !== 'login' && !isAuthenticated) {
-  //   next({ name: 'login' }); // 如果未登录且要访问的页面不是登录页面，则重定向到登录页面
-  // } else {
-  //   next(); // 已登录或访问的是登录页面，则继续导航
-  // }
+  if (to.name === 'schoolLogin' || to.name === 'studentLogin') {
+    next();
+  } else if (to.path.includes('school') && !localStorage.getItem('school_id')) {
+    next({ name: 'schoolLogin' });
+  } else if (to.path.includes('student') && !localStorage.getItem('student_id')) {
+    next({ name: 'studentLogin' });
+  } else {
+    next();
+  }
 });
 
 export default router;

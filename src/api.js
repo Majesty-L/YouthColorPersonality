@@ -22,6 +22,11 @@ api.interceptors.response.use(
 
 // -------------性格测试系统学校接口--------------------   
 
+// 学校注册
+export const schoolRegister = (params) => {
+  return api.post(`school/register`, params);
+};
+
 // 学校登陆
 export const schoolLogin = (params) => {
   return api.post(`school/login`, params);
