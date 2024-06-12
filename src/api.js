@@ -12,7 +12,7 @@ api.interceptors.response.use(
     if (status_OK.includes(res.code)) {
       return res.data;
     }
-    return Promise.reject(res.msg);
+    return Promise.reject(res.msg || res.message);
   },
   error => {
     return Promise.reject(error);

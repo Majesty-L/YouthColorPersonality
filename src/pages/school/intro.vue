@@ -27,6 +27,7 @@
 
 <script>
 import * as XLSX from 'xlsx';
+import { excelHeaderMap } from './data.js';
 export default {
   data() {
     return {
@@ -34,6 +35,7 @@ export default {
       confirmLoading: false,
       uploadData: [],
       fileList: [],
+      schoolId: localStorage.getItem('school_id'),
     };
   },
   methods: {
@@ -43,7 +45,14 @@ export default {
     handleOk() {
       this.confirmLoading = true;
       console.log(this.uploadData)
-      this.confirmLoading = false;
+      this.$axios.schoolUpload({ studentList: this.uploadData, schoolId: this.schoolId }).then(() => {
+        this.$message.success('上传成功');
+        this.confirmLoading = false;
+        this.uploadShow = false;
+      }).catch((err) => {
+        this.$message.error(err);
+        this.confirmLoading = false;
+      });
     },
     handleCancel() {
       this.uploadData = [];
@@ -51,6 +60,7 @@ export default {
       this.fileList = [];
     },
     beforeUpload(file) {
+      this.uploadData = [];
       this.fileList = [];
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -70,7 +80,7 @@ export default {
       const processedData = dataArray.map((row) => {
         const rowData = {};
         row.forEach((value, index) => {
-          const header = headers[index];
+          const header = excelHeaderMap.find(i => i.title === headers[index])?.key;
           rowData[header] = value;
         });
         return rowData;

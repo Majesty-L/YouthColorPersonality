@@ -45,9 +45,9 @@ export default {
   methods: {
     handleLogin() {
       console.log('登录信息:', this.loginForm);
-      this.$axios.schoolLogin(this.loginForm).then(({id}) => {
+      this.$axios.schoolLogin(this.loginForm).then((data) => {
         this.$message.success('登陆成功');
-        localStorage.setItem('school_id', id);
+        localStorage.setItem('school_id', data);
         this.$router.push({name: 'schoolIndex'});
       }).catch(() => {
         this.$message.error('登陆失败');
