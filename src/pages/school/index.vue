@@ -74,22 +74,10 @@
         </a-layout-content>
       </a-layout>
     </a-layout>
-    <a-modal
-      :visible="uploadShow"
-      title="导入学生信息"
-      :confirm-loading="confirmLoading"
-      @ok="handleOk"
-      @cancel="handleCancel"
-    >
-      <a-upload ref="upload" :beforeUpload="beforeUpload" :remove="removeFile" :fileList="fileList">
-        <a-button icon="upload" type="primary">点击上传</a-button>
-      </a-upload>
-    </a-modal>
   </div>
 </template>
 
 <script>
-import * as XLSX from 'xlsx';
 export default {
   name: 'AppLayout',
   components: {
@@ -97,10 +85,6 @@ export default {
   data() {
     return {
       archiveList: [],
-      uploadShow: false,
-      confirmLoading: false,
-      uploadData: [],
-      fileList: [],
     };
   },
   created() {
@@ -147,52 +131,6 @@ export default {
         // },
       ];
       // this.archiveList = [];
-    },
-    importStudentList() {
-      this.uploadShow = true;
-    },
-    handleOk() {
-      this.confirmLoading = true;
-      console.log(this.uploadData)
-      this.initList();
-      this.confirmLoading = false;
-    },
-    handleCancel() {
-      this.uploadData = [];
-      this.uploadShow = false;
-      this.fileList = [];
-    },
-    beforeUpload(file) {
-      this.fileList = [];
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-        this.getExcelData(jsonData);
-        this.fileList = [file];
-      };
-      reader.readAsArrayBuffer(file);
-      return false;
-    },
-    getExcelData(data) {
-      const headers = data[1]; // 获取第二行的字段名
-      const dataArray = data.slice(2); // 获取第二行之后的数据
-      const processedData = dataArray.map((row) => {
-        const rowData = {};
-        row.forEach((value, index) => {
-          const header = headers[index];
-          rowData[header] = value;
-        });
-        return rowData;
-      });
-      this.uploadData = processedData;
-    },
-    removeFile() {
-      // 处理文件移除操作
-      this.uploadData = [];
-      this.fileList = [];
     },
   },
 };
