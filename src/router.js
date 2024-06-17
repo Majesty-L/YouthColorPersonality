@@ -34,7 +34,12 @@ const router = new VueRouter({
         {
           name: 'schoolTest',
           path: '/school/test',
-          component: () => import('@/pages/school/test.vue'),
+          component: () => import('@/pages/school/colorTest/index.vue'),
+        },
+        {
+          name: 'schoolNewTest',
+          path: '/school/newTest',
+          component: () => import('@/pages/school/colorTest/test.vue'),
         },
         {
           name: 'schoolIntro',

@@ -37,6 +37,12 @@ export const schoolUpload = (params) => {
   return api.post(`school/upload`, params);
 };
 
+export const schoolNewTest = (params) => {
+  return api.post(`paper/newTest`, params);
+};
+
+
+
 // 学校获取档案层级信息（全部、全年级、全班级）
 export const schoolArchive = (params) => {
   return api.post(`school/archive`, params);
