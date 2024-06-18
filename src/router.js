@@ -6,6 +6,11 @@ const router = new VueRouter({
   mode: 'history',
   routes: [
     {
+      path: '/',
+      redirect: '/student/login',
+      component: () => import('@/App'),
+    },
+    {
       name: 'schoolRegister',
       path: '/register',
       component: () => import('@/pages/register.vue'),
@@ -47,41 +52,6 @@ const router = new VueRouter({
           component: () => import('@/pages/school/intro.vue'),
         },
       ]
-    },
-    {
-      path: '/',
-      redirect: '/color_web/admin',
-      component: () => import('@/App'),
-    },
-    {
-      name: 'login',
-      path: '/color_web/login',
-      component: () => import('@/pages/Login'),
-    },
-    {
-      name: 'admin',
-      path: '/color_web/admin',
-      component: () => import('@/pages/Admin'),
-    },
-    {
-      name: 'result',
-      path: '/color_web/result/:paper_id',
-      component: () => import('@/pages/Result'),
-    },
-    {
-      name: 'edit',
-      path: '/color_web/edit/:paper_id/:paper_name',
-      component: () => import('@/pages/Edit'),
-    },
-    {
-      name: 'view',
-      path: '/color_web/view/:paper_id',
-      component: () => import('@/pages/View'),
-    },
-    {
-      name: 'preview',
-      path: '/color_web/preview/:paper_id/:paper_name',
-      component: () => import('@/pages/Preview'),
     },
   ],
 });

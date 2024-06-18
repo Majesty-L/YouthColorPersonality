@@ -37,25 +37,22 @@ export const schoolUpload = (params) => {
   return api.post(`school/upload`, params);
 };
 
+// 学校新建一个测试
 export const schoolNewTest = (params) => {
   return api.post(`paper/newTest`, params);
 };
+
+// 学校获取学生信息
+export const schoolStudentInfo = (params) => {
+  return api.post(`school/studentInfo`, params);
+};
+
 
 
 
 // 学校获取档案层级信息（全部、全年级、全班级）
 export const schoolArchive = (params) => {
   return api.post(`school/archive`, params);
-};
-
-// 学校获取学生信息（单个班级）
-export const schoolStudentInfo = (params) => {
-  // this.dataSource = [
-  //     { id: 1, idCard: 'G43024120001010171X', name: '李华', sex: '男', age: 18, classId: 1 },
-  //     { id: 2, idCard: 'G43024120001010171X', name: '李华', sex: '男', age: 18, classId: 1 },
-  //     { id: 3, idCard: 'G43024120001010171X', name: '李华', sex: '男', age: 18, classId: 1 },
-  // ];
-  return api.post(`school/studentInfo`, params);
 };
 
 // 获取学校信息

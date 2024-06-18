@@ -10,4 +10,5 @@ export const excelHeaderMap = [
   { title: '手机号（非必填）', key: 'telPhone'},
   { title: '省份', key: 'province'},
   { title: '民族', key: 'nation'},
+  { title: '家长知情同意（是/否）', key: 'known'},
 ];

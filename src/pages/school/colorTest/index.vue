@@ -61,7 +61,7 @@ export default {
       const fileName = month < 6 ? `${year - 1}-1` : `${year}-2`;
       this.$axios.schoolNewTest({author: this.schoolId,name:fileName}).then(() => {
         this.$message.success('新建测试成功');
-        this.$router.push({name: 'schoolNewTest'});
+        this.$router.push({name: 'schoolNewTest', query: {name:fileName}});
       })
     },
   },
