@@ -16,8 +16,8 @@
           <a-divider></a-divider>
           <div class="process-view">
             <span>进度统计</span>
-            <a-slider class="slider" v-model="processNum" :min="0" :max="100" disabled />
-            <span class="mr">{{processNum}}%</span>
+            <a-slider class="slider" v-model="processPercent" :min="0" :max="100" disabled />
+            <span class="mr">{{processPercent}}%</span>
             <a-tag @click="getInfo">下载</a-tag>
             <a-tag @click="importKnow">更新</a-tag>
           </div>
@@ -39,11 +39,11 @@
           <div>{{ newTestName }}</div>
           <div>参与人数： {{ num }}</div>
         </div>
-        <div class="btn"><a-button>发布测试</a-button></div>
+        <div class="btn"><a-button :disabled="processPercent===0" @click="publish('发布')">发布测试</a-button></div>
       </div>
     </div>
     <div class="fixed">
-      <a-button>结束测试</a-button>
+      <a-button @click="publish('结束')">结束测试</a-button>
       <a-button>更新状态</a-button>
     </div>
     <a-modal
@@ -67,17 +67,31 @@ import { excelHeaderMap } from '../data.js';
 export default {
   data() {
     return {
-      num: 1,
+      num: '-',
       step: 0,
-      processNum: 0,
-      newTestName: this.$route.query.name,
+      processPercent: 0,
+      newTestName: this.$route.params.name,
+      newTestId: this.$route.params.id,
       uploadShow: false,
       confirmLoading: false,
       uploadData: [],
       fileList: [],
     };
   },
+  created() {
+    this.init();
+  },
   methods: {
+    init() {
+      this.$axios.schoolGetPapers({testId: this.newTestId}).then((res) => {
+        if (res.length) {
+          const { studentNum = 0, knowPercent = 0, ifRelease } = res.find(i => i.id === this.newTestId);
+          this.num = studentNum;
+          this.processPercent = (knowPercent*100).toFixed(2);
+          this.step = ifRelease ? 2 : (knowPercent ? 1 : 0);
+        }
+      });
+    },
     downloadPDF() {
       const pdfUrl = '/school-server/know.word';
       const link = document.createElement('a');
@@ -93,7 +107,7 @@ export default {
           '姓名': item.name,
           '年级': item.grade,
           '班级': item.classNum,
-          '家长知情同意（是/否）': item.xx,
+          '家长知情同意（是/否）': item.known,
         }));
         const worksheet = XLSX.utils.json_to_sheet(studentsInfo);
         const workbook = XLSX.utils.book_new();
@@ -105,19 +119,23 @@ export default {
     },
     importKnow() {
       this.uploadShow = true;
+      this.uploadData = [];
+      this.fileList = [];
     },
     handleOk() {
       this.confirmLoading = true;
-      console.log(this.uploadData)
-      // const params = this.uploadData.map(item => ({cardId: item.cardId, known: item.known}));
-      // this.$axios.schoolUpload({ studentList: this.uploadData, schoolId: this.schoolId }).then(() => {
-      //   this.$message.success('上传成功');
-      //   this.confirmLoading = false;
-      //   this.uploadShow = false;
-      // }).catch((err) => {
-      //   this.$message.error(err);
-      //   this.confirmLoading = false;
-      // });
+      const params = this.uploadData.map(item => ({cardId: item.cardId, known: item.known, testId: this.newTestId}));
+      this.$axios.schoolUploadKnown(params).then((res) => {
+        const {successNum, percent} = res;
+        this.processPercent = (percent*100).toFixed(2);
+        this.num = successNum;
+        this.$message.success('更新成功');
+        this.confirmLoading = false;
+        this.uploadShow = false;
+      }).catch((err) => {
+        this.$message.error(err);
+        this.confirmLoading = false;
+      });
     },
     handleCancel() {
       this.uploadData = [];
@@ -156,6 +174,13 @@ export default {
       // 处理文件移除操作
       this.uploadData = [];
       this.fileList = [];
+    },
+    // 发布/结束测试
+    publish(type) {
+      this.$axios.schoolPublishPaper({testId: this.newTestId, type: type}).then(() => {
+        this.$message.success('更新成功');
+        this.step = 2;
+      });
     },
   },
 }

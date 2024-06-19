@@ -41,6 +41,8 @@ export default {
   methods: {
     importStudentList() {
       this.uploadShow = true;
+      this.uploadData = [];
+      this.fileList = [];
     },
     handleOk() {
       this.confirmLoading = true;

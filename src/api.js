@@ -47,6 +47,22 @@ export const schoolStudentInfo = (params) => {
   return api.post(`school/studentInfo`, params);
 };
 
+// 学校更新学生知情情况
+export const schoolUploadKnown = (params) => {
+  return api.post(`school/uploadKnown`, params);
+};
+
+// 学校获取问卷信息
+export const schoolGetPapers = (params) => {
+  return api.post(`paper/getPapers`, params);
+};
+
+// 学校发布/结束测试
+export const schoolPublishPaper = (params) => {
+  return api.post(`paper/publish`, params);
+};
+
+
 
 
 
