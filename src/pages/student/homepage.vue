@@ -1,46 +1,63 @@
 <template>
-  <div class="login-container">
-    <h1>登录页面</h1>
-    <form @submit.prevent="handleLogin">
-      <div class="input-group">
-       <label for="schoolName">学校名称:</label>
-       <input type="text" id="schoolName" v-model="loginForm.schoolName" required>
+  <div class="home-container">
+    <headerPart :type="1"></headerPart>
+    <div class="ing-test">
+      <a-row>
+        <a-col class="test" :span="16">
+          <div class="" @click="startTest">测试</div>
+        </a-col>
+        <a-col class="test" :span="8">色盲测试</a-col>
+      </a-row>
+    </div>
+    <div class="history-test">
+      <h3>历史测试</h3>
+      <div class="list">
+        <div class="item">
+          <img src="@/assets/school/header.png" alt="avatar" />
+          <span>xxx</span>
+        </div>
       </div>
-      <div class="input-group">
-       <label for="username">账号:</label>
-       <input type="text" id="username" v-model="loginForm.username" required>
-      </div>
-      <div class="input-group">
-       <label for="password">密码:</label>
-       <input type="password" id="password" v-model="loginForm.password" required>
-      </div>
-     <button type="submit">登录</button>
-    </form>
+    </div>
   </div>
 </template>
 
 <script>
+import headerPart from './components/headerPart.vue';
 export default {
+  components: {
+    headerPart,
+  },
   data() {
     return {
-      loginForm: {
-        schoolName: '',
-        username: '',
-        password: ''
-      }
     };
   },
   methods: {
-    handleLogin() {
-      // 在这里处理登录逻辑，例如验证输入和发送请求
-      console.log('登录信息:', this.loginForm);
-      // 假设有一个loginService来处理登录请求
-      // this.loginService.login(this.loginForm);
-    }
+    startTest() {
+      this.$router.push({name: 'studentIntro'});      
+    },
   }
 }
 </script>
 
 <style lang="less" scoped>
-
+.home-container {
+  .ing-test {
+    .test {
+      display: flex;
+      justify-content: flex-end;
+      height: 420px;
+      border: 1px solid #ddd;
+    }
+  }
+  .history-test {
+    .list {
+      display: flex;
+      gap: 24px;
+      .item {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
+}
 </style>

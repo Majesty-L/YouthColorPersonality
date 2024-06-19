@@ -85,10 +85,15 @@ export default {
     init() {
       this.$axios.schoolGetPapers({testId: this.newTestId}).then((res) => {
         if (res.length) {
-          const { studentNum = 0, knowPercent = 0, ifRelease } = res.find(i => i.id === this.newTestId);
+          const { studentNum = 0, knowPercent = 0, ifRelease, finishTime } = res.find(i => i.id === this.newTestId);
           this.num = studentNum;
           this.processPercent = (knowPercent*100).toFixed(2);
-          this.step = ifRelease ? 2 : (knowPercent ? 1 : 0);
+          if (knowPercent) {
+            this.step ++;
+          }
+          if (ifRelease || finishTime) {
+            this.step ++;
+          }
         }
       });
     },

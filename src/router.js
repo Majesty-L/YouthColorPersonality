@@ -21,6 +21,16 @@ const router = new VueRouter({
       component: () => import('@/pages/student/login.vue'),
     },
     {
+      name: 'studentIndex',
+      path: '/student/index',
+      component: () => import('@/pages/student/homepage.vue'),
+    },
+    {
+      name: 'studentIntro',
+      path: '/student/intro',
+      component: () => import('@/pages/student/intro.vue'),
+    },
+    {
       name: 'schoolLogin',
       path: '/school/login',
       component: () => import('@/pages/school/login.vue'),

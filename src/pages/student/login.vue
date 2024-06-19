@@ -3,7 +3,12 @@
     <h1 class="left-container">学生登录页面</h1>
     <a-form-model class="form" :model="loginForm" @submit="handleLogin" @submit.native.prevent>
       <a-form-model-item>
-        <a-input v-model="loginForm.username" placeholder="账号">
+        <a-input v-model="loginForm.name" placeholder="学校">
+          <a-icon slot="prefix" type="user" style="color:rgba(0,0,0,.25)" />
+        </a-input>
+      </a-form-model-item>
+      <a-form-model-item>
+        <a-input v-model="loginForm.cardId" placeholder="账号">
           <a-icon slot="prefix" type="user" style="color:rgba(0,0,0,.25)" />
         </a-input>
       </a-form-model-item>
@@ -16,7 +21,7 @@
         <a-button
           type="primary"
           html-type="submit"
-          :disabled="!loginForm.username || !loginForm.password"
+          :disabled="!loginForm.cardId || !loginForm.name || !loginForm.password"
         >
           登录
         </a-button>
@@ -31,17 +36,20 @@ export default {
   data() {
     return {
       loginForm: {
-        username: '',
+        cardId: '',
+        name: '',
         password: ''
       }
     };
   },
   methods: {
     handleLogin() {
-      // 在这里处理登录逻辑，例如验证输入和发送请求
-      console.log('登录信息:', this.loginForm);
-      // 假设有一个loginService来处理登录请求
-      // this.loginService.login(this.loginForm);
+      this.$axios.studentLogin(this.loginForm).then((res) => {
+        this.$message.success('登陆成功');
+        this.$static.student_id = res;
+        localStorage.setItem('student_id', res);
+        this.$router.push({name: 'studentIndex'});
+      });
     }
   }
 }

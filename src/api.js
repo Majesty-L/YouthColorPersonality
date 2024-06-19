@@ -83,6 +83,9 @@ export const studentLogin = (params) => {
   return api.post(`student/login`, params);
 };
 
+
+
+
 // 单个学生报告
 export const studentReport = (params) => {
   // this.baseInfo = { id: 1, idCard: 'G43024120001010171X', name: '李华', sex: '男', age: 18, classId: 1 };

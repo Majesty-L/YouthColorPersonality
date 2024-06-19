@@ -7,6 +7,10 @@ import * as axios from '@/api.js';
 import '@/style/common.less';
 
 Vue.prototype.$axios = axios;
+Vue.prototype.$static = {
+  school_id: '',
+  student_id: '',
+};
 Vue.config.productionTip = false
 Vue.use(Antd);
 

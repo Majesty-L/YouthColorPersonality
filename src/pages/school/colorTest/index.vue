@@ -25,7 +25,7 @@
           </div>
         </div>
         <div>
-          <a-button @click="refreshDetail">更新状态</a-button>
+          <a-button v-if="ingTestObject.id" @click="refreshDetail">更新状态</a-button>
         </div>
       </div>
     </div>
