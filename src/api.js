@@ -42,7 +42,7 @@ export const schoolNewTest = (params) => {
   return api.post(`paper/newTest`, params);
 };
 
-// 学校获取学生信息
+// 获取学生信息（by schoolId gradeId classId studentId）
 export const schoolStudentInfo = (params) => {
   return api.post(`school/studentInfo`, params);
 };

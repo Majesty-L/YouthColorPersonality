@@ -46,7 +46,6 @@ export default {
     handleLogin() {
       this.$axios.studentLogin(this.loginForm).then((res) => {
         this.$message.success('登陆成功');
-        this.$static.student_id = res;
         localStorage.setItem('student_id', res);
         this.$router.push({name: 'studentIndex'});
       });

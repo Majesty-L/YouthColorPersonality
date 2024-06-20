@@ -5,7 +5,7 @@
       <span class="title">Little Mood</span>
     </div>
     <div class="" v-else>back</div>
-    <div class="">xx</div>
+    <div class="">{{ studentInfo.name }}</div>
   </div>
 </template>
 
@@ -19,7 +19,21 @@ export default {
   },
   data() {
     return {
+      studentInfo: {},
     };
+  },
+  created() {
+    this.init();
+  },
+  methods: {
+    init () {
+      this.$axios.schoolStudentInfo({studentId: this.studentId}).then((res) => {
+        if(res.length) {
+          this.studentInfo = res[0];
+          this.$emit('getStudentInfo', res[0]);
+        }
+      });
+    },
   },
 }
 </script>

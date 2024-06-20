@@ -31,6 +31,16 @@ const router = new VueRouter({
       component: () => import('@/pages/student/intro.vue'),
     },
     {
+      name: 'studentTest',
+      path: '/student/test',
+      component: () => import('@/pages/student/test.vue'),
+    },
+    {
+      name: 'studentReport',
+      path: '/student/report',
+      component: () => import('@/pages/student/historyReport.vue'),
+    },
+    {
       name: 'schoolLogin',
       path: '/school/login',
       component: () => import('@/pages/school/login.vue'),
@@ -74,6 +84,8 @@ router.beforeEach((to, from, next) => {
   } else if (to.path.includes('student') && !localStorage.getItem('student_id')) {
     next({ name: 'studentLogin' });
   } else {
+    Vue.prototype.$static.school_id = localStorage.getItem('school_id');
+    Vue.prototype.$static.student_id = localStorage.getItem('student_id');
     next();
   }
 });

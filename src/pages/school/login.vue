@@ -47,7 +47,6 @@ export default {
       console.log('登录信息:', this.loginForm);
       this.$axios.schoolLogin(this.loginForm).then((data) => {
         this.$message.success('登陆成功');
-        this.$static.school_id = data;
         localStorage.setItem('school_id', data);
         this.$router.push({name: 'schoolIndex'});
       }).catch(() => {

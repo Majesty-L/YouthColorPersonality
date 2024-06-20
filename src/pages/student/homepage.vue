@@ -29,11 +29,18 @@ export default {
   },
   data() {
     return {
+      studentId: this.$static.student_id,
+      studentInfo: {},
     };
   },
+  created() {
+    this.init();
+  },
   methods: {
+    init() {
+    },
     startTest() {
-      this.$router.push({name: 'studentIntro'});      
+      this.$router.push({name: 'studentIntro', params: { type: 1 }});      
     },
   }
 }
