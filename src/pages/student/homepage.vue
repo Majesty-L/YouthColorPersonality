@@ -3,7 +3,7 @@
     <headerPart :type="1" @getStudentInfo="getStudentInfo"></headerPart>
     <div class="ing-test">
       <a-row>
-        <a-col class="test" :span="15" @click="startTest">
+        <a-col class="test" :span="15" :disabled="!ingTestObject.id" @click="startTest">
           <div class="main-target">{{ ingTestObject.name }}</div>
         </a-col>
         <a-col class="test" :span="9">色盲测试</a-col>
@@ -61,7 +61,7 @@ export default {
       });
     },
     startTest() {
-      this.$router.push({name: 'studentIntro', params: { type: 1 }});      
+      this.$router.push({name: 'studentIntro', params: { type: this.ingTestObject.type }});      
     },
     getStudentInfo(info) {
         this.studentInfo = info;
