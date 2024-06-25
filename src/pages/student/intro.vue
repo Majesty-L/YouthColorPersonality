@@ -37,6 +37,9 @@ export default {
   methods: {
     getStudentInfo(info) {
       this.studentInfo = info;
+      if (info.type != '小学生') {
+        this.addPinyin = (val) => val;
+      }
     },
     sppech() {
       // 创建 SpeechSynthesisUtterance 对象

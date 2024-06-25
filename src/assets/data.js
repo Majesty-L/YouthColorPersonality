@@ -827,6 +827,56 @@ export const stripeMap = [
   { id: 43, name: '优美的' },
 ];
 
+export const imageMap = [
+  { id: 1, name: '' },
+  { id: 2, name: '' },
+  { id: 3, name: '' },
+  { id: 4, name: '' },
+  { id: 5, name: '' },
+  { id: 6, name: '' },
+  { id: 7, name: '' },
+  { id: 8, name: '' },
+  { id: 9, name: '' },
+  { id: 10, name: '' },
+  { id: 11, name: '' },
+  { id: 12, name: '' },
+  { id: 13, name: '' },
+  { id: 14, name: '' },
+  { id: 15, name: '' },
+  { id: 16, name: '' },
+  { id: 17, name: '' },
+  { id: 18, name: '' },
+  { id: 19, name: '' },
+  { id: 20, name: '' },
+  { id: 21, name: '' },
+  { id: 22, name: '' },
+  { id: 23, name: '' },
+  { id: 24, name: '' },
+  { id: 25, name: '' },
+  { id: 26, name: '' },
+  { id: 27, name: '' },
+  { id: 28, name: '' },
+  { id: 29, name: '' },
+  { id: 30, name: '' },
+  { id: 31, name: '' },
+  { id: 32, name: '' },
+  { id: 33, name: '' },
+  { id: 34, name: '' },
+  { id: 35, name: '' },
+  { id: 36, name: '' },
+  { id: 37, name: '' },
+  { id: 38, name: '' },
+  { id: 39, name: '' },
+  { id: 40, name: '' },
+  { id: 41, name: '' },
+  { id: 42, name: '' },
+  { id: 43, name: '' },
+  { id: 44, name: '' },
+  { id: 45, name: '' },
+  { id: 46, name: '' },
+  { id: 47, name: '' },
+];
+
 export const shuffleNumbers = (numbers) => {
   const shuffledNumbers = [...numbers];
   for (let i = shuffledNumbers.length - 1; i > 0; i--) {
@@ -838,3 +888,4 @@ export const shuffleNumbers = (numbers) => {
 
 export const shuffleColor = shuffleNumbers(colorMap);
 export const shuffleStripe = shuffleNumbers(stripeMap);
+export const shuffleImage = shuffleNumbers(imageMap);

@@ -79,6 +79,7 @@ export default {
     getExcelData(data) {
       const headers = data[1]; // 获取第二行的字段名
       const dataArray = data.slice(2); // 获取第二行之后的数据
+      console.log(data)
       const processedData = dataArray.map((row) => {
         const rowData = {};
         row.forEach((value, index) => {
