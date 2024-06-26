@@ -83,10 +83,6 @@ export const studentLogin = (params) => {
   return api.post(`student/login`, params);
 };
 
-
-
-
-
 // 学生提交问卷
 export const studentCommit = (params) => {
   return api.post(`student/commit`, params);

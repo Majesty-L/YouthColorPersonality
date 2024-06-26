@@ -13,6 +13,7 @@ export const excelHeaderMap = [
   // { title: '家长知情同意（是/否）', key: 'known'},
 
   // 
+  { title: 'id', key: 'id'},
   { title: '名称', key: 'name'},
   { title: '形象', key: 'animal'},
   { title: '色相', key: 'hue'},

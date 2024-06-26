@@ -4,7 +4,7 @@
   <div class="container">
     <div class="">
       <div class="title">
-        <span class="speech" @click="sppech">朗读</span>
+        <span class="speech" v-if="showBtn" @click="sppech">朗读</span>
         <span v-html="addPinyin('Hi!')"></span>
         <span class="name" v-html="addPinyin(studentInfo.name || 'xx')"></span>
         <span v-html="addPinyin('小朋友')"></span>
@@ -32,6 +32,8 @@ export default {
       studentInfo: {},
       addPinyin: html,
       type: this.$route.params.type,
+      id: this.$route.params.id,
+      showBtn: true,
     };
   },
   methods: {
@@ -39,6 +41,7 @@ export default {
       this.studentInfo = info;
       if (info.type != '小学生') {
         this.addPinyin = (val) => val;
+        this.showBtn = false;
       }
     },
     sppech() {
@@ -50,7 +53,7 @@ export default {
       speechSynthesis.speak(utterance);
     },
     startTest(type=1) {
-      this.$router.push({name: 'studentTest', params: { type: type }});
+      this.$router.push({name: 'studentTest', params: { type: type, id: this.id }});
     },
   },
 }

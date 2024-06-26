@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     init() {
-      this.$axios.schoolGetPapers({schoolId: this.studentInfo.shoolId}).then((res) => {
+      this.$axios.schoolGetPapers({schoolId: this.studentInfo.schoolId}).then((res) => {
         if (res.length) {
           const paperList = res.sort((a,b)=>{
             let t1 = new Date(Date.parse(a.createTime.replace(/-/g,"/")));
@@ -61,7 +61,9 @@ export default {
       });
     },
     startTest() {
-      this.$router.push({name: 'studentIntro', params: { type: this.ingTestObject.type }});      
+      // todo: 校验是否有权限测试
+      
+      this.$router.push({name: 'studentIntro', params: { type: this.ingTestObject.type, id: this.ingTestObject.id }});      
     },
     getStudentInfo(info) {
         this.studentInfo = info;

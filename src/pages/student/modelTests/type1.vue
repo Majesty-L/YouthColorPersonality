@@ -4,7 +4,7 @@
             <div class="text">
                 <div class="title">
                     <span v-html="addPinyin('游戏介绍')"></span>
-                    <a-button @click="speech">朗读</a-button>
+                    <a-button v-if="showBtn" @click="speech">朗读</a-button>
                 </div>
                 <div class="intro">
                     <span v-html="addPinyin('让我们一起玩一个选颜色的游戏，游戏很简单，只需要三步。你要按照提示选择你喜欢的，准备好了吗？让我们开始游戏吧！')"></span>
@@ -39,7 +39,7 @@
         </div>
         <div v-else-if="current===1" class="step1">
             <div class="title">
-                <a-button @click="speech('选10个你喜欢的颜色')">朗读</a-button>
+                <a-button v-if="showBtn" @click="speech('选10个你喜欢的颜色')">朗读</a-button>
                 <span v-html="addPinyin('选10个你喜欢的颜色')"></span>
             </div>
             <div class="content">
@@ -60,7 +60,7 @@
         </div>
         <div v-else-if="current===2" class="step2">
             <div class="title">
-                <a-button @click="speech('选5个你喜欢的组合')">朗读</a-button>
+                <a-button v-if="showBtn" @click="speech('选5个你喜欢的组合')">朗读</a-button>
                 <span v-html="addPinyin('选5个你喜欢的组合')"></span>
             </div>
             <div class="content-action">
@@ -83,7 +83,7 @@
         </div>
         <div v-else-if="current===3" class="step3">
             <div class="title">
-                <a-button @click="speech('选5个你喜欢的图片')">朗读</a-button>
+                <a-button v-if="showBtn" @click="speech('选5个你喜欢的图片')">朗读</a-button>
                 <span v-html="addPinyin('选5个你喜欢的图片')"></span>
             </div>
             <div class="content">
@@ -116,7 +116,7 @@
 </template>
 
 <script>
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { html } from 'pinyin-pro';
 import * as stripes from '@/assets/stripes'
 import * as images from '@/assets/images'
@@ -129,11 +129,15 @@ export default {
         step: {
             type: Number,
             default: 3,
-        }
+        },
+        showBtn: {
+            type: Boolean,
+            default: false,
+        },
     },
     data() {
         return {
-            current: 3,
+            current: 0,
             type: this.$route.params.type || 1,
             addPinyin: html,
             shuffleColor,
@@ -144,6 +148,7 @@ export default {
             selectedImages: [],
             stripes,
             images,
+            speechBtn: true,
         };
     },
     watch: {
@@ -152,7 +157,14 @@ export default {
                 this.current = val;
             },
             immediate: true,
-        }
+        },
+        showBtn: {
+            handler(val) {
+                this.addPinyin = val ? html : (t) => t;
+                this.speechBtn = false;
+            },
+            immediate: true,
+        },
     },
     methods: {
         speech(text='让我们一起玩一个选颜色的游戏，游戏很简单，只需要三步。你要按照提示选择你喜欢的，准备好了吗？让我们开始游戏吧！') {
@@ -162,17 +174,25 @@ export default {
         },
         startTest(num) {
             this.current = num;
-            const {selectedColors, selectedStripes, selectedImages} = this;
-            const params = {
-                hue: _.groupBy(selectedColors, i => i.hue).sort((a,b) => a.length < b.length)[0],
-                stripe: selectedColors.map(i => i.hue).join(),
-                open: '中',
-                sense: '理性',
-                selectedColors: selectedColors.map(i=>i.id),
-                selectedStripes: selectedStripes.map(i=>i.id),
-                selectedImages: selectedImages.map(i=>i.id),
-            };
-            this.$emit('changeCur', [num,params]);
+            let params = {};
+            if (num === 99) {
+                const {selectedColors, selectedStripes, selectedImages} = this;
+                const groupedColors = _.groupBy(selectedColors, 'hue');
+                const sortedGroups = _.orderBy(Object.entries(groupedColors), ([, value]) => value.length, 'desc');
+                const longestGroup = sortedGroups[0][1];
+                params = {
+                    hue: longestGroup[0].hue,
+                    phase: 'R',
+                    open: '中',
+                    sense: '理性',
+                    origin: JSON.stringify({
+                        selectedColors: selectedColors.map(i=>i.id),
+                        selectedStripes: selectedStripes.map(i=>i.id),
+                        selectedImages: selectedImages.map(i=>i.id),
+                    }),
+                };
+            }
+            this.$emit('changeCur', [num, params]);
         },
         backHome() {
             this.$router.push({name: 'studentIndex'});

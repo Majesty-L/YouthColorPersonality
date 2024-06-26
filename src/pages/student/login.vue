@@ -48,6 +48,8 @@ export default {
         this.$message.success('登陆成功');
         localStorage.setItem('student_id', res);
         this.$router.push({name: 'studentIndex'});
+      }).catch(() => {
+        this.$message.error('帐号或密码错误');
       });
     }
   }

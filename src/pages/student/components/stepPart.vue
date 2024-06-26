@@ -27,11 +27,22 @@
     },
     data() {
       return {
+        studentId: this.$static.student_id,
+        studentInfo: {},
       };
     },
     created() {
+      this.init();
     },
     methods: {
+      init () {
+        this.$axios.schoolStudentInfo({studentId: this.studentId}).then((res) => {
+          if(res.length) {
+            this.studentInfo = res[0];
+            this.$emit('getStudentInfo', res[0]);
+          }
+        });
+      },
       back() {
         this.$emit('back');
       }
@@ -44,7 +55,6 @@
     height: 64px;
     padding: 24px 12px;
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.09);
-    border-bottom: 1px solid;
     .back {
       cursor: pointer;
     }
