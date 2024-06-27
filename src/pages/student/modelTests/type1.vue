@@ -55,7 +55,7 @@
                 <div v-for="item in selectedColors" :key="item.id" class="selected_class">
                     <p :style="{backgroundColor:item.color}" />
                 </div>
-                <a-button class="end-btn" v-html="addPinyin('完成')" :disabled="selectedColors.length!=10" @click="startTest(2)"></a-button>
+                <a-button class="end-btn" v-html="addPinyin('完成')" :disabled="selectedColors.length!=10" @click="startTest(99)"></a-button>
             </div>
         </div>
         <div v-else-if="current===2" class="step2">
@@ -134,6 +134,10 @@ export default {
             type: Boolean,
             default: false,
         },
+        characterId: {
+            type: Number,
+            default: 0,
+        },
     },
     data() {
         return {
@@ -198,7 +202,7 @@ export default {
             this.$router.push({name: 'studentIndex'});
         },
         viewReport() {
-            this.$router.push({name: 'studentReport'});
+            this.$router.push({name: 'studentReport', params: { id: this.characterId }});
         },
     }
 }

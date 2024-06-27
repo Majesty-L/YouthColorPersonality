@@ -88,17 +88,9 @@ export const studentCommit = (params) => {
   return api.post(`student/commit`, params);
 };
 
-
-
-
 // 单个学生报告
 export const studentReport = (params) => {
-  // this.baseInfo = { id: 1, idCard: 'G43024120001010171X', name: '李华', sex: '男', age: 18, classId: 1 };
-  // this.reportInfos = [
-  //   { reportId: 1, reportTime: '2024-06-06', animal: 1, characteristic: [4, 7, -6, 5, 0], personInfo: 'xxxxxx', studyInfo: '学习学习', commuInfo: '沟通沟通', socialInfo: '人际人际' },
-  //   { reportId: 2, reportTime: '2023-06-06', animal: 2, characteristic: [-4, -7, 6, 9, 2], personInfo: 'xxxxxx', studyInfo: '学习1学习', commuInfo: '沟通2沟通', socialInfo: '人际人际' },
-  // ];
-  return api.post(`student/report`, params);
+  return api.post(`answer/report`, params);
 };
 
 

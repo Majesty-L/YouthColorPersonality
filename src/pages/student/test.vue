@@ -5,7 +5,7 @@
             <step-part v-else @getStudentInfo="getStudentInfo" :current="current" @back="back"></step-part>
         </div>
         <div class="content">
-            <type1 v-if="type===1" :showBtn="showBtn" :step="current" @changeCur="changeCur"></type1>
+            <type1 v-if="type===1" :showBtn="showBtn" :step="current" :characterId="characterId" @changeCur="changeCur"></type1>
         </div>
     </div>
 </template>
@@ -28,6 +28,7 @@ export default {
             id: this.$route.params.id,
             studentInfo: {},
             showBtn: true,
+            characterId: 0,
         };
     },
     methods: {
@@ -44,8 +45,9 @@ export default {
                 paperId: this.id,
                 ...params,
             };
-            this.$axios.studentCommit(finalParams).then(() => {
+            this.$axios.studentCommit(finalParams).then((res) => {
                 this.current = cur;
+                this.characterId = res;
             });
         },
         getStudentInfo(info) {
@@ -56,7 +58,6 @@ export default {
             }
         },
         back() {
-            console.log(this.current)
             if (this.current === 99 || !this.current) {
                 this.$router.push({name: 'studentIndex'});
             } else {
