@@ -7,18 +7,10 @@
           <img src="@/assets/school/header.png" alt="avatar" />
           <span class="title">Little Mood</span>
         </div>
-        <a-menu class="menu" theme="dark" mode="inline" :default-selected-keys="['1', 'sub1']"
+        <a-menu class="menu" theme="dark" mode="inline" :default-selected-keys="['sub1']"
           :default-open-keys="['sub1']">
           <!-- 各级目录 -->
-          <a-menu-item key="1" v-if="!archiveList.length">
-            <div class="init-menu">
-              <div class="text">
-                <a-icon type="appstore" />档案库
-              </div>
-              <div class="import" @click="importStudentList">+</div>
-            </div>
-          </a-menu-item>
-          <a-sub-menu key="sub1" v-else>
+          <a-sub-menu key="sub1">
             <span slot="title">
               <router-link :to="{ path: '/school/archive' }"><a-icon type="appstore" />档案库</router-link></span>
             <template v-for="grade in archiveList">
@@ -78,12 +70,14 @@
 </template>
 
 <script>
+import _ from 'lodash';
 export default {
   name: 'AppLayout',
   components: {
   },
   data() {
     return {
+      schoolId: this.$static.school_id,
       archiveList: [],
     };
   },
@@ -92,45 +86,20 @@ export default {
   },
   methods: {
     initList() {
-      this.archiveList = [
-        { gradeId: 1, gradeName: '一年级', children: [{ classId: '1-1', className: '1' }] },
-        {
-          gradeId: 2, gradeName: '二年级', children: [
-            { classId: '2-1', className: '1' },
-            { classId: '2-2', className: '2' },
-            { classId: '2-3', className: '3' },
-          ]
-        },
-        // {
-        //   gradeId: 2, gradeName: '二年级', children: [
-        //     { classId: '2-1', className: '1' },
-        //     { classId: '2-2', className: '2' },
-        //     { classId: '2-3', className: '3' },
-        //   ]
-        // },
-        // {
-        //   gradeId: 2, gradeName: '二年级', children: [
-        //     { classId: '2-1', className: '1' },
-        //     { classId: '2-2', className: '2' },
-        //     { classId: '2-3', className: '3' },
-        //   ]
-        // },
-        // {
-        //   gradeId: 2, gradeName: '二年级', children: [
-        //     { classId: '2-1', className: '1' },
-        //     { classId: '2-2', className: '2' },
-        //     { classId: '2-3', className: '3' },
-        //   ]
-        // },
-        // {
-        //   gradeId: 2, gradeName: '二年级', children: [
-        //     { classId: '2-1', className: '1' },
-        //     { classId: '2-2', className: '2' },
-        //     { classId: '2-3', className: '3' },
-        //   ]
-        // },
-      ];
-      // this.archiveList = [];
+      this.$axios.schoolStudentInfo({schoolId: this.schoolId}).then((res) => {
+          const originStudentAll = res;
+          const groupStudent = _.map(_.groupBy(originStudentAll, 'grade'), (val, key) => {
+            return {
+              gradeId: key, gradeName: `${key}年级`, children: _.map(_.groupBy(val, 'classNum'), (v, k) => {
+                return {
+                  classId: `${key}-${k}`, className: `${k}班级`, children: v,
+                }
+              }),
+            }
+          });
+          this.archiveList = groupStudent;
+          this.$store.commit('updateGroupStudent', this.archiveList);
+      });
     },
   },
 };

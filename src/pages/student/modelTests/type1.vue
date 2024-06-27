@@ -202,7 +202,7 @@ export default {
             this.$router.push({name: 'studentIndex'});
         },
         viewReport() {
-            this.$router.push({name: 'studentReport', params: { id: this.characterId }});
+            this.$router.push({name: 'studentReport'});
         },
     }
 }

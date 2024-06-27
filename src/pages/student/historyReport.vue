@@ -8,7 +8,7 @@
         <div class="">学号：{{ studentInfo.classId }}</div>
         <div class="">性别：{{ studentInfo.sex }}</div>
         <div class="">地区：{{ studentInfo.province }}</div>
-        <div class="parent">家长知情同意 <a-icon :type="JSON.parse(studentInfo.known)[reportList[0].id] ? 'check-circle' : 'close-circle'" theme="twoTone" /></div>
+        <div class="parent">家长知情同意 <a-icon :type="(studentInfo.known && JSON.parse(studentInfo.known)[reportList[0].id]) ? 'check-circle' : 'close-circle'" theme="twoTone" /></div>
         <div class="">家长知情同意</div>
       </div>
       <div class="report-detail">

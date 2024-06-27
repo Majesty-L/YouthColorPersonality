@@ -4,9 +4,9 @@
     <div>
       <a-breadcrumb>
         <a-breadcrumb-item><router-link to="/school/archive">档案库</router-link></a-breadcrumb-item>
-        <a-breadcrumb-item v-if="grade_id"><router-link :to="`/school/archive?gradeId=${grade_id}`">{{ grade_id }}</router-link></a-breadcrumb-item>
-        <a-breadcrumb-item v-if="class_id"><router-link :to="`/school/archive?gradeId=${grade_id}&classId=${class_id}`">{{ class_id }}</router-link></a-breadcrumb-item>
-        <a-breadcrumb-item v-if="student_name">{{ student_name }}</a-breadcrumb-item>
+        <a-breadcrumb-item v-if="grade_id"><router-link :to="`/school/archive?gradeId=${grade_id}`">{{ `${grade_id}年级` }}</router-link></a-breadcrumb-item>
+        <a-breadcrumb-item v-if="class_id"><router-link :to="`/school/archive?gradeId=${grade_id}&classId=${class_id}`">{{ `${class_id}班级` }}</router-link></a-breadcrumb-item>
+        <!-- <a-breadcrumb-item v-if="student_id">{{ student_id }}</a-breadcrumb-item> -->
       </a-breadcrumb>
     </div>
     <div class="detail" v-if="showType">
@@ -32,9 +32,9 @@ export default {
   },
   data() {
     return {
-      grade_id: this.$route.query.gradeId,
-      class_id: this.$route.query.classId,
-      student_name: '',
+      grade_id: '',
+      class_id: '',
+      student_id: '',
     };
   },
   computed: {
@@ -43,7 +43,7 @@ export default {
         return 1;
       } else if (!this.class_id) {
         return 2;
-      } else if (!this.student_name) {
+      } else if (!this.student_id) {
         return 3;
       }
       return 4;
@@ -54,7 +54,7 @@ export default {
       handler(to) {
         this.grade_id = to.query.gradeId;
         this.class_id = to.query.classId;
-        this.student_name = to.query.studentName;
+        this.student_id = to.query.studentId;
       },
       immediate: true,
     }

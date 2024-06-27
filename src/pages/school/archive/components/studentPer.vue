@@ -57,7 +57,7 @@ import * as animals from '@/assets/characters'
 export default {
   data() {
     return {
-      studentId: this.$route.params.studentId || '1800893297575743489',
+      studentId: this.$route.query.studentId,
       baseInfo: {},
       animals,
       gradeList: [
@@ -85,11 +85,15 @@ export default {
         if(res.length) {
           this.baseInfo = res[0];
         }
-      });
+      }).catch(() => [
+
+      ]);
       this.$axios.studentReport({studentId: this.studentId}).then((res) => {
         const result = res.sort((a, b) => new Date(Date.parse(b.createTime)) - new Date(Date.parse(a.createTime)));
         this.reportList = result.map(item => ({...item, detail: resultObject[item.characterId]})).slice(0,1);
-      })
+      }).catch(() => [
+        
+      ]);
     },
     getSliderValue(report, dataIndex) {
       const detail = report.detail || {};
