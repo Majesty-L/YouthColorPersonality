@@ -90,7 +90,7 @@ export default {
       ]);
       this.$axios.studentReport({studentId: this.studentId}).then((res) => {
         const result = res.sort((a, b) => new Date(Date.parse(b.createTime)) - new Date(Date.parse(a.createTime)));
-        this.reportList = result.map(item => ({...item, detail: resultObject[item.characterId]})).slice(0,1);
+        this.reportList = result.map(item => ({...item, detail: resultObject[item.characterId]})).filter(i=>i.isLast);
       }).catch(() => [
         
       ]);

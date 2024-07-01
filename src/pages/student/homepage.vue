@@ -65,12 +65,14 @@ export default {
       });
     },
     startTest() {
-      // todo: 校验是否有权限测试
-      
-      this.$router.push({name: 'studentIntro', params: { type: this.ingTestObject.type, id: this.ingTestObject.id }});      
+      if (!this.studentInfo.is_delete && this.studentInfo.known[this.ingTestObject.id] === '是') {
+        this.$router.push({name: 'studentIntro', params: { type: this.ingTestObject.type, id: this.ingTestObject.id }});      
+      } else {
+        this.$message.info('暂无权限！')
+      }
     },
     getStudentInfo(info) {
-        this.studentInfo = info;
+        this.studentInfo = Object.assign({}, info, {known: JSON.parse(info.known || {})});
     },
   }
 }

@@ -23,7 +23,7 @@ export default {
     },
     data() {
         return {
-            current: 99,
+            current: 0,
             type: this.$route.params.type || 0,
             id: this.$route.params.id,
             studentInfo: {},
@@ -48,6 +48,8 @@ export default {
             this.$axios.studentCommit(finalParams).then((res) => {
                 this.current = cur;
                 this.characterId = res;
+            }).catch(() => {
+                this.$message.error('提交失败，请重试');
             });
         },
         getStudentInfo(info) {

@@ -3,7 +3,7 @@
     <h2>色彩测试</h2>
     <span>每年两次的色彩心理健康测试可以及时的关注到每一位学生的变化。</span>
     <div class="new-test">
-      <a-button @click="newTest">+ 新的测试</a-button>
+      <a-button :disabled="ingTestObject.id" @click="newTest">+ 新的测试</a-button>
       <div>推荐测试时间：{{ recommendTime }} <img src="@/assets/school/timer.png" alt="">设置提醒</div>
     </div>
     <div class="ing-test">
@@ -20,12 +20,12 @@
           </div>
           <div class="process-view">
             <span>测试进度统计</span>
-            <a-slider class="slider" v-model="processData" :min="0" :max="100" disabled />
-            <span class="">{{processData}}%</span>
+            <a-slider class="slider" v-model="finishData" :min="0" :max="100" disabled />
+            <span class="">{{finishData}}%</span>
           </div>
         </div>
         <div>
-          <a-button v-if="ingTestObject.id" @click="refreshDetail">更新状态</a-button>
+          <a-button v-if="ingTestObject.id" @click="refreshDetail">查看测试状态</a-button>
         </div>
       </div>
     </div>
@@ -64,6 +64,7 @@ export default {
       fileName: '',
       recommendTime: '',
       processData: 0,
+      finishData: 0,
     };
   },
   created() {
@@ -86,6 +87,7 @@ export default {
           if (!paperList[0].finishTime) {
             this.ingTestObject = paperList[0];
             this.processData = this.ingTestObject.knowPercent ? Number((this.ingTestObject.knowPercent*100).toFixed(2)) : 0;
+            this.finishData = (this.ingTestObject.finishNum*100/this.ingTestObject.studentNum).toFixed(2);
             this.dataSource = paperList.splice(1);
           } else {
             this.dataSource = paperList;

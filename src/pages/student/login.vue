@@ -3,9 +3,9 @@
     <h1 class="left-container">学生登录页面</h1>
     <a-form-model class="form" :model="loginForm" @submit="handleLogin" @submit.native.prevent>
       <a-form-model-item>
-        <a-input v-model="loginForm.name" placeholder="学校">
-          <a-icon slot="prefix" type="user" style="color:rgba(0,0,0,.25)" />
-        </a-input>
+        <a-select v-model="loginForm.name" placeholder="学校" :options="schoolList">
+          <!-- <a-icon slot="suffixIcon" type="school" style="color:rgba(0,0,0,.25)" /> -->
+        </a-select>
       </a-form-model-item>
       <a-form-model-item>
         <a-input v-model="loginForm.cardId" placeholder="账号">
@@ -37,9 +37,10 @@ export default {
     return {
       loginForm: {
         cardId: '',
-        name: '',
-        password: ''
-      }
+        // name: '',
+        password: '',
+      },
+      schoolList: [{key:'长沙向阳小学',title:'长沙向阳小学'}],
     };
   },
   methods: {

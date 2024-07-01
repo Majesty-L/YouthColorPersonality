@@ -15,7 +15,7 @@
           <div>为了尊重保护每一位学生的隐私，在每次测试前，我们需要征集每位家长的知情同意。<br/>右边是我们提供的知情同意书模版，你可以下载。班主任负责发放给每一位家长并统计他们的同意与否。</div>
           <a-divider></a-divider>
           <div class="process-view">
-            <span>进度统计</span>
+            <span>知情同意情况</span>
             <a-slider class="slider" v-model="processPercent" :min="0" :max="100" disabled />
             <span class="mr">{{processPercent}}%</span>
             <a-tag @click="getInfo">下载</a-tag>
@@ -39,12 +39,11 @@
           <div>{{ newTestName }}</div>
           <div>参与人数： {{ num }}</div>
         </div>
-        <div class="btn"><a-button :disabled="processPercent===0" @click="publish('发布')">发布测试</a-button></div>
+        <div class="btn">
+          <a-button :disabled="processPercent===0" @click="publish('发布')">发布测试</a-button>
+          <a-button @click="publish('结束')">结束测试</a-button>
+        </div>
       </div>
-    </div>
-    <div class="fixed">
-      <a-button @click="publish('结束')">结束测试</a-button>
-      <a-button>更新状态</a-button>
     </div>
     <a-modal
       :visible="uploadShow"
@@ -112,7 +111,7 @@ export default {
           '姓名': item.name,
           '年级': item.grade,
           '班级': item.classNum,
-          '家长知情同意（是/否）': item.known,
+          '家长知情同意（是/否）': undefined,
         }));
         const worksheet = XLSX.utils.json_to_sheet(studentsInfo);
         const workbook = XLSX.utils.book_new();
@@ -129,7 +128,7 @@ export default {
     },
     handleOk() {
       this.confirmLoading = true;
-      const params = this.uploadData.map(item => ({cardId: item.cardId, known: item.known, testId: this.newTestId}));
+      const params = this.uploadData.map(item => ({cardId: item.cardId, known: item.known || '否', testId: this.newTestId}));
       this.$axios.schoolUploadKnown(params).then((res) => {
         const {successNum, percent} = res;
         this.processPercent = (percent*100).toFixed(2);
@@ -216,11 +215,6 @@ export default {
         margin: 0 12px;
       }
     }
-  }
-  .fixed {
-    position: absolute;
-    bottom: 24px;
-    margin: 0 0 0 40%;
   }
 }
 </style>

@@ -47,8 +47,8 @@
           </div>
           <div>
             <router-link to="/school/intro">
-              <img src="@/assets/school/header.png" alt="avatar" />
-              <span class="title">xx小学</span>
+              <img src="@/assets/school/schoolAvator.png" alt="avatar" />
+              <span class="title">{{ schoolInfo.name }}</span>
             </router-link>
           </div>
         </div>
@@ -73,7 +73,13 @@ export default {
     return {
       schoolId: this.$static.school_id,
       archiveList: [],
+      schoolInfo: {},
     };
+  },
+  watch: {
+    '$store.state.groupStudent'(val) {
+          this.archiveList = val;
+    },
   },
   created() {
     this.initList();
@@ -91,9 +97,12 @@ export default {
               }),
             }
           });
-          this.archiveList = groupStudent;
-          this.$store.commit('updateGroupStudent', this.archiveList);
+          this.$store.commit('updateGroupStudent', groupStudent);
+          // this.archiveList = this.$store.state.groupStudent;
       });
+      this.$axios.schoolInfo({schoolId: this.schoolId}).then((res) => {
+        this.schoolInfo = res;
+      })
     },
   },
 };
@@ -144,7 +153,7 @@ export default {
     position: absolute;
     bottom: 0;
     width: 100%;
-    padding: 12px;
+    padding: 24px;
   }
 }
 </style>

@@ -62,18 +62,19 @@ export const schoolPublishPaper = (params) => {
   return api.post(`paper/publish`, params);
 };
 
-
-
-
-
-// 学校获取档案层级信息（全部、全年级、全班级）
-export const schoolArchive = (params) => {
-  return api.post(`school/archive`, params);
-};
-
 // 获取学校信息
 export const schoolInfo = (params) => {
-  return api.post(`school/info`, params);
+  return api.post(`school/schoolInfo`, params);
+};
+
+// 修改学生档案信息
+export const modifyStudentInfo = (params) => {
+  return api.post(`school/modifyStudentInfo`, params);
+};
+
+// 修改学校信息
+export const modifySchoolInfo = (params) => {
+  return api.post(`school/modifySchoolInfo`, params);
 };
 
 // -------------性格测试系统学生接口--------------------   
@@ -92,6 +93,19 @@ export const studentCommit = (params) => {
 export const studentReport = (params) => {
   return api.post(`answer/report`, params);
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,6 +1,6 @@
 <template>
   <div class="archive-container">
-    <h2>心理健康档案库</h2>
+    <h2>档案库</h2>
     <div>
       <a-breadcrumb>
         <a-breadcrumb-item><router-link to="/school/archive">档案库</router-link></a-breadcrumb-item>
@@ -11,9 +11,9 @@
     </div>
     <div class="detail" v-if="showType">
       <archive-all v-if="showType===1"></archive-all>
-      <grade-all v-else-if="showType===2"></grade-all>
-      <class-all v-else-if="showType===3"></class-all>
-      <student-per v-else-if="showType===4"></student-per>
+      <grade-all v-else-if="showType===2" :key="grade_id"></grade-all>
+      <class-all v-else-if="showType===3" :key="class_id"></class-all>
+      <student-per v-else-if="showType===4" :key="student_id"></student-per>
     </div>
   </div>
 </template>
