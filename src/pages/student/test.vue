@@ -23,7 +23,7 @@ export default {
     },
     data() {
         return {
-            current: 0,
+            current: 99,
             type: this.$route.params.type || 0,
             id: this.$route.params.id,
             studentInfo: {},
@@ -70,5 +70,9 @@ export default {
 
 <style lang="less" scoped>
 .test-container {
+    .content {
+        background-color: #FAFAFA;
+        height: calc(100vh - 64px);
+    }
 }
 </style>

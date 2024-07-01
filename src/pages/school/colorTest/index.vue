@@ -74,7 +74,7 @@ export default {
       const currentDate = new Date();
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth();
-      this.fileName = month < 6 ? `${year - 1}-1` : `${year}-2`;
+      this.fileName = month < 6 ? `测试${year}（1）` : `测试${year}（2）`;
       this.recommendTime = `${year}年${month < 6 ? 3 : 9}月`;
       this.$axios.schoolGetPapers({schoolId: this.schoolId}).then((res) => {
         if (res.length) {

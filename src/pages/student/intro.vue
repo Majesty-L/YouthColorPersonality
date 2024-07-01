@@ -4,8 +4,10 @@
   <div class="container">
     <div class="">
       <div class="title">
-        <span class="speech" v-if="showBtn" @click="sppech">朗读</span>
-        <span v-html="addPinyin('Hi!')"></span>
+        <span class="speech" v-if="showBtn" @click="speech">
+          <img src="@/assets/student/laba.png" alt="">
+        </span>
+        <span :class="showBtn?'':'pl'" v-html="addPinyin('Hi!')"></span>
         <span class="name" v-html="addPinyin(studentInfo.name || 'xx')"></span>
         <span v-html="addPinyin('小朋友')"></span>
         👋
@@ -14,7 +16,9 @@
         <span v-html="addPinyin('让我们一起来玩个游戏')"></span><br/>
         <span v-html="addPinyin('看看你的心情是什么颜色吧！')"></span>
       </div>
-      <a-button @click="startTest(type)"><span v-html="addPinyin('进入游戏')"></span></a-button>
+      <div class="pl">
+        <a-button class="btn-student" @click="startTest(type)"><span v-html="addPinyin('进入游戏')"></span></a-button>
+      </div>
     </div>
   </div>
 </div>
@@ -44,7 +48,7 @@ export default {
         this.showBtn = false;
       }
     },
-    sppech() {
+    speech() {
       // 创建 SpeechSynthesisUtterance 对象
       const utterance = new SpeechSynthesisUtterance();
       // 设置要朗读的文本
@@ -71,7 +75,21 @@ export default {
       margin-left: -24px;
     }
     .name {
-      color:aquamarine;
+      color:#63C5E9;
+      padding: 0 12px;
+    }
+    .title {
+      font-size: 60px;
+    }
+    .text {
+      font-size: 36px;
+      padding-left: 100px;
+      // text-align: center;
+      margin-bottom: 96px;
+      line-height: 200%;
+    }
+    .pl {
+      padding-left: 100px;
     }
   }
 }

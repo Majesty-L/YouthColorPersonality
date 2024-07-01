@@ -4,10 +4,10 @@
       <a-layout-sider>
         <div class="logo">
           <!-- 头像 -->
-          <img src="@/assets/school/header.png" alt="avatar" />
+          <img src="@/assets/school/pageIcon.png" alt="avatar" />
           <span class="title">Little Mood</span>
         </div>
-        <a-menu class="menu" theme="dark" mode="inline" :default-selected-keys="['sub1']"
+        <a-menu class="menu" mode="inline" :default-selected-keys="['sub1']"
           :default-open-keys="['sub1']">
           <!-- 各级目录 -->
           <a-sub-menu key="sub1">
@@ -44,12 +44,6 @@
           </div>
           <div key="22">
             <router-link to="/school/archive">使用指南</router-link>
-          </div>
-          <div key="23">
-            <router-link to="/school/archive">常见问题</router-link>
-          </div>
-          <div key="24">
-            <router-link to="/school/archive">退出登录</router-link>
           </div>
           <div>
             <router-link to="/school/intro">
@@ -110,6 +104,16 @@ export default {
 #school-layout {
   height: 100vh;
 
+  .ant-layout-sider
+  // .ant-menu-dark, .ant-menu-dark .ant-menu-sub, 
+  // /deep/.ant-menu-dark .ant-menu-inline.ant-menu-sub 
+  {
+    background-color: #fff;
+    box-shadow: none;
+  }
+  // .ant-menu-dark .ant-menu-item, .ant-menu-dark .ant-menu-item-group-title, .ant-menu-dark .ant-menu-item > a {
+  //   color: #000;
+  // }
   .logo {
     margin-top: 12px;
     height: 64px;
@@ -119,8 +123,10 @@ export default {
   }
 
   .title {
-    margin-left: 12px;
-    color: aliceblue;
+    margin-left: 6px;
+    color: #5A5A61;
+    font-size: 18px;
+    font-weight: bold;
   }
 
   .menu {

@@ -3,18 +3,22 @@
     <headerPart :type="1" @getStudentInfo="getStudentInfo"></headerPart>
     <div class="ing-test">
       <a-row>
-        <a-col class="test" :span="15" :disabled="!ingTestObject.id" @click="startTest">
-          <div class="main-target">{{ ingTestObject.name }}</div>
+        <a-col class="test main-target" :disabled="!ingTestObject.id" @click="startTest">
+          <div class="title">{{ ingTestObject.name }}</div>
         </a-col>
-        <a-col class="test" :span="9">色盲测试</a-col>
+        <!-- <a-col class="test color-target" :span="9">
+          <div class="title">色盲<br/>测试</div>
+        </a-col> -->
       </a-row>
     </div>
     <div class="history-test">
       <h3>历史测试</h3>
       <div class="list">
         <div class="item" v-for="item, index in dataSource" :key="index">
-          <img src="@/assets/school/header.png" alt="avatar" />
-          <span>{{ item.name }}</span>
+          <div :class="item.name.includes('（1）')?'history1 img-title':'history2 img-title'">
+            {{ item.name.split('（')[0].split('测试')[1] }}
+          </div>
+          <span class="second-title">{{ item.name }}</span>
         </div>
       </div>
     </div>
@@ -78,24 +82,58 @@ export default {
     .test {
       display: flex;
       justify-content: flex-end;
+      align-items: center;
       min-height: 560px;
       cursor: pointer;
+      .title {
+        margin-right: 140px;
+        color: #fff;
+        font-size: 64px;
+        font-weight: bold;
+      }
+    }
+    .main-target {
       background: no-repeat url(@/assets/student/ingTest.png);
       background-size: cover;
-      .main-target {
-        padding-top: 160px;
-      }
+    }
+    .color-target {
+      background: no-repeat url(@/assets/student/colorTest.png);
+      background-size: cover;
     }
   }
   .history-test {
+    margin: 36px;
     .list {
       display: flex;
-      gap: 24px;
-      .item {
+      flex-wrap: wrap;
+      // justify-content: space-between;
+      gap: 48px;
+      // .item {
+      // }
+      .history1 {
+        height: 160px;
+        width: 240px;
+        background: no-repeat url(@/assets/student/history1.png);
+        background-size: cover;
+      }
+      .history2 {
+        height: 160px;
+        width: 240px;
+        background: no-repeat url(@/assets/student/history2.png);
+        background-size: cover;
+      }
+      .img-title {
         display: flex;
-        flex-direction: column;
+        justify-content: center;
         align-items: center;
-        flex: 0 0 200px;
+        color: #fff;
+        font-size: 48px;
+        font-weight: bold;
+        margin-bottom: 12px;
+        border-radius: 12px;
+      }
+      .second-title {
+        font-size: 20px;
       }
     }
   }
