@@ -71,6 +71,11 @@ const router = new VueRouter({
           path: '/school/intro',
           component: () => import('@/pages/school/intro.vue'),
         },
+        {
+          name: 'schoolReport',
+          path: '/school/report',
+          component: () => import('@/pages/school/report/index.vue'),
+        },
       ]
     },
   ],

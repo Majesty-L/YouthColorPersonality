@@ -31,7 +31,7 @@
             </template>
           </a-sub-menu>
           <a-menu-item key="2">
-            <router-link to="/school/archive"><a-icon type="appstore" />年度报告</router-link>
+            <router-link to="/school/report"><a-icon type="appstore" />年度报告</router-link>
           </a-menu-item>
           <a-menu-item key="3">
             <router-link to="/school/test"><a-icon type="appstore" />新的测试</router-link>
