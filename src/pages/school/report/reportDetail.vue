@@ -2,6 +2,7 @@
   <div class="report-container">
     <div class="filter">
       <a-select v-model="gradeName" :options="gradeSelectList"></a-select>
+      <a-button @click="search"></a-button>
     </div>
     <div class="per-report">
       <div class="level mb">
@@ -105,12 +106,18 @@ const bgColorMap = {
 export default {
   components: {
   },
+  props: {
+    paperId: {
+      type: String,
+      default: '',
+    },
+  },
   data() {
     return {
       percent,
       gradeName: '全部年级',
       loading: false,
-      gradeSelectList: [],
+      gradeSelectList: [{label:'一年级', value: '1'}],
       gradeList: [],
       gradeNoList: [
         { name: '一年级', id: '1', percent: 0, no: 0 },
@@ -161,35 +168,48 @@ export default {
     this.init();
   },
   methods: {
-    init() {
-      this.allAnswers = [
-        { character_id: 1, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '骆驼' },
-        { character_id: 1, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '狐狸' },
-        { character_id: 1, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '羊' },
-        { character_id: 1, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '鹿' },
-        { character_id: 1, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '犀牛' },
-        { character_id: 1, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '犀牛' },
-        { character_id: 1, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '犀牛' },
-        { character_id: 1, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '犀牛' },
-        { character_id: 3, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '大象' },
-        { character_id: 13, student_id: '1800893297600909313', grade: '3', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '牛' },
-        { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '大象' },
-        { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '猴子' },
-        { character_id: 41, student_id: '1800893297600909313', grade: '6', class_num: '3', sex: '女', province: '湖南', nation: '汉族', animal: '大象' },
-        { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '猫头鹰' },
-        { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '狐狸' },
-        { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '猫头鹰' },
-        { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '猫头鹰' },
-        { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '大象' },
-        { character_id: 41, student_id: '1800893297600909313', grade: '1', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '鹦鹉' },
-        { character_id: 41, student_id: '1800893297600909313', grade: '1', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '鹦鹉' },
-        { character_id: 41, student_id: '1800893297600909313', grade: '1', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '鹦鹉' },
-        { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '熊猫' },
-      ];
-      this.answerLen = this.allAnswers.length;
-      this.transferData();
-      this.getGradeChart();
-      this.getAnimalChart();
+    search() {
+      const params = {
+        paperId: this.paperId,
+        grade: this.gradeName,
+      };
+      this.init(params);
+    },
+    init(params={paperId: this.paperId}) {
+      this.$axios.getPaperReport(params).then((res) => {
+        if (!res.length) {
+          this.$message.info('暂无数据');
+        }
+          this.allAnswers = res;
+          // this.allAnswers = [
+          //   { character_id: 1, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '骆驼' },
+          //   { character_id: 1, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '狐狸' },
+          //   { character_id: 1, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '羊' },
+          //   { character_id: 1, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '鹿' },
+          //   { character_id: 1, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '犀牛' },
+          //   { character_id: 1, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '犀牛' },
+          //   { character_id: 1, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '犀牛' },
+          //   { character_id: 1, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '犀牛' },
+          //   { character_id: 3, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '大象' },
+          //   { character_id: 13, student_id: '1800893297600909313', grade: '3', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '牛' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '大象' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '猴子' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '6', class_num: '3', sex: '女', province: '湖南', nation: '汉族', animal: '大象' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '猫头鹰' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '狐狸' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '猫头鹰' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '猫头鹰' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '大象' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '1', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '鹦鹉' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '1', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '鹦鹉' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '1', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '鹦鹉' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '熊猫' },
+          // ];
+          this.answerLen = this.allAnswers.length;
+          this.transferData();
+          this.getGradeChart();
+          this.getAnimalChart();
+      });
     },
     transferData() {
       const sex = {

@@ -49,7 +49,11 @@ export default {
     init() {
       this.$axios.schoolGetPapers({schoolId: this.schoolId}).then((res) => {
         if (res.length) {
-          this.paperList = res;
+          this.paperList = res.sort((a,b)=>{
+            let t1 = new Date(Date.parse(a.createTime.replace(/-/g,"/")));
+            let t2 = new Date(Date.parse(b.createTime.replace(/-/g,"/")));
+            return t2.getTime()-t1.getTime();
+          });
         }
       });
     },

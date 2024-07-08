@@ -77,6 +77,11 @@ export const modifySchoolInfo = (params) => {
   return api.post(`school/modifySchoolInfo`, params);
 };
 
+// 学校获取年度报告
+export const getPaperReport = (params) => {
+  return api.post(`paper/report`, params);
+};
+
 // -------------性格测试系统学生接口--------------------   
 
 // 学生登陆
