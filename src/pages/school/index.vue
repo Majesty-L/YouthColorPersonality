@@ -7,23 +7,24 @@
           <img src="@/assets/school/pageIcon.png" alt="avatar" />
           <span class="title">Little Mood</span>
         </div>
+        <div class="left">导航栏</div>
         <a-menu class="menu" mode="inline" :default-selected-keys="['sub1']"
           :default-open-keys="['sub1']">
           <!-- 各级目录 -->
           <a-sub-menu key="sub1">
             <span slot="title">
-              <router-link :to="{ path: '/school/archive' }"><a-icon type="appstore" />档案库</router-link></span>
+              <router-link :to="{ path: '/school/archive' }"><span class="bold"><img class="mr" src="@/assets/school/menu1.png" alt="">档案库</span></router-link></span>
             <template v-for="grade in archiveList">
               <a-menu-item v-if="!grade.children" :key="grade.gradeName">
                 <router-link :to="{ path: `/school/archive?gradeId=${grade.gradeId}` }">{{ grade.gradeName
                   }}</router-link>
               </a-menu-item>
-              <a-sub-menu v-else :key="grade.gradeId">
+              <a-sub-menu v-else :key="grade.gradeId" class="menu2">
                 <span slot="title">
                   <router-link :to="{ path: `/school/archive?gradeId=${grade.gradeId}` }">{{ grade.gradeName
                     }}</router-link>
                 </span>
-                <a-menu-item v-for="item in grade.children" :key="`${grade.gradeId}_${item.classId}`">
+                <a-menu-item v-for="item in grade.children" :key="`${grade.gradeId}_${item.classId}`" class="menu3">
                   <router-link :to="{ path: `/school/archive?gradeId=${grade.gradeId}&classId=${item.classId}` }">{{
           item.className }}</router-link>
                 </a-menu-item>
@@ -31,24 +32,26 @@
             </template>
           </a-sub-menu>
           <a-menu-item key="2">
-            <router-link to="/school/report"><a-icon type="appstore" />年度报告</router-link>
+            <router-link to="/school/report"><span class="bold"><img class="mr" src="@/assets/school/menu2.png" alt="">年度报告</span></router-link>
           </a-menu-item>
           <a-menu-item key="3">
-            <router-link to="/school/test"><a-icon type="appstore" />新的测试</router-link>
+            <router-link to="/school/test"><span class="bold"><img class="mr" src="@/assets/school/menu3.png" alt="">色彩测试</span></router-link>
           </a-menu-item>
           <!-- 更多目录项 -->
         </a-menu>
         <div class="footer-info">
-          <div key="21">
-            <router-link to="/school/archive">关于测试</router-link>
+          <div key="21" class="else1">
+            <router-link to="/school/archive"><img class="mr" src="@/assets/school/menu4.png" alt="">关于测试</router-link>
           </div>
-          <div key="22">
-            <router-link to="/school/archive">使用指南</router-link>
+          <div key="22" class="else2">
+            <router-link to="/school/archive"><img class="mr" src="@/assets/school/menu5.png" alt="">使用指南</router-link>
           </div>
           <div>
             <router-link to="/school/intro">
-              <img src="@/assets/school/schoolAvator.png" alt="avatar" />
-              <span class="title">{{ schoolInfo.name }}</span>
+              <div class="school">
+                <div class="title"><img src="@/assets/school/schoolAvator.png" alt="avatar" />{{ schoolInfo.name }}</div>
+                <a-icon type="right"></a-icon>
+              </div>
             </router-link>
           </div>
         </div>
@@ -124,11 +127,19 @@ export default {
   //   color: #000;
   // }
   .logo {
-    margin-top: 12px;
+    padding: 12px 28px;
     height: 64px;
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .left {
+    border-top: 1px solid #E8E8EC;
+    padding-top: 12px;
+    margin: 0 30px;
+    font-size: 12px;
+    color: #73737A;
   }
 
   .title {
@@ -141,19 +152,72 @@ export default {
   .menu {
     height: calc(100vh - 80px);
     padding-bottom: 48px;
+    padding-left: 12px;
     overflow: auto;
+    box-shadow: 0 8px 0 rgba(0, 0, 0, 0.09);
+    border-right: none;
 
     .init-menu {
       display: flex;
       justify-content: space-between;
     }
+    /deep/ .ant-menu-item, .ant-menu-submenu {
+      a {
+        color: #73737A;
+      }
+    }
+    /deep/ .ant-menu-item-selected {
+      border-radius: 24px;
+      background-color: #F8F8FA;
+    }
+    /deep/ .ant-menu-item-selected::after {
+      opacity: 0;
+    }
+    .bold {
+      margin-top: -4px;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .menu2 {
+      padding-left: 12px;
+    }
+    .menu3 {
+      padding-left: 56px !important;
+    }
   }
 
   .footer-info {
     position: absolute;
-    bottom: 0;
+    bottom: 36px;
     width: 100%;
     padding: 24px;
+    a {
+      color: #73737A;
+      font-size: 12px;
+    }
+    .else1 {
+      margin-bottom: 12px;
+      padding-left: 12px;
+    }
+    .else2 {
+      margin-bottom: 36px;
+      padding-left: 12px;
+    }
+    .school {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 24px;
+      padding: 6px;
+      background-color: #F8F8FA;
+      .title {
+        font-size: 14px;
+      }
+      img {
+        width: 24px;
+        margin-right: 8px;
+      }
+    }
   }
 }
 </style>
