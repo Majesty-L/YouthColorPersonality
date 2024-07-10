@@ -1,5 +1,9 @@
 <template>
     <div>
+        <div class="level">
+            <div class="level-left"><h3>班级档案</h3></div>
+            <div class="level-right"><a-tag class="btn open">+ 添加学生</a-tag></div>
+        </div>
         <div class="table-container">
             <a-table :columns="columns" :data-source="dataSource" :pagination="false" :row-key="record => record.id"
                 :loading="loading" :customRow="customRow">
@@ -7,7 +11,7 @@
                     <img v-if="text" src="@/assets/school/safe.png" alt="">
                 </template>
                 <template slot="action" slot-scope="text, row">
-                    <a-button @click.native.stop="changeStudentInfo(row)">修改</a-button>
+                    <a-tag class="btn" @click.native.stop="changeStudentInfo(row)">修改</a-tag>
                 </template>
             </a-table>
         </div>
@@ -53,8 +57,8 @@ export default {
                 { title: '地区', dataIndex: 'province', key: 'province' },
                 { title: '动物形象', dataIndex: 'animal', key: 'animal' },
                 { title: '开放度', dataIndex: 'open', key: 'open' },
-                { title: '多点关爱', dataIndex: 'special', key: 'special', scopedSlots: { customRender: 'special' } },
-                { title: '操作', dataIndex: 'action', key: 'action', scopedSlots: { customRender: 'action' } },
+                { title: '多点关爱', dataIndex: 'special', key: 'special', scopedSlots: { customRender: 'special' }, width: 400 },
+                { title: '', dataIndex: 'action', key: 'action', scopedSlots: { customRender: 'action' }, width: 40 },
             ],
             loading: false,
             grade_id: this.$route.query.gradeId,
@@ -148,10 +152,32 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.level {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
 .table-container {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 0 12px;
     /deep/.ant-table-body {
         background-color: #fff;
+        .ant-table-thead th {
+            background-color: #fff;
+            color: #B7B7BC;
+        }
     }
+}
+.btn {
+    padding: 0 8px;
+    background-color: #E2E3F4;
+    border-radius: 24px;
+    color: #5A5FA7;
+    cursor: pointer;
+}
+.open {
+    padding: 2px 8px;
 }
 .modal {
     .title {

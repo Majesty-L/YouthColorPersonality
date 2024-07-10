@@ -3,7 +3,7 @@
     <h2>档案库</h2>
     <div>
       <a-breadcrumb>
-        <a-breadcrumb-item><router-link to="/school/archive">档案库</router-link></a-breadcrumb-item>
+        <a-breadcrumb-item v-if="grade_id"><router-link to="/school/archive">档案库</router-link></a-breadcrumb-item>
         <a-breadcrumb-item v-if="grade_id"><router-link :to="`/school/archive?gradeId=${grade_id}`">{{ `${grade_id}年级` }}</router-link></a-breadcrumb-item>
         <a-breadcrumb-item v-if="class_id"><router-link :to="`/school/archive?gradeId=${grade_id}&classId=${class_id}`">{{ `${class_id}班级` }}</router-link></a-breadcrumb-item>
         <!-- <a-breadcrumb-item v-if="student_id">{{ student_id }}</a-breadcrumb-item> -->
@@ -66,7 +66,7 @@ export default {
 .archive-container {
   padding: 24px 48px;
   .detail {
-    margin: 48px 0;
+    margin: 24px 0;
   }
 }
 </style>

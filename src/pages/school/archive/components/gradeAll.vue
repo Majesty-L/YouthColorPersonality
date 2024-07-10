@@ -1,7 +1,13 @@
 <template>
     <div>
         <div class="class-list">
-            <div v-for="item in classes" class="class-item" :key="item.classId" @click="routerToClass(item)">{{ item.className }}</div>
+            <div v-for="item in classes" class="class-item" :key="item.classId" @click="routerToClass(item)">
+                <div class="number">
+                    {{ item.className }}
+                    <!-- <span class="name">{{ item.className?.slice(0, -2) }}</span>
+                    <span class="footer">班级</span> -->
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -34,13 +40,24 @@ export default {
     gap: 24px;
 
     .class-item {
-        background-color: azure;
-        height: 120px;
-        width: 120px;
+        height: 222px;
+        width: 274px;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
+        background: url('@/assets/school/classBg1.png');
+        background-size: cover;
+        .number {
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+            max-width: 200px;
+        }
+    }
+    .class-item:hover {
+        background: no-repeat url('@/assets/school/classBg2.png');
+        background-size: contain;
     }
 }
 </style>

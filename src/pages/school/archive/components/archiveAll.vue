@@ -7,8 +7,9 @@
             <a-button class="btn-school" @click="importStudentList">上传学生信息</a-button>
         </div>
         <div v-else class="grade-list">
-            <div v-for="item in grades" class="grade-item" :key="item.gradeId" @click="routerToGrade(item)">{{
-            item.gradeName }}</div>
+            <div v-for="item in grades" :class="{'grade-item':true, 'graduate-item':item.gradeName.includes('往届')}" :key="item.gradeId" @click="routerToGrade(item)">
+                <span>{{ item.gradeName }}</span>
+            </div>
         </div>
         <!-- <a-modal :visible="uploadShow" title="导入学生信息" :confirm-loading="confirmLoading" @ok="handleOk"
             @cancel="handleCancel">
@@ -121,13 +122,32 @@ export default {
     gap: 24px;
 
     .grade-item {
-        background-color: azure;
-        height: 120px;
-        width: 120px;
+        height: 171px;
+        width: 205px;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
+        background: url('@/assets/school/gradeBg1.png');
+        background-size: cover;
+        span {
+            margin-left: -30px;
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    }
+    .grade-item:hover {
+        background: url('@/assets/school/gradeBg2.png');
+        background-size: cover;
+    }
+    .graduate-item {
+        background: url('@/assets/school/gradeBg3.png');
+        background-size: cover;
+    }
+    .graduate-item:hover {
+        background: url('@/assets/school/gradeBg4.png');
+        background-size: cover;
     }
 }
 </style>
