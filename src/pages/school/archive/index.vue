@@ -68,5 +68,8 @@ export default {
   .detail {
     margin: 24px 0;
   }
+  h2 {
+    font-size: 36px;
+  }
 }
 </style>

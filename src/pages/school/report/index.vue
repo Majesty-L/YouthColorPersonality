@@ -30,8 +30,8 @@ export default {
   data() {
     return {
       schoolId: this.$static.school_id,
-      paper_id: '',
-      paper_name: '',
+      paper_id: this.$route.query.paper,
+      paper_name: this.$route.query.paper_name,
       paperList: [],
     };
   },
@@ -69,6 +69,9 @@ export default {
 <style lang="less" scoped>
 .archive-container {
   padding: 24px 48px;
+  h2 {
+    font-size: 36px;
+  }
   .detail {
     margin: 48px 0;
     display: flex;

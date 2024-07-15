@@ -11,37 +11,45 @@
       <span>第一步</span>
       <div class="backup">
         <div class="process">
-          <div>知情同意书</div>
+          <div class="process-title">知情同意书</div>
           <div>为了尊重保护每一位学生的隐私，在每次测试前，我们需要征集每位家长的知情同意。<br/>右边是我们提供的知情同意书模版，你可以下载。班主任负责发放给每一位家长并统计他们的同意与否。</div>
           <a-divider></a-divider>
           <div class="process-view">
             <span>知情同意情况</span>
             <a-slider class="slider" v-model="processPercent" :min="0" :max="100" disabled />
-            <span class="mr">{{processPercent}}%</span>
-            <a-tag @click="getInfo">下载</a-tag>
-            <a-tag @click="importKnow">更新</a-tag>
+            <span class="num">{{processPercent}}</span>
+            <span class="mr">%</span>
+            <a-tag class="btn" @click="importKnow">更新</a-tag>
           </div>
         </div>
-        <div class="pdf">
-          <img src="@/assets/school/pdf.png" alt="">
-          <div @click="downloadPDF">
-            <a-icon type="download" />下载知情同意书
+        <div class="pdf-all">
+          <div class="pdf">
+            <img src="@/assets/school/pdf.png" alt="">
+            <div @click="downloadPDF">
+              <a-icon type="download" />下载知情同意书
+            </div>
+          </div>
+          <div class="pdf">
+            <img src="@/assets/school/excel2.png" alt="">
+            <div @click="getInfo">
+              <a-icon type="download" />下载表格模板
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="step">
+    <div class="step step2">
       <img v-if="step>1" src="@/assets/school/step2.png" alt="">
       <img v-else src="@/assets/school/step1.png" alt="">
       <span>第二步</span>
       <div class="backup">
         <div class="txt">
-          <div>{{ newTestName }}</div>
+          <div class="title">{{ newTestName }}</div>
           <div>参与人数： {{ num }}</div>
         </div>
-        <div class="btn">
-          <a-button :disabled="processPercent===0" @click="publish('发布')">发布测试</a-button>
-          <a-button @click="publish('结束')">结束测试</a-button>
+        <div>
+          <a-button class="btn-school mr" :disabled="processPercent===0" @click="publish('发布')">发布测试</a-button>
+          <a-button class="btn-school" @click="publish('结束')">结束测试</a-button>
         </div>
       </div>
     </div>
@@ -86,7 +94,7 @@ export default {
         if (res.length) {
           const { studentNum = 0, knowPercent = 0, ifRelease, finishTime } = res.find(i => i.id === this.newTestId);
           this.num = studentNum;
-          this.processPercent = (knowPercent*100).toFixed(2);
+          this.processPercent = Number((knowPercent*100).toFixed(2));
           if (knowPercent) {
             this.step ++;
           }
@@ -131,11 +139,12 @@ export default {
       const params = this.uploadData.map(item => ({cardId: item.cardId, known: item.known || '否', testId: this.newTestId}));
       this.$axios.schoolUploadKnown(params).then((res) => {
         const {successNum, percent} = res;
-        this.processPercent = (percent*100).toFixed(2);
+        this.processPercent = Number((percent*100).toFixed(2));
         this.num = successNum;
         this.$message.success('更新成功');
         this.confirmLoading = false;
         this.uploadShow = false;
+        this.step = this.step ? this.step : 1;
       }).catch((err) => {
         this.$message.error(err);
         this.confirmLoading = false;
@@ -193,6 +202,19 @@ export default {
 <style lang="less" scoped>
 .container {
   margin: 36px;
+  h2 {
+    font-size: 36px;
+  }
+  /deep/ .ant-slider-disabled .ant-slider-handle {
+    border-color: #6C72C9 !important;
+    background-color: #6C72C9;
+  }
+  /deep/ .ant-slider-track {
+    background-color: #6C72C9 !important;
+  }
+  .step {
+    margin-top: 24px;
+  }
   .backup {
     background-color: #fff;
     border-radius: 12px;
@@ -201,11 +223,20 @@ export default {
     align-items: center;
     padding: 36px;
     margin: 12px 0;
+    .pdf-all {
+      display: flex;
+      gap: 24px;
+    }
     .pdf {
       display: flex;
       flex-direction: column;
       align-items: center;
       cursor: pointer;
+    }
+    .process-title {
+      font-size: 20px;
+      color: #B5B6C9;
+      margin-bottom: 12px;
     }
     .process-view {
       display: flex;
@@ -213,6 +244,28 @@ export default {
       .slider {
         width: 600px;
         margin: 0 12px;
+      }
+      .btn {
+          margin: 24px 0;
+          background-color: #E2E3F4;
+          border-radius: 24px;
+          color: #5A5FA7;
+          cursor: pointer;
+          padding: 2px 8px;
+      }
+      .num {
+        color: #16161D;
+        font-weight: bold;
+        font-size: 20px;
+      }
+    }
+  }
+  .step2 {
+    .txt {
+      .title {
+        font-size: 36px;
+        color: #6C72C9;
+        font-weight: bold;
       }
     }
   }
