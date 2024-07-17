@@ -68,6 +68,7 @@
 
 <script>
 import _ from 'lodash';
+const sortList = ['一','二','三','四','五','六','七','八','九','十','十一','十二','往届'];
 export default {
   name: 'AppLayout',
   components: {
@@ -81,7 +82,7 @@ export default {
   },
   watch: {
     '$store.state.groupStudent'(val) {
-          this.archiveList = val;
+      this.archiveList = val;
     },
   },
   created() {
@@ -93,15 +94,14 @@ export default {
           const originStudentAll = res;
           const groupStudent = _.map(_.groupBy(originStudentAll, 'grade'), (val, key) => {
             return {
-              gradeId: key, gradeName: `${key}年级`, children: _.map(_.groupBy(val, 'classNum'), (v, k) => {
+              gradeId: key, gradeName: `${key}年级`, createTime: val[0].createTime, children: _.map(_.groupBy(val, 'classNum'), (v, k) => {
                 return {
                   classId: `${key}-${k}`, className: `${k}班级`, children: v,
                 }
               }),
             }
-          });
+          }).sort((a,b) => sortList.indexOf(a.gradeId) - sortList.indexOf(b.gradeId));
           this.$store.commit('updateGroupStudent', groupStudent);
-          // this.archiveList = this.$store.state.groupStudent;
       });
       this.$axios.schoolInfo({schoolId: this.schoolId}).then((res) => {
         this.schoolInfo = res;

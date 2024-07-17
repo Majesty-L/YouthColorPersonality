@@ -37,7 +37,7 @@ export default {
 <style lang="less" scoped>
 .class-list {
     display: flex;
-    gap: 24px;
+    flex-wrap: wrap;
 
     .class-item {
         height: 222px;

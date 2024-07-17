@@ -36,7 +36,7 @@
           <h3>请分别按照提供的格式上传每个年级的名单表格</h3>
           <div class="model">
             <div><img class="ml" src="@/assets/school/excel.png" alt=""></div>
-            <a-icon type="download"></a-icon> 下载表格模版
+            <a class="cursor none-a" href="/excel/学生档案信息模板.xlsx"><a-icon type="download"></a-icon> 下载表格模版</a>
           </div>
         </div>
         <a-table
@@ -53,9 +53,12 @@
       <!-- <a-button @click="importStudentList">上传</a-button> -->
     </div>
     <a-modal
+      class="modal"
       :visible="uploadShow"
       title="导入学生信息"
       :confirm-loading="confirmLoading"
+      okText="确认"
+      cancelText="取消"
       @ok="handleOk"
       @cancel="handleCancel"
     >
@@ -67,8 +70,10 @@
 </template>
 
 <script>
+import _ from 'lodash';
 import * as XLSX from 'xlsx';
 import { excelHeaderMap } from './data.js';
+const sortList = ['一','二','三','四','五','六','七','八','九','十','十一','十二','往届'];
 export default {
   data() {
     return {
@@ -79,7 +84,7 @@ export default {
       schoolId: localStorage.getItem('school_id'),
       schoolInfo: {},
       columns: [
-        { key: 'name', dataIndex: 'name', title: '年级' },
+        { key: 'name', dataIndex: 'name', title: '年级', width: 200 },
         { key: 'time', dataIndex: 'time', title: '上传时间' },
         { key: 'action', title: '', scopedSlots: { customRender: 'action' }, width: 100 },
       ],
@@ -94,6 +99,15 @@ export default {
       grade: '',
     };
   },
+  watch: {
+    '$store.state.groupStudent'(val) {
+      const createTime = {};
+      val.forEach((item) => {
+        createTime[item.gradeId] = item.createTime;
+      });
+      this.dataSource = this.dataSource.map(item => ({ ...item, time: createTime[item.id] }));
+    },
+  },
   created() {
     this.init();
   },
@@ -102,6 +116,18 @@ export default {
       const that = this;
       this.$confirm({
         content: '本次上传将覆盖已有数据，是否确认上传？',
+        okText: '确定',
+        cancelText: '取消',
+        class: 'modal',
+        okButtonProps: {
+          style: {
+            backgroundColor: '#6C72C9',
+            borderColor: '#6C72C9',
+          }
+        },
+        cancelButtonProps: {
+          class: 'custom-cancel-button',
+        },
         onOk: () => {
           that.uploadShow = true;
           that.uploadData = [];
@@ -117,6 +143,7 @@ export default {
         this.$message.success('上传成功');
         this.confirmLoading = false;
         this.uploadShow = false;
+        this.initList();
       }).catch((err) => {
         this.$message.error(err);
         this.confirmLoading = false;
@@ -161,6 +188,21 @@ export default {
       // 处理文件移除操作
       this.uploadData = [];
       this.fileList = [];
+    },
+    initList() {
+      this.$axios.schoolStudentInfo({schoolId: this.schoolId}).then((res) => {
+        const originStudentAll = res;
+        const groupStudent = _.map(_.groupBy(originStudentAll, 'grade'), (val, key) => {
+          return {
+            gradeId: key, gradeName: `${key}年级`, createTime: val[0].createTime, children: _.map(_.groupBy(val, 'classNum'), (v, k) => {
+              return {
+                classId: `${key}-${k}`, className: `${k}班级`, children: v,
+              }
+            }),
+          }
+        }).sort((a,b) => sortList.indexOf(a.gradeId) - sortList.indexOf(b.gradeId));
+        this.$store.commit('updateGroupStudent', groupStudent);
+      });
     },
     init() {
       this.$axios.schoolInfo({schoolId: this.schoolId}).then((res) => {
@@ -235,7 +277,7 @@ export default {
       }
       .upload {
         background-color: #6C72C9;
-        margin: 24px 0;
+        margin: 4px 0;
         border-radius: 24px;
         color: #fff;
         cursor: pointer;
@@ -251,5 +293,24 @@ export default {
       }
     }
   }
+}
+.modal {
+  /deep/ .ant-btn-primary {
+    background-color: #6C72C9;
+    border-color: #6C72C9;
+  }
+  /deep/ .ant-btn:hover {
+    color: #6C72C9;
+    border-color: #6C72C9;
+  }
+  /deep/ .ant-btn-primary:hover {
+    color: #fff;
+  }
+}
+</style>
+<style>
+.custom-cancel-button:hover {
+  color: #6C72C9;
+  border-color: #6C72C9;
 }
 </style>

@@ -119,6 +119,7 @@ export default {
 }
 .grade-list {
     display: flex;
+    flex-wrap: wrap;
     gap: 24px;
 
     .grade-item {
