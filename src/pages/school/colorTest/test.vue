@@ -25,9 +25,10 @@
         <div class="pdf-all">
           <div class="pdf">
             <img src="@/assets/school/pdf.png" alt="">
-            <div @click="downloadPDF">
+            <a class="cursor none-a" href="/excel/知情同意书.pdf" download><a-icon type="download"></a-icon> 下载知情同意书</a>
+            <!-- <div @click="downloadPDF">
               <a-icon type="download" />下载知情同意书
-            </div>
+            </div> -->
           </div>
           <div class="pdf">
             <img src="@/assets/school/excel2.png" alt="">
@@ -104,13 +105,13 @@ export default {
         }
       });
     },
-    downloadPDF() {
-      const pdfUrl = '/school-server/know.word';
-      const link = document.createElement('a');
-      link.href = pdfUrl;
-      link.download = '家长知情同意书.word'; // 可以自定义下载的文件名
-      link.click();
-    },
+    // downloadPDF() {
+    //   const pdfUrl = '/school-server/know.word';
+    //   const link = document.createElement('a');
+    //   link.href = pdfUrl;
+    //   link.download = '家长知情同意书.word'; // 可以自定义下载的文件名
+    //   link.click();
+    // },
     getInfo() {
       this.$axios.schoolStudentInfo({schoolId: localStorage.getItem('school_id')}).then(res => {
         const studentsInfo = res.map(item => ({
@@ -231,7 +232,9 @@ export default {
       display: flex;
       flex-direction: column;
       align-items: center;
-      cursor: pointer;
+      div {
+        cursor: pointer;
+      }
     }
     .process-title {
       font-size: 20px;

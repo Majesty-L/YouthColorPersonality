@@ -12,7 +12,8 @@
       </div>
       <div class="report-detail">
         <h2>我的报告</h2>
-        <div v-for="(perReport, index) in reportList" :key="index" class="report">
+        <a-button @click="html2report">下载PDF报告</a-button>
+        <div v-for="(perReport, index) in reportList" :key="index" class="report" id="report">
           <div class="first-line">
             <div class="status">最近，我的状态是</div>
             <div class="parent"><a-icon :type="(studentInfo.known && studentInfo.known[perReport.paperId] === '是') ? 'check-circle' : 'close-circle'" theme="twoTone" /> 家长知情同意</div>
@@ -57,6 +58,8 @@
 import headerPart from './components/headerPart.vue';
 import { resultObject } from './data.js';
 import * as animals from '@/assets/characters'
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 export default {
   components: {
     headerPart,
@@ -99,6 +102,19 @@ export default {
       this.$static.student_id = null;
       localStorage.removeItem('student_id');
       this.$router.push({name: 'studentLogin'});
+    },
+    html2report() {
+      const element = document.getElementById('report');
+      
+      html2canvas(element).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF();
+        const width = (canvas.width/canvas.height) * 297;
+        const height = 297;
+
+        pdf.addImage(imgData, 'PNG', (210-width)/2, 0, width, height);
+        pdf.save('个人报告.pdf');
+      });
     },
   }
 }

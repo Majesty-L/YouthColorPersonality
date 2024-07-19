@@ -2,9 +2,10 @@
   <div class="report-container">
     <div class="filter">
       <a-select v-model="gradeName" :options="gradeSelectList"></a-select>
-      <a-button @click="search"></a-button>
+      <a-button @click="search">生成报告</a-button>
+      <a-button @click="html2report">下载PDF报告</a-button>
     </div>
-    <div class="per-report">
+    <div class="per-report" id="per-report">
       <div class="level mb">
         <div class="level-left">
           <h3>测试人群</h3>
@@ -69,6 +70,8 @@
 import { sixGradeMap } from '../data.js';
 import * as echarts from 'echarts';
 import * as characters from '@/assets/characters/index.js';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 const percent = (zi, mu, len = 0) => {
   if (!mu) return '-';
@@ -120,12 +123,12 @@ export default {
       gradeSelectList: [{label:'一年级', value: '1'}],
       gradeList: [],
       gradeNoList: [
-        { name: '一年级', id: '1', percent: 0, no: 0 },
-        { name: '二年级', id: '2', percent: 0, no: 1 },
-        { name: '三年级', id: '3', percent: 0, no: 2 },
-        { name: '四年级', id: '4', percent: 0, no: 3 },
-        { name: '五年级', id: '5', percent: 0, no: 4 },
-        { name: '六年级', id: '6', percent: 0, no: 5 },
+        { name: '一年级', id: '一', percent: 0, no: 0 },
+        { name: '二年级', id: '二', percent: 0, no: 1 },
+        { name: '三年级', id: '三', percent: 0, no: 2 },
+        { name: '四年级', id: '四', percent: 0, no: 3 },
+        { name: '五年级', id: '五', percent: 0, no: 4 },
+        { name: '六年级', id: '六', percent: 0, no: 5 },
       ],
       allAnswers: [],
       detailData: [],
@@ -217,12 +220,12 @@ export default {
         '女': 0,
       };
       const grade = {
-        '1': 0,
-        '2': 0,
-        '3': 0,
-        '4': 0,
-        '5': 0,
-        '6': 0,
+        '一': 0,
+        '二': 0,
+        '三': 0,
+        '四': 0,
+        '五': 0,
+        '六': 0,
       };
       const animals = {};
       const detailData = [];
@@ -416,6 +419,32 @@ export default {
         };
         chart.setOption(option);
       })
+    },
+    html2report() {
+      const element = document.getElementById('per-report');
+
+      // 保存原始的样式
+      const originalHeight = element.style.height;
+      const originalOverflow = element.style.overflow;
+
+      // 移除高度限制和滚动条
+      element.style.height = 'auto';
+      element.style.overflow = 'visible';
+
+
+      html2canvas(element).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF();
+        const width = (canvas.width/canvas.height) * 297;
+        const height = 297;
+
+        pdf.addImage(imgData, 'PNG', (210-width)/2, 5, width, height);
+        pdf.save('年度报告.pdf');
+
+        // 恢复原始的样式
+        element.style.height = originalHeight;
+        element.style.overflow = originalOverflow;
+      });
     },
   }
 }
