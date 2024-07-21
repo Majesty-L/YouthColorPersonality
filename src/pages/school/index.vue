@@ -105,6 +105,7 @@ export default {
       });
       this.$axios.schoolInfo({schoolId: this.schoolId}).then((res) => {
         this.schoolInfo = res;
+        this.$static.schoolInfo = res;
       })
     },
   },

@@ -4,7 +4,7 @@
     <span class="subtitle">每年两次的色彩心理健康测试可以及时的关注到每一位学生的变化。</span>
     <div class="new-test">
       <a-button class="btn-school else" :disabled="!!ingTestObject.id" @click="newTest">+ 新的测试</a-button>
-      <div>推荐测试时间：{{ recommendTime }} <img class="clock" src="@/assets/school/timer.png" alt="">设置提醒</div>
+      <div>推荐测试时间：{{ recommendTime }} <img class="clock" src="@/assets/school/timer.png" alt=""><span class="cursor" @click="setSubmail">设置提醒</span></div>
     </div>
     <div class="ing-test">
       <h3>进行中测试</h3>
@@ -45,6 +45,22 @@
         </a-table>
       </div>
     </div>
+    <a-modal
+      class="modal"
+      :visible="showSet"
+      title="设置提醒时间"
+      :confirm-loading="showSetLoading"
+      okText="确认"
+      cancelText="取消"
+      @ok="handleOk"
+      @cancel="handleCancel"
+    >
+      <a-date-picker valueFormat="YYYY-MM-DD" v-model="mailTime" placeholder="请选择提醒日期" class="date-picker"></a-date-picker>
+      <a-radio-group :value="type" class="set-type">
+        <a-radio value="phone">短信提醒 <a-input v-model="phone"></a-input></a-radio>
+        <!-- <a-radio value="mail">邮件提醒</a-radio> -->
+      </a-radio-group>
+    </a-modal>
   </div>
 </template>
 
@@ -67,6 +83,12 @@ export default {
       recommendTime: '',
       processData: 0,
       finishData: 0,
+      showSet: false,
+      schoolInfo: {},
+      type: 'phone',
+      phone: '',
+      mailTime: '',
+      showSetLoading: false,
     };
   },
   created() {
@@ -113,6 +135,23 @@ export default {
     onClickAction({id, name}) {
       this.$router.push({path: '/school/report', query: { paper: id, paper_name: name }});
     },
+    setSubmail() {
+      this.showSet = true;
+      this.mailTime = this.$static.schoolInfo.mailTime;
+    },
+    handleOk() {
+      this.showSetLoading = true;
+      console.log(this.type, this.phone, this.mailTime)
+      this.$axios.modifySchoolInfo({schoolId: this.$static.school_id, mailPhone: this.phone, mailTime: this.mailTime}).then(() => {
+        this.$message.success("设置成功");
+      }).finally(() => {
+        this.showSetLoading = false;
+        this.showSet = false;
+      })
+    },
+    handleCancel() {
+      this.showSet = false;
+    },
   },
 }
 </script>
@@ -133,7 +172,7 @@ export default {
     margin: 24px 0 12px;
   }
   .clock {
-    margin: 0 2px 0 48px;
+    margin: 0 4px 0 48px;
     width: 16px;
   }
   h3 {
@@ -203,6 +242,18 @@ export default {
     border-radius: 12px;
     padding: 36px;
     margin: 12px 0;
+  }
+}
+.date-picker {
+  width: 200px;
+  margin-bottom: 12px;
+  /deep/ .ant-calendar-picker-input {
+    border-radius: 20px;
+  }
+}
+.set-type {
+  /deep/.ant-input {
+    border-radius: 20px;
   }
 }
 </style>
