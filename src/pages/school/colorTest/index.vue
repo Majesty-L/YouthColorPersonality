@@ -65,6 +65,10 @@
 </template>
 
 <script>
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+
+moment.locale('zh-cn');
 export default {
   data() {
     return {
@@ -138,12 +142,15 @@ export default {
     setSubmail() {
       this.showSet = true;
       this.mailTime = this.$static.schoolInfo.mailTime;
+      this.phone = this.$static.schoolInfo.mailPhone;
     },
     handleOk() {
       this.showSetLoading = true;
-      console.log(this.type, this.phone, this.mailTime)
-      this.$axios.modifySchoolInfo({schoolId: this.$static.school_id, mailPhone: this.phone, mailTime: this.mailTime}).then(() => {
+      this.$axios.modifySchoolInfo({schoolId: this.$static.school_id, mailPhone: this.phone, mailTime: this.mailTime}).then((res) => {
         this.$message.success("设置成功");
+        this.$static.schoolInfo = res;
+        this.mailTime = this.$static.schoolInfo.mailTime;
+        this.phone = this.$static.schoolInfo.mailPhone;
       }).finally(() => {
         this.showSetLoading = false;
         this.showSet = false;
@@ -254,6 +261,19 @@ export default {
 .set-type {
   /deep/.ant-input {
     border-radius: 20px;
+  }
+}
+.modal {
+  /deep/ .ant-btn-primary {
+    background-color: #6C72C9;
+    border-color: #6C72C9;
+  }
+  /deep/ .ant-btn:hover {
+    color: #6C72C9;
+    border-color: #6C72C9;
+  }
+  /deep/ .ant-btn-primary:hover {
+    color: #fff;
   }
 }
 </style>
