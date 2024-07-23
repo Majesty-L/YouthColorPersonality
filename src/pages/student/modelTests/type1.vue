@@ -191,12 +191,26 @@ export default {
                 const {selectedColors, selectedStripes, selectedImages} = this;
                 const groupedColors = _.groupBy(selectedColors, 'hue');
                 const sortedGroups = _.orderBy(Object.entries(groupedColors), ([, value]) => value.length, 'desc');
-                const longestGroup = sortedGroups[0][1];
+                // 色调 取选中最多的色调
+                const hue = sortedGroups[0][0];
+                // 色相 取选中最多的色相
+
+                // 开放度 选中最多的颜色个数决定 4/7/7+
+                const open = sortedGroups[0][1].length <= 4 ? '低' : sortedGroups[0][1].length <= 7 ? '中' : '高';
+                // 理性/感性 hue尾号 0-4：感性 5-9：理性
+                let isGan = 0;
+                selectedColors.forEach(item => {
+                    if (item.id%10 < 5) {
+                        isGan += 1;
+                    } else {
+                        isGan -= 1;
+                    }
+                })
                 params = {
-                    hue: longestGroup[0].hue,
+                    hue,
                     phase: 'R',
-                    open: '中',
-                    sense: '理性',
+                    open,
+                    sense: isGan ? '感性' : '理性',
                     origin: JSON.stringify({
                         selectedColors: selectedColors.map(i=>i.id),
                         selectedStripes: selectedStripes.map(i=>i.id),
