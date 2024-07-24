@@ -1,9 +1,15 @@
 <template>
   <div class="report-container">
     <div class="filter">
-      <a-select v-model="gradeName" :options="gradeSelectList"></a-select>
-      <a-button @click="search">生成报告</a-button>
-      <a-button @click="html2report">下载PDF报告</a-button>
+      <div class="left">
+        <a-select class="mr" v-model="select.grade" :options="options.gradeOptions"></a-select>
+        <a-select class="mr" v-model="select.classNum" :options="options.classOptions"></a-select>
+        <a-select class="mr" v-model="select.sex" :options="options.sexOptions"></a-select>
+        <a-select class="mr" v-model="select.province" :options="options.areaOptions"></a-select>
+        <a-select class="mr" v-model="select.nation" :options="options.nationOptions"></a-select>
+        <a-button class="btn-school -btn" @click="search">生成报告</a-button>
+      </div>
+      <div class="cursor" @click="html2report"><img src="@/assets/school/pdfIcon.png" alt="">下载PDF报告</div>
     </div>
     <div class="per-report" id="per-report">
       <div class="level mb">
@@ -21,7 +27,7 @@
             <div class="pink"></div>
           </div>
           <div class="level">
-            <div class="level-left">
+            <div class="text-left">
               男<br /><span class="bold">{{ percent(sexData['男'], answerLen) }}%</span>
             </div>
             <div class="text-right">
@@ -69,7 +75,7 @@
 <script>
 import { sixGradeMap } from '../data.js';
 import * as echarts from 'echarts';
-import * as characters from '@/assets/characters/index.js';
+import * as characterIcon from '@/assets/characterIcon/index.js';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
@@ -118,9 +124,21 @@ export default {
   data() {
     return {
       percent,
-      gradeName: '全部年级',
       loading: false,
-      gradeSelectList: [{label:'一年级', value: '1'}],
+      options: {
+        gradeOptions: [],
+        classOptions: [],
+        sexOptions: [],
+        areaOptions: [],
+        nationOptions: [],
+      },
+      select: {
+        grade: '全部年级',
+        classNum: '全部班级',
+        sex: '全部性别',
+        province: '全部地区',
+        nation: '全部民族',
+      },
       gradeList: [],
       gradeNoList: [
         { name: '一年级', id: '一', percent: 0, no: 0 },
@@ -146,7 +164,7 @@ export default {
         { text: ['果断', '清晰'], dataIndex: 'guoduan' },
         { text: ['现实', '理想'], dataIndex: 'xianshi' },
       ],
-      characters,
+      characterIcon,
     };
   },
   computed: {
@@ -168,17 +186,21 @@ export default {
     },
   },
   created() {
-    this.init();
+    this.init(true);
   },
   methods: {
     search() {
+      let copy = {};
+      Object.keys(this.select).map(key => {
+        copy[key] = this.select[key].includes('全部') ? undefined : this.select[key];
+      });
       const params = {
         paperId: this.paperId,
-        grade: this.gradeName,
+        ...copy,
       };
-      this.init(params);
+      this.init(false,params);
     },
-    init(params={paperId: this.paperId}) {
+    init(flash=false, params={paperId: this.paperId}) {
       this.$axios.getPaperReport(params).then((res) => {
         if (!res.length) {
           this.$message.info('暂无数据');
@@ -192,29 +214,39 @@ export default {
           //   { character_id: 1, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '犀牛' },
           //   { character_id: 1, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '犀牛' },
           //   { character_id: 1, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '犀牛' },
-          //   { character_id: 1, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '犀牛' },
+          //   { character_id: 1, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '鹰' },
           //   { character_id: 3, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '大象' },
           //   { character_id: 13, student_id: '1800893297600909313', grade: '3', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '牛' },
           //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '大象' },
           //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '猴子' },
           //   { character_id: 41, student_id: '1800893297600909313', grade: '6', class_num: '3', sex: '女', province: '湖南', nation: '汉族', animal: '大象' },
           //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '猫头鹰' },
-          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '狐狸' },
-          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '猫头鹰' },
-          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '猫头鹰' },
-          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '大象' },
-          //   { character_id: 41, student_id: '1800893297600909313', grade: '1', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '鹦鹉' },
-          //   { character_id: 41, student_id: '1800893297600909313', grade: '1', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '鹦鹉' },
-          //   { character_id: 41, student_id: '1800893297600909313', grade: '1', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '鹦鹉' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '鹦鹉' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '羊' },
           //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '熊猫' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '兔子' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '1', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '天鹅' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '1', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '松鼠' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '1', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '狮子' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '猫' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '6', class_num: '3', sex: '女', province: '湖南', nation: '汉族', animal: '骆驼' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '驴' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '鹿' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '鹿' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '孔雀' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '考拉' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '1', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '狐狸' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '1', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '猴子' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '1', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '河马' },
+          //   { character_id: 41, student_id: '1800893297600909313', grade: '2', class_num: '3', sex: '男', province: '湖南', nation: '汉族', animal: '豹子' },
           // ];
           this.answerLen = this.allAnswers.length;
-          this.transferData();
+          this.transferData(flash);
           this.getGradeChart();
           this.getAnimalChart();
       });
     },
-    transferData() {
+    transferData(flash) {
       const sex = {
         '男': 0,
         '女': 0,
@@ -229,11 +261,22 @@ export default {
       };
       const animals = {};
       const detailData = [];
+      let options = {
+        gradeOptions: new Set(['全部年级']),
+        classOptions: new Set(['全部班级']),
+        sexOptions: ['全部性别', '男', '女'],
+        areaOptions: new Set(['全部地区']),
+        nationOptions: new Set(['全部民族']),
+      }
       this.allAnswers.forEach(item => {
         detailData.push({ ...item, sixGrade: sixGradeMap[item.character_id] });
         sex[item.sex]++;
         grade[item.grade]++;
         animals[item.animal] = animals[item.animal] ? animals[item.animal] + 1 : 1;
+        options.gradeOptions.add(item.grade);
+        options.classOptions.add(item.class_num);
+        options.areaOptions.add(item.province);
+        options.nationOptions.add(item.nation);
       })
       this.detailData = detailData;
       this.sexData = sex;
@@ -244,6 +287,16 @@ export default {
         i.no = gradeNo.indexOf(i.id);
         return i;
       });
+      if (flash) {
+        // 筛选下拉
+        this.options = {
+          gradeOptions: [...options.gradeOptions].map(i => ({value: i, label: i})),
+          classOptions: [...options.classOptions].map(i => ({value: i, label: i})),
+          sexOptions: options.sexOptions.map(i => ({value: i, label: i})),
+          areaOptions: [...options.areaOptions].map(i => ({value: i, label: i})),
+          nationOptions: [...options.nationOptions].map(i => ({value: i, label: i})),
+        };
+      }
     },
     getGradeChart() {
       const re = {
@@ -363,25 +416,27 @@ export default {
           },
           label: {
             formatter: params => {
-              return `{a|}\n{bold| ${params.name}}\n{percentage| ${params.value}%}`;
+              return `{blank|}\n{a|}\n{bold| ${params.name}}\n{percentage| ${params.value}%}`;
             },
             rich: {
+              blank: {
+                height: 20, // 调整这个值来改变空白的大小
+              },
               a: {
                 backgroundColor: {
-                  image: characters[name]
+                  image: characterIcon[name]
                 },
                 height: 100,
-                align: 'center',
-                className: 'center-image',
+                align: 'center', // 图片水平居中
               },
               bold: {
                 fontSize: 20,
                 fontWeight: 'bold',
-                align: 'center', // 文字居中对齐
+                align: 'center', // 图片水平居中
               },
               percentage: {
                 fontSize: 20,
-                align: 'center', // 文字居中对齐
+                align: 'center', // 图片水平居中
               },
             }
           }
@@ -391,6 +446,13 @@ export default {
       this.$nextTick(() => {
         const chart = echarts.init(document.getElementById('animal'));
         const option = {
+          tooltip: {
+            trigger: 'item',
+            formatter: (params) => {
+              if (!params.data?.name) return '';
+              return `<div style="background-color:${params.data?.itemStyle?.color || '#fff'}"><img src=${characterIcon[params.data?.name] || ''}/>${params.data?.name || ''}: ${params.data?.value || ''}%</div>`;
+            },
+          },
           grid: {
             left: '0%', // 调整图表左边距
             right: '0%', // 调整图表右边距
@@ -399,8 +461,13 @@ export default {
           },
           series: [
             {
+              left: 0,
+              right: 0,
+              top: 10,
+              bottom: 20,
               type: 'treemap',
               roam: false, 
+              nodeClick: false, 
               breadcrumb: {
                 show: false, // 隐藏树状结构
               },
@@ -456,6 +523,15 @@ export default {
 
   .filter {
     margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .-btn {
+      width: 120px;
+      height: 30px;
+      font-size: 14px;
+    }
 
     /deep/.ant-select {
       width: 120px;
@@ -656,8 +732,5 @@ export default {
       }
     }
   }
-}
-.center-image {
-  background-position: center;
 }
 </style>

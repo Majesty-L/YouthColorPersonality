@@ -98,7 +98,7 @@
 <script>
 import headerPart from './components/headerPart.vue';
 import { resultObject, describe } from './data.js';
-import * as animals from '@/assets/characters'
+import * as animals from '@/assets/characterIcon'
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 export default {

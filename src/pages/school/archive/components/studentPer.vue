@@ -104,7 +104,7 @@
 
 <script>
 import { resultObject, describe } from '@/pages/student/data.js';
-import * as animals from '@/assets/characters'
+import * as animals from '@/assets/characterIcon'
 export default {
   data() {
     return {
