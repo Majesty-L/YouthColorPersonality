@@ -4,7 +4,7 @@
       <div class="level-left">
         <h3>班级档案</h3>
       </div>
-      <div class="level-right"><a-tag class="btn open">+ 添加学生</a-tag></div>
+      <div class="level-right"><a-tag class="btn open" @click="onClickAdd">+ 添加学生</a-tag></div>
     </div>
     <div class="table-container">
       <a-table :columns="columns" :data-source="dataSource" :pagination="false" :row-key="record => record.id"
@@ -41,6 +41,44 @@
         </a-form-model-item>
       </a-form-model>
     </a-modal>
+    <a-modal class="modal" :visible="addVisible" @cancel="addVisible=false">
+      <div slot="title" class="title">新增档案信息</div>
+      <div slot="footer" class="footer">
+        <a-button key="submit" type="primary" :loading="confirmLoading" @click="handleAddOk">
+          确定
+        </a-button>
+      </div>
+      <a-form-model class="form" layout="horizontal" :model="addForm">
+        <a-form-model-item label="学籍号">
+          <a-input v-model="addForm.cardId" placeholder="学籍号"></a-input>
+        </a-form-model-item>
+        <a-form-model-item label="学号">
+          <a-input v-model="addForm.classId" placeholder="学号"></a-input>
+        </a-form-model-item>
+        <a-form-model-item label="姓名">
+          <a-input v-model="addForm.name" placeholder="姓名">
+          </a-input>
+        </a-form-model-item>
+        <a-form-model-item label="性别">
+          <a-radio-group v-model="addForm.sex">
+            <a-radio value="男">男</a-radio>
+            <a-radio value="女">女</a-radio>
+          </a-radio-group>
+        </a-form-model-item>
+        <a-form-model-item label="年龄">
+          <a-input-number v-model="addForm.age" placeholder="年龄"></a-input-number>
+        </a-form-model-item>
+        <a-form-model-item label="地区">
+          <a-input v-model="addForm.nation" placeholder="地区"></a-input>
+        </a-form-model-item>
+        <a-form-model-item label="民族">
+          <a-input v-model="addForm.province" placeholder="民族"></a-input>
+        </a-form-model-item>
+        <a-form-model-item label="手机号">
+          <a-input v-model="addForm.phone" placeholder="手机号"></a-input>
+        </a-form-model-item>
+      </a-form-model>
+    </a-modal>
   </div>
 </template>
 
@@ -68,16 +106,18 @@ export default {
       confirmLoading: false,
       changeForm: {},
       gradeList: [
-        { key: '1', title: '一年级' },
-        { key: '2', title: '二年级' },
-        { key: '3', title: '三年级' },
-        { key: '4', title: '四年级' },
-        { key: '5', title: '五年级' },
-        { key: '6', title: '六年级' },
+        { key: '一', title: '一年级' },
+        { key: '二', title: '二年级' },
+        { key: '三', title: '三年级' },
+        { key: '四', title: '四年级' },
+        { key: '五', title: '五年级' },
+        { key: '六', title: '六年级' },
       ],
       editRow: {},
       loadingDelete: false,
       schoolId: this.$static.school_id,
+      addForm: {},
+      addVisible: false,
     };
   },
   computed: {
@@ -144,9 +184,30 @@ export default {
     },
     handleDelete() {
       this.loadingDelete = true;
-      this.$message.success('删除成功');
-      this.loadingDelete = false;
-      this.changeVisible = false;
+      this.$axios.modifyStudentInfo({id: this.editRow.id, delete: true}).then(() => {
+        this.$message.success('删除成功');
+        this.initList();
+        this.loadingDelete = false;
+        this.changeVisible = false;
+      }).catch((err) => {
+        this.$message.error(err);
+        this.loadingDelete = false;
+      });
+    },
+    handleAddOk() {
+      this.confirmLoading = true;
+      this.$axios.modifyStudentInfo({...this.addForm, grade: this.grade_id, classNum: this.class_id?.replace(`${this.grade_id}-`, ''), schoolId: this.schoolId}).then(() => {
+        this.$message.success('新增成功');
+        this.initList();
+        this.confirmLoading = false;
+        this.addVisible = false;
+      }).catch((err) => {
+        this.$message.error(err);
+        this.confirmLoading = false;
+      });
+    },
+    onClickAdd() {
+      this.addVisible = true;
     },
   },
 }
@@ -205,6 +266,25 @@ export default {
     /deep/.ant-form-item-label {
       flex: 0 0 125px;
     }
+    /deep/.ant-select, .ant-input, /deep/.ant-select-selection {
+      min-width: 200px;
+      border-radius: 20px;
+    }
+  }
+  /deep/ .ant-btn-primary {
+    background-color: #6C72C9;
+    border-color: #6C72C9;
+    border-radius: 20px;
+  }
+  /deep/ .ant-btn:hover {
+    color: #6C72C9;
+    border-color: #6C72C9;
+  }
+  /deep/ .ant-btn {
+    border-radius: 20px;
+  }
+  /deep/ .ant-btn-primary:hover {
+    color: #fff;
   }
 }
 </style>

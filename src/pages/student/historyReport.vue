@@ -12,9 +12,9 @@
       </div>
       <div class="report-detail">
         <div class="head">
-          <div class="">
+          <div class="flex">
             <h2>我的报告</h2>
-            <a-button @click="html2report">下载PDF报告</a-button>
+            <div class="cursor" @click="html2report"><img src="@/assets/school/pdfIcon.png" alt="">下载PDF报告</div>
           </div>
           <div class="all-reports">
             <div v-for="report,index in reportList" :key="index">
@@ -22,7 +22,7 @@
             </div>
           </div>
         </div>
-        <div id="report" class="report">
+        <div id="report" class="report" v-if="reportList.length">
           <div class="first-line">
             <div class="status">最近，我的状态是</div>
             <div class="parent"><a-icon :type="(studentInfo.known && studentInfo.known[selectReport.paperId] === '是') ? 'check-circle' : 'close-circle'" theme="twoTone" /> 家长知情同意</div>
@@ -89,6 +89,9 @@
               </div>
             </div>
           </div>
+        </div>
+        <div class="report" v-else>
+          暂无报告
         </div>
       </div>
     </div>
@@ -224,6 +227,10 @@ export default {
       .head {
         display: flex;
         justify-content: space-between;
+        .flex {
+          display: flex;
+          gap: 24px;
+        }
         .all-reports {
           display: flex;
           .report-tag {
@@ -247,6 +254,7 @@ export default {
         .animal-content {
           display: flex;
           .animal {
+            padding-top: 24px;
             border-radius: 24px;
             box-shadow: 0 8px 18px rgba(0, 0, 0, 0.09);
             margin: 12px 120px 0 12px;

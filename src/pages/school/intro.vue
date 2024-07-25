@@ -100,12 +100,15 @@ export default {
     };
   },
   watch: {
-    '$store.state.groupStudent'(val) {
-      const createTime = {};
-      val.forEach((item) => {
-        createTime[item.gradeId] = item.createTime;
-      });
-      this.dataSource = this.dataSource.map(item => ({ ...item, time: createTime[item.id] }));
+    '$store.state.groupStudent': {
+      handler(val) {
+        const createTime = {};
+        val?.forEach((item) => {
+          createTime[item.gradeId] = item.createTime;
+        });
+        this.dataSource = this.dataSource.map(item => ({ ...item, time: createTime[item.id] }));
+      },
+      immediate: true,
     },
   },
   created() {
@@ -139,7 +142,7 @@ export default {
     handleOk() {
       this.confirmLoading = true;
       console.log(this.uploadData)
-      this.$axios.schoolUpload({ studentList: this.uploadData, schoolId: this.schoolId }).then(() => {
+      this.$axios.schoolUpload({ studentList: this.uploadData, schoolId: this.schoolId, grade: this.grade }).then(() => {
         this.$message.success('上传成功');
         this.confirmLoading = false;
         this.uploadShow = false;

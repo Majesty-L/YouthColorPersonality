@@ -4,7 +4,7 @@
       <h2>学生档案</h2>
       <div class="base-form">
         <div class="avatar">
-          <img src="@/assets/school/header.png" alt="avatar" />
+          <img src="@/assets/school/avator.png" alt="avatar" />
         </div>
         <div class="info">
           <a-row>
@@ -34,7 +34,7 @@
           </div>
         </div>
       </div>
-      <div class="background">
+      <div class="background" v-if="reportList.length">
         <div class="animal-content">
           <div class="animal">
             <img :src="animals[selectReport.detail?.animal]" alt="">
@@ -97,6 +97,9 @@
             </div>
           </div>
         </div>
+      </div>
+      <div class="background" v-else>
+        暂无报告
       </div>
     </div>
   </div>
@@ -225,6 +228,7 @@ export default {
   .animal-content {
     display: flex;
     .animal {
+      padding-top: 24px;
       border-radius: 24px;
       box-shadow: 0 8px 18px rgba(0, 0, 0, 0.09);
       margin: 12px 120px 0 12px;
