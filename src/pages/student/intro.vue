@@ -51,6 +51,8 @@ export default {
     speech() {
       // 创建 SpeechSynthesisUtterance 对象
       const utterance = new SpeechSynthesisUtterance();
+      utterance.rate = 1.6; 
+      utterance.pitch = 1.5; 
       // 设置要朗读的文本
       utterance.text = `Hi！${this.studentInfo.name}小朋友。让我们一起来玩个游戏，看看你的心情是什么颜色吧！`;
       // 朗读文本

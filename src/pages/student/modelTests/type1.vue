@@ -4,7 +4,7 @@
             <div class="text">
                 <div class="title">
                     <span v-html="addPinyin('游戏介绍')"></span>
-                    <span class="speech" v-if="showBtn" @click="speech">
+                    <span class="speech" v-if="showBtn" @click="speech('让我们一起玩一个选颜色的游戏，游戏很简单，只需要三步。你要按照提示选择你喜欢的，准备好了吗？让我们开始游戏吧！')">
                         <img src="@/assets/student/laba.png" alt="">
                     </span>
                 </div>
@@ -177,10 +177,27 @@ export default {
             },
             immediate: true,
         },
+        selectedColors(val) {
+            if (val && val.length==10) {
+                this.$info({content:'已选中10个色块！'});
+            }
+        },
+        selectedStripes(val) {
+            if (val && val.length==5) {
+                this.$info({content:'已选中5个组合！'});
+            }
+        },
+        selectedImages(val) {
+            if (val && val.length==5) {
+                this.$info({content:'已选中5个图片！'});
+            }
+        },
     },
     methods: {
-        speech(text='让我们一起玩一个选颜色的游戏，游戏很简单，只需要三步。你要按照提示选择你喜欢的，准备好了吗？让我们开始游戏吧！') {
+        speech(text) {
             const utterance = new SpeechSynthesisUtterance();
+            utterance.rate = 1.6; 
+            utterance.pitch = 1.5; 
             utterance.text = text;
             speechSynthesis.speak(utterance);
         },
@@ -250,7 +267,9 @@ export default {
             justify-content: space-evenly;
             .title {
                 font-size: 60px;
-                color: #63C5E9;
+                span {
+                    color: #63C5E9;
+                }
                 width: 600px;
                 .speech {
                     margin-left: 12px;

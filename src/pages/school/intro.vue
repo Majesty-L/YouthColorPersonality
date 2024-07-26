@@ -12,16 +12,30 @@
             <div class="spot mr"></div><span>学校 </span><span class="name">{{ schoolInfo.name }}</span>
           </a-col>
           <a-col :span="12">
-            <div class="spot mr"></div><span>手机 </span><span class="name">{{ schoolInfo.name }}</span>
+            <div class="spot mr"></div>
+            <span>手机 </span>
+            <span v-if="!showEdit.mailPhone" class="name">{{ schoolInfo.mailPhone }}</span>
+            <a-input v-else class="name" v-model="schoolInfo.mailPhone"></a-input>
+            <img class="cursor ml" src="@/assets/school/edit.png" alt="" @click="onClickEdit('mailPhone', '手机', schoolInfo.mailPhone)">
           </a-col>
           <a-col :span="12">
-            <div class="spot mr"></div><span>邮箱 </span><span class="name">{{ schoolInfo.name }}</span>
+            <div class="spot mr"></div>
+            <span>邮箱 </span>
+            <span v-if="!showEdit.email" class="name">{{ schoolInfo.email }}</span>
+            <a-input v-else class="name" v-model="schoolInfo.email"></a-input>
+            <img class="cursor ml" src="@/assets/school/edit.png" alt="" @click="onClickEdit('email', '邮箱', schoolInfo.email)">
           </a-col>
           <a-col :span="12">
             <div class="spot mr"></div><span>账号 </span><span class="name">{{ schoolInfo.id }}</span>
           </a-col>
           <a-col :span="12">
-            <div class="spot mr"></div><span>密码 </span><span class="name">{{ schoolInfo.password }}</span>
+            <div class="spot mr"></div>
+            <span>密码 </span>
+            <span v-if="!showEdit.password" class="name">{{ showPassword ? schoolInfo.password : schoolInfo.password?.replace(/[0-9~`!@#$%^&*()\-_=+[{\]}\\|;:'",<.>/?]/g, '*') }}
+              <a-icon class="cursor ml" :type="showPassword?'eye-invisible':'eye'" @click="showPassword=!showPassword" />
+            </span>
+            <a-input v-else class="name" v-model="schoolInfo.password"></a-input>
+            <a-tag class="edit ml" @click="onClickEdit('password', '密码', schoolInfo.password)">修改密码</a-tag>
           </a-col>
         </a-row>
       </div>
@@ -97,6 +111,12 @@ export default {
         { id: '六', name: '六年级' },
       ],
       grade: '',
+      showPassword: false,
+      showEdit: {
+        mailPhone: false,
+        email: false,
+        password:  false,
+      },
     };
   },
   watch: {
@@ -217,6 +237,18 @@ export default {
       localStorage.removeItem('school_id');
       this.$router.push({name: 'schoolLogin'});
     },
+    onClickEdit(dataIndex, name, val) {
+      if (this.showEdit[dataIndex]) {
+        this.$axios.modifySchoolInfo({[dataIndex]: val, schoolId: this.schoolId}).then((res) => {
+          this.$message.success("设置成功");
+          this.$static.schoolInfo = res;
+          this.schoolInfo = res;
+          this.showEdit[dataIndex] = false;
+        });
+      } else {
+        this.showEdit[dataIndex] = true;
+      }
+    },
   },
 }
 </script>
@@ -252,7 +284,18 @@ export default {
       }
       span {
         font-size: 20px;
-        line-height: 170%
+        line-height: 200%;
+      }
+      .name {
+        width: 200px;
+      }
+      .edit {
+        background-color: #E2E3F4;
+        border-radius: 24px;
+        color: #5A5FA7;
+        cursor: pointer;
+        height: 26px;
+        font-size: 12px;
       }
     }
     .btn {

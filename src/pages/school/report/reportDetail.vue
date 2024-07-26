@@ -727,7 +727,7 @@ export default {
       margin-top: 48px;
 
       .chart {
-        width: 1400px;
+        width: 1300px;
         height: 1000px;
       }
     }
