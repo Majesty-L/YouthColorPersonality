@@ -206,14 +206,14 @@ export default {
             let params = {};
             if (num === 99) {
                 const {selectedColors, selectedStripes, selectedImages} = this;
-                const groupedColors = _.groupBy(selectedColors, 'hue');
-                const sortedGroups = _.orderBy(Object.entries(groupedColors), ([, value]) => value.length, 'desc');
                 // 色调 取选中最多的色调
-                const hue = sortedGroups[0][0];
-                // 色相 取选中最多的色相
-
-                // 开放度 选中最多的颜色个数决定 4/7/7+
-                const open = sortedGroups[0][1].length <= 4 ? '低' : sortedGroups[0][1].length <= 7 ? '中' : '高';
+                const groupedHues = _.orderBy(Object.entries(_.groupBy(selectedColors, 'hue')), ([, value]) => value.length, 'desc');
+                const hue = groupedHues[0][0];
+                // 色相 取选中最多的分组色相
+                const groupedPhases = _.orderBy(Object.entries(_.groupBy(selectedColors, 'groupPhase')), ([, value]) => value.length, 'desc');
+                const phase = groupedPhases[0][0];
+                // 开放度 选中最多的色调的颜色个数决定 4/7/7+
+                const open = groupedHues[0][1].length <= 4 ? '低' : groupedHues[0][1].length <= 7 ? '中' : '高';
                 // 理性/感性 hue尾号 0-4：感性 5-9：理性
                 let isGan = 0;
                 selectedColors.forEach(item => {
@@ -225,7 +225,7 @@ export default {
                 })
                 params = {
                     hue,
-                    phase: 'R',
+                    phase,
                     open,
                     sense: isGan ? '感性' : '理性',
                     origin: JSON.stringify({
