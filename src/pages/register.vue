@@ -8,20 +8,20 @@
         </a-input>
       </a-form-model-item>
       <a-form-model-item>
-        <a-input v-model="loginForm.shortname" placeholder="学校简称">
-          <a-icon slot="prefix" type="user" style="color:rgba(0,0,0,.25)" />
+        <a-input v-model="loginForm.password" type="password" placeholder="密码">
+          <a-icon slot="prefix" type="lock" style="color:rgba(0,0,0,.25)" />
         </a-input>
       </a-form-model-item>
       <a-form-model-item>
-        <a-input v-model="loginForm.password" type="password" placeholder="密码">
-          <a-icon slot="prefix" type="lock" style="color:rgba(0,0,0,.25)" />
+        <a-input v-model="loginForm.key" placeholder="验证码">
+          <a-icon slot="prefix" type="user" style="color:rgba(0,0,0,.25)" />
         </a-input>
       </a-form-model-item>
       <a-form-model-item>
         <a-button
           type="primary"
           html-type="submit"
-          :disabled="!loginForm.username || !loginForm.shortname || !loginForm.password"
+          :disabled="!loginForm.username || !loginForm.key || !loginForm.password"
         >
           注册
         </a-button>
@@ -37,19 +37,23 @@ export default {
     return {
       loginForm: {
         username: '',
-        shortname: '',
-        password: ''
+        password: '',
+        key: '',
       }
     };
   },
   methods: {
     handleLogin() {
-      console.log('登录信息:', this.loginForm);
-      this.$axios.schoolRegister(this.loginForm).then(() => {
-        this.$message.success('注册成功');
-      }).catch(() => {
-        this.$message.error('注册失败');
-      });
+      if (this.loginForm.key === 'huangqian') {
+        // console.log('登录信息:', this.loginForm);
+        this.$axios.schoolRegister(this.loginForm).then(() => {
+          this.$message.success('注册成功');
+        }).catch(() => {
+          this.$message.error('注册失败');
+        });
+      } else {
+        this.$message.error('验证码错误！');
+      }
     },
   }
 }
@@ -62,8 +66,10 @@ export default {
   height: 100vh;
   .left-container {
     flex: 1;
+    margin-left: 48px;
   }
   .form {
+    margin-right: 48px;
     flex: 1;
   }
 }

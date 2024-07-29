@@ -11,28 +11,23 @@
         </div>
         <div class="title">学校端</div>
       </div>
-      <a-form-model class="form" :model="loginForm" @submit="handleLogin" @submit.native.prevent>
-        <a-form-model-item>
-          <template slot="label"><a-icon type="bank" style="color:rgba(0,0,0,.25)" />账号</template>
-          <a-input v-model="loginForm.username" placeholder="学校名称" class="item">
-            <a-icon slot="prefix" type="bank" style="color:rgba(0,0,0,.25)" />
+      <a-form-model class="form" :model="loginForm" @submit.native.prevent>
+        <a-form-model-item :colon="false">
+          <template slot="label"><span class="label"><img src="@/assets/school/name.png" alt="">账号</span></template>
+          <a-input v-model="loginForm.username" placeholder="输入账号" class="item">
           </a-input>
         </a-form-model-item>
-        <a-form-model-item>
-          <a-input v-model="loginForm.shortname" placeholder="账号" class="item">
-            <a-icon slot="prefix" type="user" style="color:rgba(0,0,0,.25)" />
-          </a-input>
-        </a-form-model-item>
-        <a-form-model-item>
-          <a-input v-model="loginForm.password" type="password" placeholder="密码" class="item">
-            <a-icon slot="prefix" type="lock" style="color:rgba(0,0,0,.25)" />
-          </a-input>
+        <a-form-model-item :colon="false">
+          <template slot="label"><span class="label"><img src="@/assets/school/password.png" alt="">密码</span></template>
+          <a-input-password v-model="loginForm.password" placeholder="输入密码" class="item">
+          </a-input-password>
         </a-form-model-item>
       </a-form-model>
       <a-button
+        class="btn-school"
         type="primary"
-        html-type="submit"
         :disabled="!loginForm.username || !loginForm.password"
+        @click="handleLogin"
       >
         登录
       </a-button>
@@ -47,14 +42,13 @@ export default {
     return {
       loginForm: {
         username: '',
-        shortname: '',
         password: ''
       }
     };
   },
   methods: {
     handleLogin() {
-      console.log('登录信息:', this.loginForm);
+      // console.log('登录信息:', this.loginForm);
       this.$axios.schoolLogin(this.loginForm).then((data) => {
         this.$message.success('登陆成功');
         localStorage.setItem('school_id', data);
@@ -73,7 +67,7 @@ export default {
   align-items: center;
   height: 100vh;
   .container {
-    margin: 48px;
+    margin: 64px 96px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -102,6 +96,16 @@ export default {
     .form {
       .item {
         width: 400px;
+      }
+      /deep/ .ant-input {
+        border-radius: 30px;
+        height: 52px;
+        padding-left: 24px;
+      }
+      .label {
+        font-size: 20px;
+        color: #434349;
+        line-height: 120%;
       }
     }
   }
