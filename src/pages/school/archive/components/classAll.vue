@@ -69,10 +69,10 @@
           <a-input-number v-model="addForm.age" placeholder="年龄"></a-input-number>
         </a-form-model-item>
         <a-form-model-item label="地区">
-          <a-input v-model="addForm.nation" placeholder="地区"></a-input>
+          <a-input v-model="addForm.province" placeholder="地区"></a-input>
         </a-form-model-item>
         <a-form-model-item label="民族">
-          <a-input v-model="addForm.province" placeholder="民族"></a-input>
+          <a-input v-model="addForm.nation" placeholder="民族"></a-input>
         </a-form-model-item>
         <a-form-model-item label="手机号">
           <a-input v-model="addForm.phone" placeholder="手机号"></a-input>

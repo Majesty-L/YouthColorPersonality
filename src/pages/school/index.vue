@@ -44,7 +44,7 @@
             <router-link to="/school/about"><img class="mr" src="@/assets/school/menu4.png" alt="">关于测试</router-link>
           </div>
           <div key="22" class="else2">
-            <router-link to="/school/archive"><img class="mr" src="@/assets/school/menu5.png" alt="">使用指南</router-link>
+            <router-link to="/school/guide"><img class="mr" src="@/assets/school/menu5.png" alt="">使用指南</router-link>
           </div>
           <div>
             <router-link to="/school/intro">

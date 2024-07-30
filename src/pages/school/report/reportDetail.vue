@@ -11,64 +11,63 @@
       </div>
       <div class="cursor" @click="html2report"><img src="@/assets/school/pdfIcon.png" alt="">下载PDF报告</div>
     </div>
-    <div class="per-report" id="per-report">
-      <div class="level mb">
-        <div class="level-left">
-          <h3>测试人群</h3>
-        </div>
-        <div class="level-right">
-          <span>本报告测试人数：</span><span class="report-num">{{ answerLen }}</span>
-        </div>
-      </div>
-      <div class="rec-container">
-        <div class="sex-part">
-          <div class="rectangle">
-            <div class="blue"></div>
-            <div class="pink"></div>
+    <a-spin :spinning="loading" tip="生成报告中，请勿退出当前页面..." size="large">
+      <div class="per-report" id="per-report">
+        <div class="level mb">
+          <div class="level-left">
+            <h3>测试人群</h3>
           </div>
-          <div class="level">
-            <div class="text-left">
-              男<br /><span class="bold">{{ percent(sexData['男'], answerLen) }}%</span>
+          <div class="level-right">
+            <span>本报告测试人数：</span><span class="report-num">{{ answerLen }}</span>
+          </div>
+        </div>
+        <div class="rec-container">
+          <div class="sex-part">
+            <div class="rectangle">
+              <div class="blue"></div>
+              <div class="pink"></div>
             </div>
-            <div class="text-right">
-              女<br /><span class="bold">{{ percent(sexData['女'], answerLen) }}%</span>
-            </div>
-          </div>
-        </div>
-        <div class="grade-part">
-          <div class="rectangle">
-            <div v-for="item, index in gradeNoList" :key="index" :class="`rec color${item.no}`"></div>
-          </div>
-          <div class="grade-percent">
-            <div class="per-grade" v-for="item, index in gradeNoList" :key="index">
-              {{ item.name }}<br /><span class="bold">{{ percent(item.percent, answerLen) }}%</span>
+            <div class="level">
+              <div class="text-left">
+                男<br /><span class="bold">{{ percent(sexData['男'], answerLen) }}%</span>
+              </div>
+              <div class="text-right">
+                女<br /><span class="bold">{{ percent(sexData['女'], answerLen) }}%</span>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="six-container">
-        <h3>色彩心理特征指数</h3>
-        <div class="exponent">
-          <div class="chart">
-            <div class="per" v-for="exponent, index in exponents" :key="index" :id="exponent.dataIndex"></div>
-          </div>
-          <a-divider class="divider" type="vertical" :dashed="false"></a-divider>
-          <div class="num-container">
-            <div class="title">平均分</div>
-            <div class="num">
-              <div class="average" v-for="item, index in average" :key="index">{{ item }}</div>
+          <div class="grade-part">
+            <div class="rectangle">
+              <div v-for="item, index in gradeNoList" :key="index" :class="`rec color${item.no}`"></div>
+            </div>
+            <div class="grade-percent">
+              <div class="per-grade" v-for="item, index in gradeNoList" :key="index">
+                {{ item.name }}<br /><span class="bold">{{ percent(item.percent, answerLen) }}%</span>
+              </div>
             </div>
           </div>
         </div>
+        <div class="six-container">
+          <h3>色彩心理特征指数</h3>
+          <div class="exponent">
+            <div class="chart">
+              <div class="per" v-for="exponent, index in exponents" :key="index" :id="exponent.dataIndex"></div>
+            </div>
+            <a-divider class="divider" type="vertical" :dashed="false"></a-divider>
+            <div class="num-container">
+              <div class="title">平均分</div>
+              <div class="num">
+                <div class="average" v-for="item, index in average" :key="index">{{ item }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="character-container">
+          <h3>形象分布</h3>
+          <div class="chart" id="animal"></div>
+        </div>
       </div>
-      <div class="character-container">
-        <h3>形象分布</h3>
-        <div class="chart" id="animal"></div>
-      </div>
-    </div>
-    <div class="loading" v-if="loading">
-
-    </div>
+    </a-spin>
   </div>
 </template>
 
@@ -201,6 +200,7 @@ export default {
       this.init(false,params);
     },
     init(flash=false, params={paperId: this.paperId}) {
+      this.loading = true;
       this.$axios.getPaperReport(params).then((res) => {
         if (!res.length) {
           this.$message.info('暂无数据');
@@ -244,6 +244,8 @@ export default {
           this.transferData(flash);
           this.getGradeChart();
           this.getAnimalChart();
+      }).finally(() => {
+        this.loading = false;
       });
     },
     transferData(flash) {
@@ -546,6 +548,12 @@ export default {
     }
   }
 
+  .loading {
+    height: 85vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .per-report {
     margin-top: 12px;
     background-color: #fff;
