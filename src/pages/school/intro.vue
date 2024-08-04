@@ -161,14 +161,14 @@ export default {
     },
     handleOk() {
       this.confirmLoading = true;
-      console.log(this.uploadData)
+      // console.log(this.uploadData)
       this.$axios.schoolUpload({ studentList: this.uploadData, schoolId: this.schoolId, grade: this.grade }).then(() => {
         this.$message.success('上传成功');
         this.confirmLoading = false;
         this.uploadShow = false;
         this.initList();
-      }).catch((err) => {
-        this.$message.error(err);
+      }).catch(() => {
+        this.$message.error("数据上传失败，请检查表格内容后重试!使用问题请对照使用说明或联系团队!");
         this.confirmLoading = false;
       });
     },
@@ -195,7 +195,7 @@ export default {
     getExcelData(data) {
       const headers = data[1]; // 获取第二行的字段名
       const dataArray = data.slice(2); // 获取第二行之后的数据
-      console.log(data)
+      // console.log(data)
       const processedData = dataArray.map((row) => {
         const rowData = {};
         row.forEach((value, index) => {

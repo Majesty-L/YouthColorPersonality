@@ -46,8 +46,11 @@ export default {
     handleLogin() {
       if (this.loginForm.key === 'huangqian') {
         // console.log('登录信息:', this.loginForm);
-        this.$axios.schoolRegister(this.loginForm).then(() => {
-          this.$message.success('注册成功');
+        this.$axios.schoolRegister(this.loginForm).then((res) => {
+          this.$confirm({
+            title: '注册成功',
+            content: '学校id为：'+res,
+          });
         }).catch(() => {
           this.$message.error('注册失败');
         });

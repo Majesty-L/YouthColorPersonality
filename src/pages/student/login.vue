@@ -103,7 +103,7 @@ export default {
       .item {
         width: 400px;
       }
-      /deep/ .ant-input {
+      /deep/ .ant-input, .ant-select-selection__rendered {
         border-radius: 30px;
         height: 52px;
         padding-left: 24px;

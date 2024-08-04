@@ -87,7 +87,11 @@ export default {
     };
   },
   created() {
-    this.init();
+    if (!this.newTestId) {
+      this.$router.push({path: '/school/test'});
+    } else {
+      this.init();
+    }
   },
   methods: {
     init() {
@@ -146,8 +150,8 @@ export default {
         this.confirmLoading = false;
         this.uploadShow = false;
         this.step = this.step ? this.step : 1;
-      }).catch((err) => {
-        this.$message.error(err);
+      }).catch(() => {
+        this.$message.error("数据上传失败，请检查表格内容后重试!使用问题请对照使用说明或联系团队!");
         this.confirmLoading = false;
       });
     },

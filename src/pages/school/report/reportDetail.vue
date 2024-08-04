@@ -24,8 +24,8 @@
         <div class="rec-container">
           <div class="sex-part">
             <div class="rectangle">
-              <div class="blue"></div>
-              <div class="pink"></div>
+              <div class="blue" :style="{width:percent(sexData['男'], answerLen)+'%'}"></div>
+              <div class="pink" :style="{width:percent(sexData['女'], answerLen)+'%'}"></div>
             </div>
             <div class="level">
               <div class="text-left">
@@ -452,7 +452,7 @@ export default {
             trigger: 'item',
             formatter: (params) => {
               if (!params.data?.name) return '';
-              return `<div style="background-color:${params.data?.itemStyle?.color || '#fff'}"><img src=${characterIcon[params.data?.name] || ''}/>${params.data?.name || ''}: ${params.data?.value || ''}%</div>`;
+              return `<div style="font-size:20px;padding:12px;background-color:${params.data?.itemStyle?.color || '#fff'}"><img class=mr src=${(characterIcon[params.data?.name] || '').replace(params.data?.name,encodeURIComponent(params.data?.name))} />${params.data?.name || ''}: ${params.data?.value || ''}%</div>`;
             },
           },
           grid: {
@@ -607,7 +607,7 @@ export default {
       }
 
       .blue {
-        width: 60%;
+        width: 50%;
         height: 100%;
         background-color: #8ACCE4;
         position: absolute;
@@ -615,7 +615,7 @@ export default {
       }
 
       .pink {
-        width: 40%;
+        width: 50%;
         height: 100%;
         background-color: #F4A6A6;
         position: absolute;

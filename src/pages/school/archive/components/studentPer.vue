@@ -22,7 +22,7 @@
             </a-col>
           </a-row>
         </div>
-        <div class="parent"><a-icon :type="baseInfo.known ? 'check-circle' : 'close-circle'" theme="twoTone" /> 家长知情同意</div>
+        <div class="parent"><a-icon :type="(baseInfo.known && baseInfo.known[selectReport.paperId] === '是') ? 'check-circle' : 'close-circle'" theme="twoTone" /> 家长知情同意</div>
       </div>
     </div>
     <div class="report-list">
@@ -140,7 +140,7 @@ export default {
     getStudentInfo() {
       this.$axios.schoolStudentInfo({studentId: this.studentId}).then((res) => {
         if(res.length) {
-          this.baseInfo = res[0];
+          this.baseInfo = Object.assign({}, res[0], {known: JSON.parse(res[0].known || {})});
         }
       });
       this.$axios.studentReport({studentId: this.studentId}).then((res) => {

@@ -178,18 +178,30 @@ export default {
             immediate: true,
         },
         selectedColors(val) {
-            if (val && val.length==10) {
-                this.$info({content:'已选中10个色块！'});
+            if (val && val.length>=10) {
+                if (val.length>10) {
+                    this.selectedColors.pop();
+                } else {
+                    this.$info({content:'已选中10个色块！'});
+                }
             }
         },
         selectedStripes(val) {
-            if (val && val.length==5) {
-                this.$info({content:'已选中5个组合！'});
+            if (val && val.length>=5) {
+                if (val.length>5) {
+                    this.selectedStripes.pop();
+                } else {
+                    this.$info({content:'已选中5个组合！'});
+                }
             }
         },
         selectedImages(val) {
-            if (val && val.length==5) {
-                this.$info({content:'已选中5个图片！'});
+            if (val && val.length>=5) {
+                if (val.length>5) {
+                    this.selectedImages.pop();
+                } else {
+                    this.$info({content:'已选中5个图片！'});
+                }
             }
         },
     },
