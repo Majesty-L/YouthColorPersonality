@@ -67,6 +67,12 @@
           <div class="chart" id="animal"></div>
         </div>
       </div>
+      <div class="all-animals" id="animal-intro" v-show="showIntro">
+        <h3>形象介绍检索</h3>
+        <div class="col" v-for="animal in Object.keys(animalIntro)" :key="animal">
+          <img :src="characterIcon[animal]" width="70" height="70" alt="">{{ animalIntro[animal] }}
+        </div>
+      </div>
     </a-spin>
   </div>
 </template>
@@ -87,6 +93,32 @@ const allTypeX = [-10, -9, -8, -7, -6, -5, -4, -3.5, -3, -2.5, -2, -1.5, -1, -0.
 
 const bgColorMap = {
   老虎: '#E78148',
+  豹子: '#FFBC6E',
+  鹦鹉: '#D0DF67',
+  河马: '#8F7890',
+  猴子: '#7C463A',
+  大象: '#EADADB',
+  牛: '#DDBBBC',
+  鹰: '#C24B54',
+  松鼠: '#ED5D2B',
+  熊猫: '#E8E8EC',
+  骆驼: '#E4B88F',
+  狐狸: '#FFB661',
+  羊: '#F9EAD9',
+  鹿: '#B78461',
+  驴: '#9994A0',
+  犀牛: '#7A7A7B',
+  考拉: '#D3D2BA',
+  狮子: '#BA6448',
+  孔雀: '#19AB96',
+  天鹅: '#EEE3F0',
+  兔子: '#F2E7EF',
+  猫: '#C8C2D8',
+  猫头鹰: '#CABFB3',
+};
+
+const animalIntro = {
+  老虎: '1.积极主动，善于表达，感染力强，很会鼓舞人心。\n2.具备领导才能，能够带领他人共同前进，并激发团队的潜能。\n3.表现出旺盛的活力，具有积极的生活态度，能够以乐观和热情的方式面对生活中的挑战。\n4.通常非常积极和自信，有明确的目标和强烈的动力去实现它们。',
   豹子: '#FFBC6E',
   鹦鹉: '#D0DF67',
   河马: '#8F7890',
@@ -164,6 +196,8 @@ export default {
         { text: ['现实', '理想'], dataIndex: 'xianshi' },
       ],
       characterIcon,
+      animalIntro,
+      showIntro: false,
     };
   },
   computed: {
@@ -500,6 +534,8 @@ export default {
       element.style.height = 'auto';
       element.style.overflow = 'visible';
 
+      this.showIntro = true;
+      const element2 = document.getElementById('animal-intro');
 
       html2canvas(element).then((canvas) => {
         const imgData = canvas.toDataURL('image/png');
@@ -508,11 +544,20 @@ export default {
         const height = 297;
 
         pdf.addImage(imgData, 'PNG', (210-width)/2, 5, width, height);
-        pdf.save('年度报告.pdf');
 
         // 恢复原始的样式
         element.style.height = originalHeight;
         element.style.overflow = originalOverflow;
+
+        html2canvas(element2).then((canvas) => {
+          const imgData = canvas.toDataURL('image/png');
+          const width = (canvas.width/canvas.height) * 297;
+          const height = 297;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 10, 0, width, height);
+          pdf.save('年度报告.pdf');
+          this.showIntro = false;
+        });
       });
     },
   }
@@ -739,6 +784,19 @@ export default {
         height: 1000px;
       }
     }
+  }
+}
+.all-animals {
+  display: flex;
+  flex-direction: column;
+  margin: 24px;
+  padding: 24px 0;
+  .col {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    height: 90px;
+    white-space: pre-wrap;
   }
 }
 </style>

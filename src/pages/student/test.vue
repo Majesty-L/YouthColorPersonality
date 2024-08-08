@@ -31,6 +31,11 @@ export default {
             characterId: 0,
         };
     },
+    created() {
+        if (!this.id) {
+        this.$router.push({name: 'studentIndex'});
+        }
+    },
     methods: {
         changeCur([cur, params]) {
             if (cur === 99) {

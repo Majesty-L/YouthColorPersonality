@@ -4,9 +4,13 @@
             <div class="text">
                 <div class="title">
                     <span v-html="addPinyin('游戏介绍')"></span>
-                    <span class="speech" v-if="showBtn" @click="speech('让我们一起玩一个选颜色的游戏，游戏很简单，只需要三步。你要按照提示选择你喜欢的，准备好了吗？让我们开始游戏吧！')">
+                    <!-- <span class="speech" v-if="showBtn" @click="speech('让我们一起玩一个选颜色的游戏，游戏很简单，只需要三步。你要按照提示选择你喜欢的，准备好了吗？让我们开始游戏吧！')">
                         <img src="@/assets/student/laba.png" alt="">
-                    </span>
+                    </span> -->
+                    <div class="speech" @click="play(1)">
+                        <video class="video" id="play1" width="120px" height="120px" v-if="showBtn" src="@/assets/speech/1.mp4">
+                        </video>
+                    </div>
                 </div>
                 <div class="intro">
                     <span v-html="addPinyin('让我们一起玩一个选颜色的游戏，游戏很简单，只需要三步。你要按照提示选择你喜欢的，准备好了吗？让我们开始游戏吧！')"></span>
@@ -41,9 +45,13 @@
         </div>
         <div v-else-if="current===1" class="step1">
             <div class="title">
-                <span class="speech" v-if="showBtn" @click="speech('选10个你喜欢的颜色')">
+                <!-- <span class="speech" v-if="showBtn" @click="speech('选10个你喜欢的颜色')">
                     <img src="@/assets/student/laba.png" alt="">
-                </span>
+                </span> -->
+                <div class="speech" @click="play(2)">
+                    <video class="video" id="play2" width="120px" height="120px" v-if="showBtn" src="@/assets/speech/2.mp4">
+                    </video>
+                </div>
                 <span v-html="addPinyin('选10个你喜欢的颜色')"></span>
             </div>
             <div class="content">
@@ -64,9 +72,13 @@
         </div>
         <div v-else-if="current===2" class="step2">
             <div class="title">
-                <span class="speech" v-if="showBtn" @click="speech('选5个你喜欢的组合')">
+                <!-- <span class="speech" v-if="showBtn" @click="speech('选5个你喜欢的组合')">
                     <img src="@/assets/student/laba.png" alt="">
-                </span>
+                </span> -->
+                <div class="speech" @click="play(3)">
+                    <video class="video" id="play3" width="120px" height="120px" v-if="showBtn" src="@/assets/speech/3.mp4">
+                    </video>
+                </div>
                 <span v-html="addPinyin('选5个你喜欢的组合')"></span>
             </div>
             <div class="content-action">
@@ -89,9 +101,13 @@
         </div>
         <div v-else-if="current===3" class="step3">
             <div class="title">
-                <span class="speech" v-if="showBtn" @click="speech('选5个你喜欢的图片')">
+                <!-- <span class="speech" v-if="showBtn" @click="speech('选5个你喜欢的图片')">
                     <img src="@/assets/student/laba.png" alt="">
-                </span>
+                </span> -->
+                <div class="speech" @click="play(4)">
+                    <video class="video" id="play4" width="120px" height="120px" v-if="showBtn" src="@/assets/speech/4.mp4">
+                    </video>
+                </div>
                 <span v-html="addPinyin('选5个你喜欢的图片')"></span>
             </div>
             <div class="content">
@@ -206,6 +222,10 @@ export default {
         },
     },
     methods: {
+        play(type) {
+            var video = document.getElementById(`play${type}`);
+            video.play();
+        },
         speech(text) {
             const utterance = new SpeechSynthesisUtterance();
             utterance.rate = 1.6; 
@@ -261,13 +281,21 @@ export default {
 
 <style lang="less" scoped>
 .title {
+    display: flex;
+    align-items: center;
     span {
         font-size: 36px;
         color: #fff;
+        margin-right: 12px;
     }
     .speech {
+        background: no-repeat url('@/assets/student/laba.png');
+        width: 120px;
+        height: 120px;
         cursor: pointer;
-        margin-right: 12px;
+        .video {
+            opacity: 0;
+        }
     }
 }
 .type-container {

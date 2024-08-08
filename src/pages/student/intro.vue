@@ -4,9 +4,13 @@
   <div class="container">
     <div class="">
       <div class="title">
-        <span class="speech" v-if="showBtn" @click="speech">
+        <!-- <span class="speech" v-if="showBtn" @click="speech">
           <img src="@/assets/student/laba.png" alt="">
-        </span>
+        </span> -->
+        <div class="speech" @click="play">
+            <video class="video" id="play" width="120px" height="120px" v-if="showBtn" src="@/assets/speech/0.mp4">
+            </video>
+        </div>
         <span :class="showBtn?'':'pl'" v-html="addPinyin('Hi!')"></span>
         <span class="name" v-html="addPinyin(studentInfo.name || 'xx')"></span>
         <span v-html="addPinyin('小朋友')"></span>
@@ -40,7 +44,16 @@ export default {
       showBtn: true,
     };
   },
+  created() {
+    if (!this.id) {
+      this.$router.push({name: 'studentIndex'});
+    }
+  },
   methods: {
+    play() {
+        var video = document.getElementById('play');
+        video.play();
+    },
     getStudentInfo(info) {
       this.studentInfo = info;
       if (info.type != '小学生') {
@@ -73,14 +86,23 @@ export default {
     justify-content: center;
     align-items: center;
     .speech {
-      cursor: pointer;
-      margin-left: -24px;
+        display: inline-block;
+        background: no-repeat url('@/assets/student/laba.png');
+        width: 120px;
+        height: 120px;
+        cursor: pointer;
+        margin-left: -24px;
+        .video {
+            opacity: 0;
+        }
     }
     .name {
       color:#63C5E9;
       padding: 0 12px;
     }
     .title {
+      display: flex;
+      align-items: center;
       font-size: 60px;
     }
     .text {
