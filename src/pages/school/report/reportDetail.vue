@@ -530,6 +530,7 @@ export default {
       })
     },
     html2report() {
+      this.loading = true;
       const element = document.getElementById('per-report');
 
       // 保存原始的样式
@@ -563,6 +564,7 @@ export default {
           pdf.addImage(imgData, 'PNG', 10, 0, width, height);
           pdf.save('年度报告.pdf');
           this.showIntro = false;
+          this.loading = false;
         });
       });
     },
