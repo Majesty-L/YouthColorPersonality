@@ -9,7 +9,7 @@
     <div class="table-container">
       <a-table :columns="columns" :data-source="dataSource" :pagination="false" :row-key="record => record.id"
         :loading="loading" :customRow="customRow">
-        <template slot="special" slot-scope="text">
+        <template slot="needSafe" slot-scope="text">
           <img v-if="text" src="@/assets/school/safe.png" alt="">
         </template>
         <template slot="action" slot-scope="text, row">
@@ -96,7 +96,7 @@ export default {
         { title: '地区', dataIndex: 'province', key: 'province' },
         { title: '动物形象', dataIndex: 'animal', key: 'animal' },
         { title: '开放度', dataIndex: 'open', key: 'open' },
-        { title: '多点关爱', dataIndex: 'special', key: 'special', scopedSlots: { customRender: 'special' }, width: 400 },
+        { title: '多点关爱', dataIndex: 'needSafe', key: 'needSafe', scopedSlots: { customRender: 'needSafe' }, width: 400 },
         { title: '', dataIndex: 'action', key: 'action', scopedSlots: { customRender: 'action' }, width: 40 },
       ],
       loading: false,

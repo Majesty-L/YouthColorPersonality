@@ -85,7 +85,7 @@
               <div class="col" v-if="index<2">
                 <span class="sub-header">{{ text.title[1] }}：</span>
                 <div class="text">
-                  {{ selectReport.detail ? selectReport.detail[text.dataIndex[0]] : '' }}
+                  {{ selectReport.detail ? selectReport.detail[text.dataIndex[1]] : '' }}
                 </div>
               </div>
             </div>
