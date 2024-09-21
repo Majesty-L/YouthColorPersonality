@@ -8,6 +8,10 @@
 export default {
   name: 'App',
   components: {
+  },
+  created() {
+    console.log(this, this.__proto__)
+
   }
 }
 </script>

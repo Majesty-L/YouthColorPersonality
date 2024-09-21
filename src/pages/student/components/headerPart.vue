@@ -18,6 +18,9 @@
       </div>
       <img class="pointer" src="@/assets/student/avator.png" alt="avatar"  @click="routerToReport"/>
     </div>
+    <slot>default</slot>
+    <slot name="my" x="123">my</slot>
+    <slot name="you" y="222">you</slot>
   </div>
 </template>
 

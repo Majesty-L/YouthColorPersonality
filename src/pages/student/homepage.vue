@@ -22,11 +22,19 @@
         </div>
       </div>
     </div>
+
+    <!-- 学习slot插槽 -->
+    <headerPart>
+      <!-- <div v-slot:my="xx">{{ xx }}</div>
+      <div v-slot:you="yy">{{ yy }}</div> -->
+      <div>456</div>
+    </headerPart>
   </div>
 </template>
 
 <script>
 import headerPart from './components/headerPart.vue';
+import Vue from 'vue';
 export default {
   components: {
     headerPart,
@@ -45,6 +53,7 @@ export default {
     }
   },
   created() {
+    // console.log(this, this.__proto__, Vue.prototype)
   },
   methods: {
     init() {
