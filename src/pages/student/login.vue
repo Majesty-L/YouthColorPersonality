@@ -50,7 +50,7 @@ export default {
         name: '',
         password: '',
       },
-      schoolList: ['长沙向阳小学'],
+      schoolList: ['长沙育英会展小学'],
     };
   },
   methods: {
