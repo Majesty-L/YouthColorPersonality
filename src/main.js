@@ -9,7 +9,7 @@ import store from './store';
 
 Vue.prototype.$axios = axios;
 Vue.prototype.$static = {
-  school_id: '',
+  school_id: '', 
   student_id: '',
 };
 Vue.config.productionTip = false

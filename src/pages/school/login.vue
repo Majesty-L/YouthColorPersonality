@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <div class="img">
-      <img src="@/assets/school/login.png" alt="">
+      <img src="@/assets/school/login.webp" alt="">
     </div>
     <div class="container">
       <div class="head">

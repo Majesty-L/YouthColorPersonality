@@ -95,7 +95,7 @@ export default {
       }
     }
     .main-target {
-      background: no-repeat url(@/assets/student/ingTest.png);
+      background: no-repeat url(@/assets/student/ingTest.webp);
       background-size: cover;
     }
     .color-target {
