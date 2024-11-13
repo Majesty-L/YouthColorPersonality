@@ -119,7 +119,7 @@ export default {
         { text: ['个性', '群体'], dataIndex: 'geti' },
         { text: ['执行', '幻想'], dataIndex: 'zhixing' },
         { text: ['果断', '清晰'], dataIndex: 'guoduan' },
-        { text: ['理想', '现实'], dataIndex: 'lixiang' },
+        { text: ['现实', '理想'], dataIndex: 'xianshi' },
       ],
       textList: [
         { text: '个人特质', dataIndex: ['person_1', 'person_2', 'person_3'], title: ['优势', '弱势', '建议'] },
