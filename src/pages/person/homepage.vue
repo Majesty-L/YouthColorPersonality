@@ -2,18 +2,23 @@
   <div class="home-container">
     <headerPart :type="1" @getStudentInfo="getStudentInfo"></headerPart>
     <div class="ing-test">
-      <a-row>
-        <a-col class="test main-target" :disabled="!ingTestObject.id" @click="startTest">
-          <div class="title">{{ ingTestObject.name }}</div>
-        </a-col>
-        <!-- <a-col class="test color-target" :span="9">
-          <div class="title">色盲<br/>测试</div>
-        </a-col> -->
-      </a-row>
+        <span v-html="addPinyin('欢迎来到KH色彩性格研究所')"></span>
+        <span v-html="addPinyin('我们用色彩探索性格，快来试试吧！')"></span>
+        <div class="test main-target" :disabled="!ingTestObject.id" @click="startTest">
+          <span v-html="addPinyin('儿童色彩性格测试')"></span>
+          <div class="time">
+            <div class=""><img src="@/assets/person/homepage-test-1.png" alt="">3道题</div>
+            <div class=""><img src="@/assets/person/homepage-test-2.png" alt="">5分钟</div>
+          </div>
+        </div>
     </div>
     <div class="history-test">
-      <h3>历史测试</h3>
+      <h3>测试记录</h3>
       <div class="list">
+        <div class="nodata" v-if="!dataSource.length">
+          <span v-html="addPinyin('暂时还没有测试记录，')"></span>
+          <span v-html="addPinyin('点击上面测试开始你的性格色彩测试之旅吧')"></span>
+        </div>
         <div class="item" v-for="item, index in dataSource" :key="index">
           <div :class="item.name.includes('（1）')?'history1 img-title':'history2 img-title'">
             {{ item.name.split('（')[0].split('测试')[1] }}
@@ -81,21 +86,8 @@ export default {
 <style lang="less" scoped>
 .home-container {
   .ing-test {
-    .test {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      min-height: 560px;
-      cursor: pointer;
-      .title {
-        margin-right: 140px;
-        color: #fff;
-        font-size: 64px;
-        font-weight: bold;
-      }
-    }
     .main-target {
-      background: no-repeat url(@/assets/student/ingTest.webp);
+      background: no-repeat url(@/assets/person/homepage-test.png);
       background-size: cover;
     }
     .color-target {

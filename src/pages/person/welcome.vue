@@ -45,7 +45,7 @@
             <img src="@/assets/person/i2.png" alt="">
             <div class="detail-title">测试报告涵盖内容</div>
             <div class="type">
-              <div class="sub-title">· 类型分析 - 动物形象及色相色调等维度</div>
+              <div class="sub-title">· 类型分析 - 动物形象及色相色调等维度</div>
             </div>
             <div class="type">
               <div class="sub-title">· 色彩心理特征指数</div>

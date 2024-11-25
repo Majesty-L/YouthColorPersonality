@@ -8,14 +8,7 @@
       <a-icon type="left" @click="back"></a-icon>
     </div>
     <div class="right">
-      <div class="mr">
-        <div class="name pointer" @click="routerToReport">
-          {{ studentInfo.name }}
-        </div>
-        <div class="name-router pointer" @click="deleteLocal">
-          退出登录
-        </div>
-      </div>
+      <a-button>分享</a-button>
       <img class="pointer" src="@/assets/student/avator.png" alt="avatar"  @click="routerToReport"/>
     </div>
   </div>
