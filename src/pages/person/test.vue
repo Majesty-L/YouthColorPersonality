@@ -29,6 +29,7 @@ export default {
             studentInfo: {},
             showBtn: true,
             characterId: 0,
+            from: this.$route.path.includes('student') ? 'student' : 'person',
         };
     },
     created() {
@@ -46,11 +47,12 @@ export default {
         },
         result(params, cur) {
             const finalParams = {
-                studentId: this.studentInfo.id,
-                paperId: this.id,
+                personId: this.personInfo.id,
+                paperType: 1,
+                payId: this.id,
                 ...params,
             };
-            this.$axios.studentCommit(finalParams).then((res) => {
+            this.$axios.personCommit(finalParams).then((res) => {
                 this.current = cur;
                 this.characterId = res;
             }).catch(() => {
@@ -66,7 +68,7 @@ export default {
         },
         back() {
             if (this.current === 99 || !this.current) {
-                this.$router.push({name: 'studentIndex'});
+                this.$router.push({name: `${this.from}Index`});
             } else {
                 this.current--;
             }

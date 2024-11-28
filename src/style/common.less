@@ -1,3 +1,4 @@
+@test-theme-color: #63C5E9;
 .ml {
   margin-left: 12px;
 }
@@ -11,7 +12,7 @@
   margin-bottom: 12px;
 }
 .btn-student {
-  background-color: #63C5E9;
+  background-color: @test-theme-color;
   width: 584px;
   height: 84px;
   border-radius: 24px;
@@ -31,6 +32,20 @@
     color: #6C72C9;
     background: none;
 }
+.btn-confirm {
+  width: 584px;
+  height: 84px;
+  border-radius: 24px;
+  color: #fff;
+  font-size: 40px;
+  background-color: #FA7800;
+}
+.btn-confirm:hover {
+  border-color: #FA7800;
+  color: #FA7800;
+  background: none;
+}
+
 @font-face {
   font-family: 'Alibaba PuHuiTi 2.0';
   src: url('../assets/puhui.ttf') format('truetype'),

@@ -106,12 +106,12 @@ const router = new VueRouter({
     {
       name: 'personIntro',
       path: '/person/intro',
-      component: () => import('@/pages/student/intro.vue'),
+      component: () => import('@/pages/person/intro.vue'),
     },
     {
       name: 'personTest',
       path: '/person/test',
-      component: () => import('@/pages/student/test.vue'),
+      component: () => import('@/pages/person/test.vue'),
     },
     {
       name: 'personReport',

@@ -4,10 +4,7 @@
             <div class="text">
                 <div class="title">
                     <span v-html="addPinyin('游戏介绍')"></span>
-                    <!-- <span class="speech" v-if="showBtn" @click="speech('让我们一起玩一个选颜色的游戏，游戏很简单，只需要三步。你要按照提示选择你喜欢的，准备好了吗？让我们开始游戏吧！')">
-                        <img src="@/assets/student/laba.png" alt="">
-                    </span> -->
-                    <div class="speech" @click="play(1)">
+                    <div :class="{speech, 'bc-student': from==='student', 'bc-person': from==='person'}" @click="play(1)">
                         <video class="video" id="play1" width="120px" height="120px" v-if="showBtn" src="@/assets/speech/1.mp4">
                         </video>
                     </div>
@@ -45,9 +42,6 @@
         </div>
         <div v-else-if="current===1" class="step1">
             <div class="title">
-                <!-- <span class="speech" v-if="showBtn" @click="speech('选10个你喜欢的颜色')">
-                    <img src="@/assets/student/laba.png" alt="">
-                </span> -->
                 <div class="speech" @click="play(2)">
                     <video class="video" id="play2" width="120px" height="120px" v-if="showBtn" src="@/assets/speech/2.mp4">
                     </video>
@@ -67,14 +61,11 @@
                 <div v-for="item in selectedColors" :key="item.id" class="selected_class">
                     <p :style="{backgroundColor:item.color}" />
                 </div>
-                <a-button class="btn-student end-btn" v-html="addPinyin('完成')" :disabled="selectedColors.length!=10" @click="startTest(2)"></a-button>
+                <a-button :class="{btnStudent:from==='student', btnPerson:from==='person', endBtn: true}" v-html="addPinyin('完成')" :disabled="selectedColors.length!=10" @click="startTest(2)"></a-button>
             </div>
         </div>
         <div v-else-if="current===2" class="step2">
             <div class="title">
-                <!-- <span class="speech" v-if="showBtn" @click="speech('选5个你喜欢的组合')">
-                    <img src="@/assets/student/laba.png" alt="">
-                </span> -->
                 <div class="speech" @click="play(3)">
                     <video class="video" id="play3" width="120px" height="120px" v-if="showBtn" src="@/assets/speech/3.mp4">
                     </video>
@@ -95,15 +86,12 @@
                     <div v-for="item in selectedStripes" :key="item.id" class="selected_class">
                         <img :src="stripes[`stripe${item.id}`]"/>
                     </div>
-                    <a-button class="btn-student end-btn" v-html="addPinyin('完成')" :disabled="selectedStripes.length!=5" @click="startTest(3)"></a-button>
+                    <a-button :class="{btnStudent:from==='student', btnPerson:from==='person', endBtn: true}" v-html="addPinyin('完成')" :disabled="selectedStripes.length!=5" @click="startTest(3)"></a-button>
                 </div>
             </div>
         </div>
         <div v-else-if="current===3" class="step3">
             <div class="title">
-                <!-- <span class="speech" v-if="showBtn" @click="speech('选5个你喜欢的图片')">
-                    <img src="@/assets/student/laba.png" alt="">
-                </span> -->
                 <div class="speech" @click="play(4)">
                     <video class="video" id="play4" width="120px" height="120px" v-if="showBtn" src="@/assets/speech/4.mp4">
                     </video>
@@ -123,7 +111,7 @@
                 <div v-for="item in selectedImages" :key="item.id" class="selected_class">
                     <img :src="images[`image${item.id}`]"/>
                 </div>
-                <a-button class="btn-student end-btn" v-html="addPinyin('完成')" :disabled="selectedImages.length!=5" @click="startTest(99)"></a-button>
+                <a-button :class="{btnStudent:from==='student', btnPerson:from==='person', endBtn: true}" v-html="addPinyin('完成')" :disabled="selectedImages.length!=5" @click="startTest(99)"></a-button>
             </div>
         </div>
         <div v-else-if="current===99" class="step4">
@@ -132,7 +120,7 @@
                 <div class="finish-text" v-html="addPinyin('完成啦！')"></div>
             </div>
             <div class="action">
-                <a-button class="btn-student btn1 mr" v-html="addPinyin('返回首页')" @click="backHome"></a-button>
+                <a-button :class="{btnStudent:from==='student', btnPerson:from==='person', btn1: true, mr: true}" v-html="addPinyin('返回首页')" @click="backHome"></a-button>
                 <a-button class="btn-student btn2 ml" v-html="addPinyin('查看结果')" @click="viewReport"></a-button>
             </div>
         </div>
@@ -177,6 +165,8 @@ export default {
             stripes,
             images,
             speechBtn: true,
+            from: this.$route.path.includes('student') ? 'student' : 'person',
+            imageUrl: `${this.from}laba`,
         };
     },
     watch: {
@@ -270,10 +260,10 @@ export default {
             this.$emit('changeCur', [num, params]);
         },
         backHome() {
-            this.$router.push({name: 'studentIndex'});
+            this.$router.push({name: `${this.from}Index`});
         },
         viewReport() {
-            this.$router.push({name: 'studentReport'});
+            this.$router.push({name: `${this.from}Report`});
         },
     }
 }
@@ -289,13 +279,18 @@ export default {
         margin-right: 12px;
     }
     .speech {
-        background: no-repeat url('@/assets/student/laba.png');
         width: 120px;
         height: 120px;
         cursor: pointer;
         .video {
             opacity: 0;
         }
+    }
+    .bc-student {
+        background: no-repeat url('@/assets/student/laba.png');
+    }
+    .bc-person {
+        background: no-repeat url('@/assets/person/laba.png');
     }
 }
 .type-container {

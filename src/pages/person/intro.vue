@@ -1,27 +1,23 @@
 <template>
 <div class="intro-container">
-  <headerPart :type="2" @getStudentInfo="getStudentInfo"></headerPart>
+  <headerPart :type="2"></headerPart>
   <div class="container">
     <div class="">
       <div class="title">
-        <!-- <span class="speech" v-if="showBtn" @click="speech">
-          <img src="@/assets/student/laba.png" alt="">
-        </span> -->
         <div class="speech" @click="play">
             <video class="video" id="play" width="120px" height="120px" v-if="showBtn" src="@/assets/speech/0.mp4">
             </video>
         </div>
         <span :class="showBtn?'':'pl'" v-html="addPinyin('Hi!')"></span>
-        <span class="name" v-html="addPinyin(studentInfo.name || 'xx')"></span>
+        <span class="name" v-html="addPinyin(personInfo.name || '')"></span>
         <span v-html="addPinyin('小朋友')"></span>
         👋
       </div>
       <div class="text">
-        <span v-html="addPinyin('让我们一起来玩个游戏')"></span><br/>
-        <span v-html="addPinyin('看看你的心情是什么颜色吧！')"></span>
+        <span v-html="addPinyin('让我们来玩个游戏，看看通过颜色能发现哪些关于你心情的秘密！')"></span><br/>
       </div>
-      <div class="pl">
-        <a-button class="btn-student" @click="startTest(type)"><span v-html="addPinyin('进入游戏')"></span></a-button>
+      <div class="">
+        <a-button class="btn-confirm" @click="startTest(type)"><span v-html="addPinyin('进入游戏')"></span></a-button>
       </div>
     </div>
   </div>
@@ -37,7 +33,7 @@ export default {
   },
   data() {
     return {
-      studentInfo: {},
+      personInfo: {},
       addPinyin: html,
       type: this.$route.params.type,
       id: this.$route.params.id,
@@ -46,39 +42,31 @@ export default {
   },
   created() {
     if (!this.id) {
-      this.$router.push({name: 'studentIndex'});
+      this.$router.push({name: 'personIndex'});
     }
+    this.getPersonInfo();
   },
   methods: {
     play() {
-        var video = document.getElementById('play');
-        video.play();
+      var video = document.getElementById('play');
+      video.play();
     },
-    getStudentInfo(info) {
-      this.studentInfo = info;
-      if (info.type != '小学生') {
-        this.addPinyin = (val) => val;
-        this.showBtn = false;
-      }
-    },
-    speech() {
-      // 创建 SpeechSynthesisUtterance 对象
-      const utterance = new SpeechSynthesisUtterance();
-      utterance.rate = 1.6; 
-      utterance.pitch = 1.5; 
-      // 设置要朗读的文本
-      utterance.text = `Hi！${this.studentInfo.name}小朋友。让我们一起来玩个游戏，看看你的心情是什么颜色吧！`;
-      // 朗读文本
-      speechSynthesis.speak(utterance);
+    getPersonInfo() {
+      this.$axios.personInfo({personId: this.personId}).then((res) => {
+        if(res.length) {
+          this.personInfo = res[0];
+        }
+      });
     },
     startTest(type=1) {
-      this.$router.push({name: 'studentTest', params: { type: type, id: this.id }});
+      this.$router.push({name: 'personTest', params: { type: type, id: this.id }});
     },
   },
 }
 </script>
 
 <style lang="less" scoped>
+@test-theme-color: #00D9C0;
 .intro-container {
   .container {
     height: 90vh;
@@ -87,7 +75,7 @@ export default {
     align-items: center;
     .speech {
         display: inline-block;
-        background: no-repeat url('@/assets/student/laba.png');
+        background: no-repeat url('@/assets/person/laba.png');
         width: 120px;
         height: 120px;
         cursor: pointer;
@@ -97,7 +85,7 @@ export default {
         }
     }
     .name {
-      color:#63C5E9;
+      color:@test-theme-color;
       padding: 0 12px;
     }
     .title {
@@ -107,13 +95,9 @@ export default {
     }
     .text {
       font-size: 36px;
-      padding-left: 100px;
-      // text-align: center;
+      width: 600px;
       margin-bottom: 96px;
       line-height: 200%;
-    }
-    .pl {
-      padding-left: 100px;
     }
   }
 }

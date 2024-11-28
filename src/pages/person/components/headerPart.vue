@@ -8,13 +8,14 @@
       <a-icon type="left" @click="back"></a-icon>
     </div>
     <div class="right">
-      <a-button>分享</a-button>
+      <a-button class="share-btn" icon="share-alt"><span v-html="addPinyin('分享')"></span></a-button>
       <img class="pointer" src="@/assets/student/avator.png" alt="avatar"  @click="routerToReport"/>
     </div>
   </div>
 </template>
 
 <script>
+import { html } from 'pinyin-pro';
 export default {
   props: {
     type: {
@@ -24,32 +25,28 @@ export default {
   },
   data() {
     return {
-      studentId: this.$static.student_id,
-      studentInfo: {},
+      addPinyin: html,
+      personId: this.$static.person_id,
+      personInfo: {},
     };
   },
   created() {
-    this.init();
+    // this.init();
   },
   methods: {
     init () {
-      this.$axios.schoolStudentInfo({studentId: this.studentId}).then((res) => {
+      this.$axios.personInfo({personId: this.personId}).then((res) => {
         if(res.length) {
-          this.studentInfo = res[0];
-          this.$emit('getStudentInfo', res[0]);
+          this.personInfo = res[0];
+          this.$emit('getPersonInfo', res[0]);
         }
       });
     },
     back() {
-      this.$router.push({name: 'studentIndex'});
+      this.$router.push({name: 'personIndex'});
     },
     routerToReport() {
-      this.$router.push({name: 'studentReport'});
-    },
-    deleteLocal() {
-      this.$static.student_id = null;
-      localStorage.removeItem('student_id');
-      this.$router.push({name: 'studentLogin'});
+      this.$router.push({name: 'personReport'});
     },
   },
 }
@@ -69,12 +66,17 @@ export default {
     cursor: pointer;
   }
   .title {
-    color: #B7B7BC;
+    color: #000;
     font-size: 24px;
   }
   .right {
     display: flex;
     align-items: center;
+    .share-btn {
+      border-radius: 12px;
+      padding: auto 16px;
+      margin-right: 16px;
+    }
     .name-router {
       text-decoration: underline;
     }

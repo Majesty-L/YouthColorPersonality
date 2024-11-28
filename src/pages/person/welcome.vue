@@ -95,11 +95,10 @@ export default {
     };
   },
   created() {
-    if (!this.id) {
-      this.$router.push({name: 'studentIndex'});
-    }
   },
   methods: {
+    getStudentInfo() {},
+    helpDetails() {},
   },
 };
 </script>
