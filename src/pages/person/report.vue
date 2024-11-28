@@ -1,6 +1,6 @@
 <template>
   <div class="report-container">
-    <headerPart :type="2" @getStudentInfo="getStudentInfo"></headerPart>
+    <headerPart :type="2"></headerPart>
     <div class="content">
       <div class="self-info">
         <img src="@/assets/student/avator-big.png" alt="avatar" />
@@ -129,16 +129,17 @@ export default {
       ],
       selectReport: {},
       describe,
+      person_id: this.$static.person_id,
     };
   },
   created() {
+    this.getPersonInfo();
   },
   methods: {
-    getStudentInfo(info) {
-        this.studentInfo = Object.assign({}, info, {known: JSON.parse(info.known || {})});
-        this.$axios.studentReport({studentId: info.id}).then((res) => {
-          const result = res.sort((a, b) => new Date(Date.parse(b.answer.createTime)) - new Date(Date.parse(a.answer.createTime)));
-          this.reportList = result.map(item => ({...item.answer, detail: resultObject[item.answer.characterId], name: item.paper_name})).filter(i=>i.isLast);
+    getPersonInfo() {
+        this.$axios.personReport({personId: this.person_id}).then((res) => {
+          const result = res.sort((a, b) => new Date(Date.parse(b.createTime)) - new Date(Date.parse(a.createTime)));
+          this.reportList = result.map(item => ({...item, detail: resultObject[item.characterId], name: item.createTime.split(' ')[0]})).filter(i=>i.isLast);
           this.selectReport = this.reportList[0] || {};
         })
     },
@@ -147,9 +148,9 @@ export default {
       return detail[dataIndex];
     },
     deleteLocal() {
-      this.$static.student_id = null;
-      localStorage.removeItem('student_id');
-      this.$router.push({name: 'studentLogin'});
+      this.$static.person_id = null;
+      localStorage.removeItem('person_id');
+      this.$router.push({name: 'personLogin'});
     },
     html2report() {
       const element = document.getElementById('report');

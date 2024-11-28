@@ -106,12 +106,6 @@ export const personCommit = (params) => {
   return api.post(`person/commit`, params);
 };
 
-/**  提交测试关联内容
-*   1、在个人测试结果表上记录
-*   2、在支付记录表上记录已消费
-*   3、
-*/
-
 // 查询个人信息
 export const personInfo = (params) => {
   return api.post(`person/getInfo`, params);
@@ -120,4 +114,9 @@ export const personInfo = (params) => {
 // 获取未使用订单
 export const personPay = (params) => {
   return api.post(`person/getPayList`, params);
+};
+
+// 获取测试报告
+export const personReport = (params) => {
+  return api.post(`person/report`, params);
 };

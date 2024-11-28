@@ -66,7 +66,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@test-theme-color: #00D9C0;
+@test-theme-color-person: #00D9C0;
 .intro-container {
   .container {
     height: 90vh;
@@ -85,7 +85,7 @@ export default {
         }
     }
     .name {
-      color:@test-theme-color;
+      color: @test-theme-color-person;
       padding: 0 12px;
     }
     .title {

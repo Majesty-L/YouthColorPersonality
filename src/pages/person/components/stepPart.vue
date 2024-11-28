@@ -32,7 +32,7 @@
       };
     },
     created() {
-      this.init();
+      // this.init();
     },
     methods: {
       init () {

@@ -1,8 +1,8 @@
 <template>
     <div class="test-container">
         <div class="step">
-            <headerPart v-if="current === 99" :type="2" @getStudentInfo="getStudentInfo"></headerPart>
-            <step-part v-else @getStudentInfo="getStudentInfo" :current="current" @back="back"></step-part>
+            <headerPart v-if="current === 99" :type="2"></headerPart>
+            <step-part v-else :current="current" @back="back"></step-part>
         </div>
         <div class="content">
             <type1 v-if="type===1" :showBtn="showBtn" :step="current" :characterId="characterId" @changeCur="changeCur"></type1>
@@ -24,17 +24,16 @@ export default {
     data() {
         return {
             current: 0,
+            person_id: this.$static.person_id,
             type: this.$route.params.type || 0,
             id: this.$route.params.id,
-            studentInfo: {},
             showBtn: true,
             characterId: 0,
-            from: this.$route.path.includes('student') ? 'student' : 'person',
         };
     },
     created() {
         if (!this.id) {
-        this.$router.push({name: 'studentIndex'});
+            this.$router.push({name: 'personIndex'});
         }
     },
     methods: {
@@ -47,7 +46,7 @@ export default {
         },
         result(params, cur) {
             const finalParams = {
-                personId: this.personInfo.id,
+                personId: this.person_id,
                 paperType: 1,
                 payId: this.id,
                 ...params,
@@ -59,16 +58,9 @@ export default {
                 this.$message.error('提交失败，请重试');
             });
         },
-        getStudentInfo(info) {
-            this.studentInfo = info;
-            if (info.type != '小学生') {
-                this.addPinyin = (val) => val;
-                this.showBtn = false;
-            }
-        },
         back() {
             if (this.current === 99 || !this.current) {
-                this.$router.push({name: `${this.from}Index`});
+                this.$router.push({name: `personIndex`});
             } else {
                 this.current--;
             }
