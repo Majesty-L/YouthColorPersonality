@@ -1,119 +1,113 @@
 <template>
   <div class="login-container">
-    <div class="img">
-      <img src="@/assets/student/login.webp" alt="">
+    <div class="logo">
+      <img src="@/assets/school/pageIcon.png" alt="avatar" />
+      <span class="title">Little Mood</span>
     </div>
     <div class="container">
-      <div class="head">
-        <div class="logo">
-          <img src="@/assets/school/pageIcon.png" alt="avatar" />
-          <span class="title">Little Mood</span>
+      <div class="login">
+
+        <div v-if="activeMethod === 'wechat'" class="login-method">
+          <h3 class="head"><img src="@/assets/person/wechat.png" alt="">微信扫码注册/登录</h3>
+          <img class="qr-code" :src="qrCodeUrl" alt="QR Code">
+          <a class="change-active" @click="activeMethod = 'sms'">手机号注册/登录</a>
         </div>
-        <div class="title">学生端</div>
+        
+        <div v-else class="login-method">
+          <h3 class="head">手机号注册/登录</h3>
+          <a-form-item label="手机号">
+            <a-input v-model="phoneCode" />
+          </a-form-item>
+          <a-form-item v-if="activeMethod === 'sms'" label="验证码">
+            <a-input v-model="verificationCode" /><a @click="activeMethod = 'password'">密码登录</a>
+          </a-form-item>
+          <a-form-item v-if="activeMethod === 'password'" label="密码">
+            <a-input type="password" v-model="password" /><a @click="activeMethod = 'sms'">验证码登录</a>
+          </a-form-item>
+          <a-button type="primary" @click="loginWithPhone">注册</a-button>
+          <div class="change-active"><img src="@/assets/person/wechat.png" alt=""><a @click="activeMethod = 'wechat'">手机号注册/登录</a></div>
+        </div>
       </div>
-      <a-form-model class="form" :model="loginForm" @submit.native.prevent>
-        <a-form-model-item :colon="false">
-          <template slot="label"><span class="label"><img src="@/assets/student/school.png" alt="">学校</span></template>
-          <a-auto-complete v-model="loginForm.name" placeholder="输入学校名称" :data-source="schoolList" class="item">
-          </a-auto-complete>
-        </a-form-model-item>
-        <a-form-model-item :colon="false">
-          <template slot="label"><span class="label"><img src="@/assets/school/name.png" alt="">学号</span></template>
-          <a-input v-model="loginForm.cardId" placeholder="输入学号或学籍号" class="item">
-          </a-input>
-        </a-form-model-item>
-        <a-form-model-item :colon="false">
-          <template slot="label"><span class="label"><img src="@/assets/school/password.png" alt="">密码</span></template>
-          <a-input-password v-model="loginForm.password" placeholder="输入密码" class="item">
-          </a-input-password>
-        </a-form-model-item>
-      </a-form-model>
-      <a-button 
-        class="btn-student"
-        type="primary"
-        :disabled="!loginForm.cardId || !loginForm.name || !loginForm.password"
-        @click="handleLogin"
-      >
-        登录
-      </a-button>
+        
+      <div class="img">
+        <img src="@/assets/person/login.png" alt="">
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import QRCode from 'qrcode';
 export default {
-  name: 'LoginPage',
   data() {
     return {
-      loginForm: {
-        cardId: '',
-        name: '',
-        password: '',
-      },
-      schoolList: ['长沙育英会展小学'],
+      activeMethod: 'wechat', // 默认显示微信扫码登录
+      phoneCode: '',
+      verificationCode: '',
+      phonePassword: '',
+      password: ''
     };
   },
+  created() {
+    this.init();
+  },
   methods: {
-    handleLogin() {
-      this.$axios.studentLogin(this.loginForm).then((res) => {
-        this.$message.success('登陆成功');
-        localStorage.setItem('student_id', res);
-        this.$router.push({ name: 'studentIndex' });
-      }).catch(() => {
-        this.$message.error('帐号或密码错误');
-      });
-    }
+    init() {
+      this.$axios.webGetUrl().then(res=>{
+        console.log('webGetUrl', res);
+        this.generateQRCode(res);
+      })
+    },
+    // 生成微信登录二维码
+    generateQRCode(url) {
+      QRCode.toDataURL(url)
+        .then(qrCodeUrl => {
+          this.qrCodeUrl = qrCodeUrl;
+        })
+        .catch(error => {
+          console.error('Failed to generate QR code:', error);
+        });
+    },
+    loginWithPhone() {
+      // 实现手机登录逻辑
+      console.log('手机登录', this.phoneCode, this.verificationCode);
+    },
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
-.login-container {
-  display: flex;
-  align-items: center;
+.login-container { 
+  background-color: #FFF8D4;
   height: 100vh;
+  padding: 54px 48px;
+  .title {
+    font-size: 24px;
+    color: #000;
+    margin-left: 24px;
+  }
   .container {
-    margin: 64px 96px;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
-    flex: 1;
-    height: 100%;
     .head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-    }
-    .logo {
-      padding: 12px 28px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .title {
-      margin-left: 6px;
-      color: #5A5A61;
-      font-size: 18px;
-      font-weight: bold;
-    }
-    .form {
-      .item {
-        width: 400px;
+      text-align: center;
+      margin-bottom: 24px;
+      img {
+        margin-right: 16px;
       }
-      /deep/ .ant-input, .ant-select-selection__rendered {
-        border-radius: 30px;
-        height: 52px;
-        padding-left: 24px;
-      }
-      .label {
-        font-size: 20px;
-        color: #434349;
-        line-height: 120%;
-      }
+    }
+    .login {
+      background-color: #fff;
+      padding: 100px 160px;
+      border-radius: 10px;
+    }
+    .change-active {
+      margin-top: 24px;
+      display: block;
+      text-align: center;
     }
   }
 }
+
 </style>
