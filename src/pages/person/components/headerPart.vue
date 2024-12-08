@@ -34,14 +34,14 @@ export default {
     // this.init();
   },
   methods: {
-    init () {
-      this.$axios.personInfo({personId: this.personId}).then((res) => {
-        if(res.length) {
-          this.personInfo = res[0];
-          this.$emit('getPersonInfo', res[0]);
-        }
-      });
-    },
+    // init () {
+    //   this.$axios.personInfo({id: this.personId}).then((res) => {
+    //     if(res.length) {
+    //       this.personInfo = res[0];
+    //       this.$emit('getPersonInfo', res[0]);
+    //     }
+    //   });
+    // },
     back() {
       this.$router.push({name: 'personIndex'});
     },

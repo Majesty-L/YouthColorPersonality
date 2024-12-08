@@ -24,6 +24,7 @@
             <a-slider class="slider" v-model="finishData" :min="0" :max="100" disabled />
             <span class="num">{{finishData}}</span>
             <span class="">%</span>
+            <a-tag class="btn" @click="onClickUnTestDetail">未完成明细</a-tag>
           </div>
         </div>
         <div>
@@ -61,6 +62,16 @@
         <!-- <a-radio value="mail">邮件提醒</a-radio> -->
       </a-radio-group>
     </a-modal>
+    <a-modal
+      class="modal"
+      :visible="showUnTest"
+      title="未完成学生名单"
+      :footer="null"
+      destroyOnClose
+      @cancel="showUnTest = false"
+    >
+      <a-table :columns="unTestCols" :dataSource="unTestStudents" :loading="showUnTestLoading"></a-table>
+    </a-modal>
   </div>
 </template>
 
@@ -93,6 +104,15 @@ export default {
       phone: '',
       mailTime: '',
       showSetLoading: false,
+      showUnTest: false,
+      showUnTestLoading: false,
+      unTestStudents: [],
+      unTestCols: [
+        {title:'学籍号', dataIndex: 'createTime'},
+        {title:'姓名', dataIndex: 'name'},
+        {title:'年级', dataIndex: 'createTime'},
+        {title:'班级', dataIndex: 'createTime'},
+      ],
     };
   },
   created() {
@@ -158,6 +178,17 @@ export default {
     },
     handleCancel() {
       this.showSet = false;
+    },
+    onClickUnTestDetail() {
+      this.showUnTestDetail = true;
+      this.showUnTestLoading = true;
+      this.$axios.getUnfinishedStudent({schoolId: this.$static.school_id, paperId: this.ingTestObject.id}).then((res) => {
+        if (res && res.length) {
+          this.unTestStudents = res;
+        }
+      }).finally(() => {
+        this.showUnTestLoading = false;
+      });
     },
   },
 }
@@ -241,6 +272,14 @@ export default {
         color: #16161D;
         font-weight: bold;
         font-size: 20px;
+      }
+      .btn {
+        margin: 24px 12px;
+        background-color: #E2E3F4;
+        border-radius: 24px;
+        color: #5A5FA7;
+        cursor: pointer;
+        padding: 2px 8px;
       }
     }
   }

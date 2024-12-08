@@ -100,7 +100,6 @@ export default {
     margin: 80px auto;
   }
   .ing-test {
-    cursor: pointer;
     .ing-title {
       font-size: 48px;
       margin-bottom: 16px;
@@ -111,6 +110,7 @@ export default {
       margin: 16px;
     }
     .main-target {
+      cursor: pointer;
       padding: 150px 65% 0 60px;
       height: 460px;
       background: no-repeat url(@/assets/person/homepage-test.png);

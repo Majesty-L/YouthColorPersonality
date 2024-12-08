@@ -37,6 +37,7 @@ export default {
       addPinyin: html,
       type: this.$route.params.type,
       id: this.$route.params.id,
+      person_id: this.$static.person_id,
       showBtn: true,
     };
   },
@@ -44,7 +45,9 @@ export default {
     if (!this.id) {
       this.$router.push({name: 'personIndex'});
     }
-    this.getPersonInfo();
+    if (this.person_id) {
+      this.getPersonInfo();
+    }
   },
   methods: {
     play() {
@@ -52,7 +55,7 @@ export default {
       video.play();
     },
     getPersonInfo() {
-      this.$axios.personInfo({personId: this.personId}).then((res) => {
+      this.$axios.personInfo({id: this.person_id}).then((res) => {
         if(res.length) {
           this.personInfo = res[0];
         }

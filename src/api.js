@@ -82,6 +82,11 @@ export const getPaperReport = (params) => {
   return api.post(`paper/report`, params);
 };
 
+// 学校获取未完成学生名单
+export const getUnfinishedStudent = (params) => {
+  return api.post(`paper/unfinishedStudent`, params);
+};
+
 // -------------性格测试系统学生接口--------------------   
 
 // 学生登陆
@@ -108,7 +113,7 @@ export const personCommit = (params) => {
 
 // 查询个人信息
 export const personInfo = (params) => {
-  return api.post(`person/getInfo`, params);
+  return api.post(`person/info`, params);
 };
 
 // 获取未使用订单
@@ -119,4 +124,9 @@ export const personPay = (params) => {
 // 获取测试报告
 export const personReport = (params) => {
   return api.post(`person/report`, params);
+};
+
+// 个人登录
+export const validateLogin = (params) => {
+  return api.post(`person/login`, params);
 };

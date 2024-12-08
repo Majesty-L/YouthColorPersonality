@@ -3,12 +3,7 @@
     <headerPart :type="2"></headerPart>
     <div class="content">
       <div class="self-info">
-        <img src="@/assets/student/avator-big.png" alt="avatar" />
-        <div class="title">{{ studentInfo.name }}</div>
         <div class="remove" @click="deleteLocal">退出登录</div>
-        <div class="detail-info"><span class="detail-info-before mr"></span>学号 {{ studentInfo.classId }}</div>
-        <div class="detail-info"><span class="detail-info-before mr"></span>性别 {{ studentInfo.sex }}</div>
-        <div class="detail-info"><span class="detail-info-before mr"></span>地区 {{ studentInfo.province }}</div>
       </div>
       <div class="report-detail">
         <div class="head">
@@ -139,8 +134,9 @@ export default {
     getPersonInfo() {
         this.$axios.personReport({personId: this.person_id}).then((res) => {
           const result = res.sort((a, b) => new Date(Date.parse(b.createTime)) - new Date(Date.parse(a.createTime)));
-          this.reportList = result.map(item => ({...item, detail: resultObject[item.characterId], name: item.createTime.split(' ')[0]})).filter(i=>i.isLast);
+          this.reportList = result.map(item => ({...item, detail: resultObject[item.characterId], name: item.createTime.split(' ')[0]}));
           this.selectReport = this.reportList[0] || {};
+          console.log(this.reportList);
         })
     },
     getSliderValue(report, dataIndex) {
@@ -181,6 +177,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@test-theme-color-person: #00D9C0;
 .report-container {
   .content {
     margin-top: 24px;
@@ -198,23 +195,6 @@ export default {
         background-color: #B7B7BC;
         color: #fff;
         margin: 12px 0 64px;
-      }
-      .title {
-        font-size: 32px;
-        font-weight: bold;
-        margin-top: 12px;
-      }
-      .detail-info {
-        width: 200px;
-        text-align: left;
-        font-size: 20px;
-      }
-      .detail-info-before {
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background-color: #63C5E9;
       }
     }
     .report-detail {
@@ -286,8 +266,8 @@ export default {
               width: 600px;
             }
             /deep/ .ant-slider-disabled .ant-slider-handle {
-              border-color: #63C5E9 !important;
-              background-color: #63C5E9;
+              border-color: @test-theme-color-person !important;
+              background-color: @test-theme-color-person;
             }
             /deep/ .ant-slider-rail {
               background-color: #e5f8ff !important;
@@ -312,7 +292,7 @@ export default {
               height: 200px;
             }
             .sub-header {
-              color: #63C5E9;
+              color: @test-theme-color-person;
             }
             .content {
               display: flex;

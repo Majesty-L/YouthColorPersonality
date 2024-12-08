@@ -146,10 +146,6 @@ export default {
             type: Boolean,
             default: false,
         },
-        characterId: {
-            type: Number,
-            default: 0,
-        },
     },
     data() {
         return {
