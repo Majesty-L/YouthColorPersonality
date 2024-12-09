@@ -68,6 +68,7 @@
       title="未完成学生名单"
       :footer="null"
       destroyOnClose
+      width="800px"
       @cancel="showUnTest = false"
     >
       <a-table :columns="unTestCols" :dataSource="unTestStudents" :loading="showUnTestLoading"></a-table>
@@ -108,10 +109,10 @@ export default {
       showUnTestLoading: false,
       unTestStudents: [],
       unTestCols: [
-        {title:'学籍号', dataIndex: 'createTime'},
+        {title:'学籍号', dataIndex: 'cardId'},
         {title:'姓名', dataIndex: 'name'},
-        {title:'年级', dataIndex: 'createTime'},
-        {title:'班级', dataIndex: 'createTime'},
+        {title:'年级', dataIndex: 'grade'},
+        {title:'班级', dataIndex: 'classNum'},
       ],
     };
   },
@@ -180,7 +181,7 @@ export default {
       this.showSet = false;
     },
     onClickUnTestDetail() {
-      this.showUnTestDetail = true;
+      this.showUnTest = true;
       this.showUnTestLoading = true;
       this.$axios.getUnfinishedStudent({schoolId: this.$static.school_id, paperId: this.ingTestObject.id}).then((res) => {
         if (res && res.length) {
