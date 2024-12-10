@@ -11,9 +11,14 @@ const router = new VueRouter({
       component: () => import('@/App'),
     },
     {
-      name: 'schoolRegister',
+      name: 'adminRegister',
       path: '/register',
-      component: () => import('@/pages/register.vue'),
+      component: () => import('@/pages/admin/register.vue'),
+    },
+    {
+      name: 'adminOverview',
+      path: '/overview',
+      component: () => import('@/pages/admin/overview.vue'),
     },
     {
       name: 'studentLogin',

@@ -2,6 +2,8 @@
   <div class="report-container">
     <div class="filter">
       <div class="left">
+        <a-select class="mr" v-model="select.school" :options="options.gradeOptions"></a-select>
+        <a-select class="mr" v-model="select.paper" :options="options.gradeOptions"></a-select>
         <a-select class="mr" v-model="select.grade" :options="options.gradeOptions"></a-select>
         <a-select class="mr" v-model="select.classNum" :options="options.classOptions"></a-select>
         <a-select class="mr" v-model="select.sex" :options="options.sexOptions"></a-select>
@@ -78,7 +80,7 @@
 </template>
 
 <script>
-import { sixGradeMap, allTypeX, bgColorMap, animalIntro } from '../data.js';
+import { sixGradeMap, allTypeX, bgColorMap, animalIntro } from '../school/data.js';
 import * as echarts from 'echarts';
 import * as characterIcon from '@/assets/characterIcon/index.js';
 import html2canvas from 'html2canvas';
@@ -89,14 +91,11 @@ const percent = (zi, mu, len = 0) => {
   return zi ? (zi * 100 / mu).toFixed(len) : 0;
 }
 
+
 export default {
   components: {
   },
   props: {
-    paperId: {
-      type: String,
-      default: '',
-    },
   },
   data() {
     return {
@@ -125,6 +124,7 @@ export default {
         { name: '五年级', id: '五', percent: 0, no: 4 },
         { name: '六年级', id: '六', percent: 0, no: 5 },
       ],
+      originAnswers: {},
       allAnswers: [],
       detailData: [],
       answerLen: 0,
@@ -168,28 +168,54 @@ export default {
     this.init(true);
   },
   methods: {
+    // 筛选搜索条件
     search() {
       let copy = {};
+      let canUseStorage = true;
       Object.keys(this.select).map(key => {
         copy[key] = this.select[key].includes('全部') ? undefined : this.select[key];
-      });
-      const params = {
-        paperId: this.paperId,
-        ...copy,
-      };
-      this.init(false,params);
-    },
-    init(flash=false, params={paperId: this.paperId}) {
-      this.loading = true;
-      this.$axios.getPaperReport(params).then((res) => {
-        if (!res.length) {
-          this.$message.info('暂无数据');
+        // 有非学校或问卷的筛选，需要重新拉接口
+        if (!['school', 'paper'].includes(key) && copy[key]) {
+          canUseStorage = false;
         }
-          this.allAnswers = res;
+      });
+      if (canUseStorage) {
+        // 只筛选了学校和问卷，可以从全量数据中拿到
+        this.allAnswers = Object.keys(this.originAnswers).reduce((res, cur) => res.concat((!copy[school]||cur.includes(copy.school))&&(!copy[paper]||cur.includes(copy.paper))&&this.originAnswers[cur] ? this.originAnswers[cur] : []), []);
+        this.answerLen = this.allAnswers.length;
+        this.transferData(false);
+        this.getGradeChart();
+        this.getAnimalChart();
+      } else {
+        this.loading = true;
+        const params = copy;
+        this.$axios.getPaperReport({isAdmin: true, ...params}).then((res) => {
+          if (!res || !Object.keys(res).length) {
+            this.$message.info('暂无数据');
+          }
+          this.allAnswers = Object.keys(res).reduce((pre, cur) => {return pre.concat(res[cur] || [])}, []);
           this.answerLen = this.allAnswers.length;
-          this.transferData(flash);
+          this.transferData(false);
           this.getGradeChart();
           this.getAnimalChart();
+        }).finally(() => {
+          this.loading = false;
+        });
+      }
+    },
+    // 初始化
+    init() {
+      this.loading = true;
+      this.$axios.getPaperReport({isAdmin: true}).then((res) => {
+        if (!res || !Object.keys(res).length) {
+          this.$message.info('暂无数据');
+        }
+        this.originAnswers = res;
+        this.allAnswers = Object.keys(res).reduce((pre, cur) => {return pre.concat(res[cur] || [])}, []);
+        this.answerLen = this.allAnswers.length;
+        this.transferData(true);
+        this.getGradeChart();
+        this.getAnimalChart();
       }).finally(() => {
         this.loading = false;
       });
@@ -486,9 +512,11 @@ export default {
 
 <style lang="less" scoped>
 .report-container {
+  padding: 24px;
   color: #414158;
 
   .filter {
+    position: sticky;
     margin-top: 12px;
     display: flex;
     justify-content: space-between;
@@ -524,8 +552,8 @@ export default {
     background-color: #fff;
     border-radius: 12px;
     padding: 12px 36px;
-    height: 85vh;
-    overflow: auto;
+    // height: 85vh;
+    // overflow: auto;
 
     .level {
       display: flex;
