@@ -2,8 +2,8 @@
   <div class="report-container">
     <div class="filter">
       <div class="left">
-        <a-select class="mr" v-model="select.school" :options="options.gradeOptions"></a-select>
-        <a-select class="mr" v-model="select.paper" :options="options.gradeOptions"></a-select>
+        <a-select class="mr" v-model="select.school" :options="options.schoolOptions"></a-select>
+        <a-select class="mr" v-model="select.paper" :options="options.paperOptions"></a-select>
         <a-select class="mr" v-model="select.grade" :options="options.gradeOptions"></a-select>
         <a-select class="mr" v-model="select.classNum" :options="options.classOptions"></a-select>
         <a-select class="mr" v-model="select.sex" :options="options.sexOptions"></a-select>
@@ -12,6 +12,7 @@
         <a-button class="btn-school -btn" @click="search">生成报告</a-button>
       </div>
       <div class="cursor" @click="html2report"><img src="@/assets/school/pdfIcon.png" alt="">下载PDF报告</div>
+      <div class="cursor" @click="downloadAnswers"><img src="@/assets/school/pdfIcon.png" alt="">导出源数据</div>
     </div>
     <a-spin :spinning="loading" tip="生成报告中，请勿退出当前页面..." size="large">
       <div class="per-report" id="per-report">
@@ -80,11 +81,13 @@
 </template>
 
 <script>
-import { sixGradeMap, allTypeX, bgColorMap, animalIntro } from '../school/data.js';
+import { sixGradeMap, allTypeX, bgColorMap, animalIntro, detailDownloadColMapping } from '../school/data.js';
 import * as echarts from 'echarts';
 import * as characterIcon from '@/assets/characterIcon/index.js';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 const percent = (zi, mu, len = 0) => {
   if (!mu) return '-';
@@ -102,6 +105,8 @@ export default {
       percent,
       loading: false,
       options: {
+        schoolOptions: [],
+        paperOptions: [],
         gradeOptions: [],
         classOptions: [],
         sexOptions: [],
@@ -109,6 +114,8 @@ export default {
         nationOptions: [],
       },
       select: {
+        school: '全部学校',
+        paper: '全部问卷',
         grade: '全部年级',
         classNum: '全部班级',
         sex: '全部性别',
@@ -181,7 +188,7 @@ export default {
       });
       if (canUseStorage) {
         // 只筛选了学校和问卷，可以从全量数据中拿到
-        this.allAnswers = Object.keys(this.originAnswers).reduce((res, cur) => res.concat((!copy[school]||cur.includes(copy.school))&&(!copy[paper]||cur.includes(copy.paper))&&this.originAnswers[cur] ? this.originAnswers[cur] : []), []);
+        this.allAnswers = Object.keys(this.originAnswers).reduce((res, cur) => res.concat((!copy.school||cur.includes(copy.school))&&(!copy.paper||cur.includes(copy.paper))&&this.originAnswers[cur] ? this.originAnswers[cur] : []), []);
         this.answerLen = this.allAnswers.length;
         this.transferData(false);
         this.getGradeChart();
@@ -236,12 +243,19 @@ export default {
       const animals = {};
       const detailData = [];
       let options = {
+        schoolOptions: new Set(['全部学校']),
+        paperOptions: new Set(['全部问卷']),
         gradeOptions: new Set(['全部年级']),
         classOptions: new Set(['全部班级']),
         sexOptions: ['全部性别', '男', '女'],
         areaOptions: new Set(['全部地区']),
         nationOptions: new Set(['全部民族']),
       }
+      Object.keys(this.originAnswers).forEach(item => {
+        const [schoolName, paperName] = item.split('_');
+        options.schoolOptions.add(schoolName);
+        options.paperOptions.add(paperName);
+      });
       this.allAnswers.forEach(item => {
         detailData.push({ ...item, sixGrade: sixGradeMap[item.character_id] });
         sex[item.sex]++;
@@ -264,6 +278,8 @@ export default {
       if (flash) {
         // 筛选下拉
         this.options = {
+          schoolOptions: [...options.schoolOptions].map(i => ({value: i, label: i})),
+          paperOptions: [...options.paperOptions].map(i => ({value: i, label: i})),
           gradeOptions: [...options.gradeOptions].map(i => ({value: i, label: i})),
           classOptions: [...options.classOptions].map(i => ({value: i, label: i})),
           sexOptions: options.sexOptions.map(i => ({value: i, label: i})),
@@ -505,6 +521,20 @@ export default {
           this.loading = false;
         });
       });
+    },
+    downloadAnswers() {
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.json_to_sheet(this.allAnswers.map(item => {
+        let res = {};
+        Object.keys(detailDownloadColMapping).forEach((key) => {
+          res[detailDownloadColMapping[key]] = item[key];
+        })
+        return res;
+      }));
+      XLSX.utils.book_append_sheet(workbook, worksheet);
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      const excelBlob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      saveAs(excelBlob, `源数据.xlsx`);
     },
   }
 }
