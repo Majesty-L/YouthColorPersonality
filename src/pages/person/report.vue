@@ -3,19 +3,24 @@
     <headerPart :type="2"></headerPart>
     <div class="content">
       <div class="self-info">
+        <div class="menu">
+          <div class="cursor"><img src="@/assets/person/menu1.png" alt="" class="mr">性格报告</div>
+          <div class="cursor"><img src="@/assets/person/menu2.png" alt="" class="mr">账号信息</div>
+          <div class="cursor"><img src="@/assets/person/menu3.png" alt="" class="mr">评价反馈</div>
+        </div>
         <div class="remove" @click="deleteLocal">退出登录</div>
       </div>
       <div class="report-detail">
         <div class="head">
           <div class="flex">
-            <h2>我的报告</h2>
-            <div class="cursor" @click="html2report"><img src="@/assets/school/pdfIcon.png" alt="">下载PDF报告</div>
-          </div>
-          <div class="all-reports">
-            <div v-for="report,index in reportList" :key="index">
-              <a-tag :class="{'report-tag': true, 'select': !!(selectReport.paperId === report.paperId)}" @click="onClickReport(report)">{{ report.name }}</a-tag>
+            <h2>性格测试</h2>
+            <!-- <div class="cursor" @click="html2report"><img src="@/assets/school/pdfIcon.png" alt="">下载PDF报告</div> -->
+            <div class="all-reports">
+              <div v-for="report,index in reportList" :key="index">
+                <a-tag :class="{'report-tag': true, 'select': !!(selectReport.paperId === report.paperId)}" @click="onClickReport(report)">{{ report.name }}</a-tag>
+              </div>
             </div>
-          </div>
+        </div>
         </div>
         <div id="report" class="report" v-if="reportList.length">
           <div class="first-line">
@@ -125,6 +130,7 @@ export default {
       selectReport: {},
       describe,
       person_id: this.$static.person_id,
+      curTab: 'report',
     };
   },
   created() {
@@ -183,18 +189,23 @@ export default {
     margin-top: 24px;
     display: flex;
     .self-info {
-      flex: 0 0 25%;
+      flex: 0 0 20%;
       display: flex;
       flex-direction: column;
       align-items: center;
       margin-top: 48px;
+      justify-content: space-between;
+      .menu {
+        line-height: 300%;
+      }
       .remove {
+        position: sticky;
+        bottom: 48px;
         cursor: pointer;
         border-radius: 12px;
         padding: 2px 12px;
         background-color: #B7B7BC;
         color: #fff;
-        margin: 12px 0 64px;
       }
     }
     .report-detail {

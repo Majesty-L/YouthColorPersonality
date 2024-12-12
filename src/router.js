@@ -121,7 +121,7 @@ const router = new VueRouter({
     {
       name: 'personReport',
       path: '/person/report',
-      component: () => import('@/pages/person/report.vue'), // 个人测试结果页
+      component: () => import('@/pages/person/report/index.vue'), // 个人测试结果页
     },
   ],
 });
