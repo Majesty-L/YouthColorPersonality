@@ -2,7 +2,7 @@
   <div class="report-container">
     <headerPart :type="2"></headerPart>
     <div class="content">
-      <div class="self-info">
+      <div class="self-info" v-if="windowWidth>430">
         <div class="menu">
           <div class="cursor" @click="curTab='report'"><img src="@/assets/person/menu1.png" alt="" class="mr">性格报告</div>
           <div class="cursor" @click="curTab='info'"><img src="@/assets/person/menu2.png" alt="" class="mr">账号信息</div>
@@ -12,6 +12,7 @@
       </div>
       <report-view v-if="curTab==='report'"></report-view>
       <card-info v-if="curTab==='info'"></card-info>
+      <rate-info v-if="curTab==='callback'"></rate-info>
     </div>
   </div>
 </template>
@@ -19,16 +20,19 @@
 <script>
 import reportView from './reportView.vue';
 import cardInfo from './cardInfo.vue';
+import rateInfo from './rateInfo.vue';
 import headerPart from '../components/headerPart.vue';
 export default {
   components: {
     headerPart,
     reportView,
     cardInfo,
+    rateInfo,
   },
   data() {
     return {
       curTab: 'report',
+      windowWidth: window.innerWidth,
     };
   },
   created() {

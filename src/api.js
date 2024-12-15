@@ -116,6 +116,11 @@ export const personInfo = (params) => {
   return api.post(`person/info`, params);
 };
 
+// 更新个人信息
+export const updatePersonInfo = (params) => {
+  return api.post(`person/updateInfo`, params);
+};
+
 // 获取未使用订单
 export const personPay = (params) => {
   return api.post(`person/getPayList`, params);
@@ -129,4 +134,9 @@ export const personReport = (params) => {
 // 个人登录
 export const validateLogin = (params) => {
   return api.post(`person/login`, params);
+};
+
+// 评论反馈
+export const callbackRate = (params) => {
+  return api.post(`person/callback`, params);
 };

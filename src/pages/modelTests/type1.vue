@@ -118,6 +118,8 @@
             <div class="showoff">
                 <img src="@/assets/student/success.png" alt="">
                 <div class="finish-text" v-html="addPinyin('完成啦！')"></div>
+                <h3 class="mtl" v-html="addPinyin('评价')"></h3>
+                <a-rate v-model="grade" style="font-size: 36px" @change="onChangeRate"></a-rate>
             </div>
             <div class="action">
                 <a-button :class="{'btn-student':from==='student', 'btn-person':from==='person', btn1: true, mr: true}" v-html="addPinyin('返回首页')" @click="backHome"></a-button>
@@ -146,6 +148,10 @@ export default {
             type: Boolean,
             default: false,
         },
+        commitRes: {
+            type: Object,
+            default: () => ({}),
+        },
     },
     data() {
         return {
@@ -163,6 +169,7 @@ export default {
             speechBtn: true,
             from: this.$route.path.includes('student') ? 'student' : 'person',
             imageUrl: `${this.from}laba`,
+            grade: 0,
         };
     },
     watch: {
@@ -260,6 +267,23 @@ export default {
         },
         viewReport() {
             this.$router.push({name: `${this.from}Report`});
+        },
+        // 评价
+        onChangeRate(rate) {
+            console.log(this.commitRes)
+            if (!this.commitRes || !this.commitRes.paperId) {
+                this.$message.error('提交失败，请重试！');
+                return;
+            }
+            const params = {
+                grade: rate,
+                ...this.commitRes,
+            };
+            this.$axios.callbackRate(params).then(() => {
+                this.$message.success('提交成功！');
+            }).catch((err) => {
+                this.$message.error(err);
+            })
         },
     }
 }

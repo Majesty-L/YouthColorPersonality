@@ -5,7 +5,7 @@
             <step-part v-else @getStudentInfo="getStudentInfo" :current="current" @back="back"></step-part>
         </div>
         <div class="content">
-            <type1 v-if="type===1" :showBtn="showBtn" :step="current" :characterId="characterId" @changeCur="changeCur"></type1>
+            <type1 v-if="type===1" :showBtn="showBtn" :step="current" :commitRes="commitRes" @changeCur="changeCur"></type1>
         </div>
     </div>
 </template>
@@ -28,7 +28,7 @@ export default {
             id: this.$route.params.id,
             studentInfo: {},
             showBtn: true,
-            characterId: 0,
+            commitRes: undefined,
         };
     },
     created() {
@@ -52,7 +52,7 @@ export default {
             };
             this.$axios.studentCommit(finalParams).then((res) => {
                 this.current = cur;
-                this.characterId = res;
+                this.commitRes = res;
             }).catch(() => {
                 this.$message.error('提交失败，请重试');
             });
