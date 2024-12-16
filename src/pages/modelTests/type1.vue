@@ -118,12 +118,12 @@
             <div class="showoff">
                 <img src="@/assets/student/success.png" alt="">
                 <div class="finish-text" v-html="addPinyin('完成啦！')"></div>
-                <h3 class="mtl" v-html="addPinyin('评价')"></h3>
+                <h3 class="mt" v-html="addPinyin('评价')"></h3>
                 <a-rate v-model="grade" style="font-size: 36px" @change="onChangeRate"></a-rate>
             </div>
             <div class="action">
                 <a-button :class="{'btn-student':from==='student', 'btn-person':from==='person', btn1: true, mr: true}" v-html="addPinyin('返回首页')" @click="backHome"></a-button>
-                <a-button class="btn-student btn2 ml" v-html="addPinyin('查看结果')" @click="viewReport"></a-button>
+                <a-button class="btn-student btn2 ml mt" v-html="addPinyin('查看结果')" @click="viewReport"></a-button>
             </div>
         </div>
     </div>
@@ -554,7 +554,6 @@ export default {
         .btn2 {
             width: 300px;
             background-color: #FA7800;
-            margin-top: 60px;
         }
         .btn2:hover {
             border-color: #FA7800;
