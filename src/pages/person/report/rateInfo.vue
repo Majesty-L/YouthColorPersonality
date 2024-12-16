@@ -8,7 +8,7 @@
         <h3 v-html="addPinyin('评价')"></h3>
         <a-rate v-model="grade" style="font-size: 36px"></a-rate>
         <h3 class="mtl" v-html="addPinyin('反馈')"></h3>
-        <a-textarea v-model="text" :autosize="{minRows:6}"></a-textarea>
+        <a-textarea v-model="remark" :autosize="{minRows:6}"></a-textarea>
         <a-button class="btn-person -btn" v-html="addPinyin('提交')" @click="onSaveEdit"></a-button>
       </div>
     </div>
@@ -24,7 +24,7 @@ export default {
     return {
       addPinyin: html,
       grade: 0,
-      text: '',
+      remark: '',
       personId: this.$static.person_id,
     };
   },
@@ -35,12 +35,12 @@ export default {
   },
   methods: {
     onSaveEdit() {
-      const { grade, text, personId } = this;
-      if ((!grade&&grade!==0) || !text) {
+      const { grade, remark, personId } = this;
+      if ((!grade&&grade!==0) || !remark) {
         this.$message.error('请填写评价和反馈内容！');
         return;
       }
-      this.$axios.callbackRate({grade, text, personId}).then(() => {
+      this.$axios.callbackRate({grade, remark, personId}).then(() => {
         this.$message.success('提交成功！');
       }).catch((err) => {
         this.$message.error(err);

@@ -8,7 +8,8 @@
       <a-icon type="left" @click="back"></a-icon>
     </div>
     <div class="right">
-      <a-button class="share-btn" icon="share-alt"><span v-html="addPinyin('分享')"></span></a-button>
+      <share></share>
+      <!-- <a-button class="share-btn" icon="share-alt"><span v-html="addPinyin('分享')"></span></a-button> -->
       <img class="pointer" src="@/assets/student/avator.png" alt="avatar"  @click="routerToReport"/>
     </div>
   </div>
@@ -16,7 +17,11 @@
 
 <script>
 import { html } from 'pinyin-pro';
+import share from './share.vue';
 export default {
+  components: {
+    share,
+  },
   props: {
     type: {
       type: Number,

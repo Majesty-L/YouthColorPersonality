@@ -1,100 +1,115 @@
-
 <template>
-    <div class="right">
-        <a-button class="share-btn" icon="share-alt"><span v-html="addPinyin('分享')"></span></a-button>
-        <img class="pointer" src="@/assets/student/avator.png" alt="avatar"  @click="routerToReport"/>
-    </div>
+  <div>
+    <a-button class="share-btn" icon="share-alt" @click="showShare=true"><span v-html="addPinyin('分享')"></span></a-button>
+    <a-modal :visible="showShare" title="分享给朋友" width="400px" :footer="null" @cancel="showShare=false">
+      <div class="share-type">
+        <a-button class="item" icon="link" @click="copyLink()">复制链接</a-button>
+        <a-button class="item" icon="wechat" @click="shareWx()">分享到微信</a-button>
+        <a-button class="item" icon="download" @click="downloadImg()">生成图片</a-button>
+      </div>
+      <div v-show="true" id="poster">
+        <div v-if="animal" class="share1">
+          <div class="logo">
+            <img src="@/assets/school/pageIcon.png" alt="avatar" />
+            <span class="title">Little Mood</span>
+          </div>
+          <h1 v-html="addPinyin('儿童色彩心理测试')"></h1>
+          <img :src="this.qrCode" alt="">
+        </div>
+        <div v-else class="share2">
+          <div class="logo">
+            <img src="@/assets/school/pageIcon.png" alt="avatar" />
+            <span class="title">Little Mood</span>
+          </div>
+          <img :src="this.qrCode" alt="">
+        </div>
+      </div>
+    </a-modal>
+  </div>
 </template>
-  
-  <script>
-  import { html } from 'pinyin-pro';
-  export default {
-    props: {
-      type: {
-        type: Number,
-        default: 1,
-      },
+
+<script>
+import { html } from 'pinyin-pro';
+import QRCode from 'qrcode';
+import html2canvas from 'html2canvas';
+export default {
+  props: {
+    animal: {
+      type: Number,
     },
-    data() {
-      return {
-        addPinyin: html,
-        personId: this.$static.person_id,
-        personInfo: {},
-      };
+  },
+  data() {
+    return {
+      addPinyin: html,
+      showShare: false,
+      qrCodeUrl: '',
+    };
+  },
+  created() {
+  },
+  methods: {
+    copyLink() {
+      navigator.clipboard.writeText(window.location.href);
+      this.$message.success('复制成功！');
     },
-    created() {
-      // this.init();
+    shareWx() {
+      const shareUrl = window.location.href;
+      this.generateQRCode(shareUrl).then(() => {
+        this.$confirm({
+          title: '扫描二维码分享给朋友', 
+          content: (<div><img src={this.qrCodeUrl} /></div>),
+          okText: '确定',
+          cancelText: '取消',
+        })
+      });
     },
-    methods: {
-        show(row) {
-            this.row = row;
-            // console.log('show', row);
-            this.shareUrl = `${window.location.origin}/color_web/view/${row.id}`;
-            this.generateQRCode(this.shareUrl);
-        },
-        generateQRCode(url) {
-            QRCode.toDataURL(url)
-            .then(qrCodeUrl => {
-                this.qrCodeUrl = qrCodeUrl;
-            })
-            .catch(error => {
-                console.error('Failed to generate QR code:', error);
-            });
-        },
-        // 分享功能 下载海报
-        downloadPoster(posterName='poster') {
-            // console.log(this.row)
-            const posterElement = document.getElementById(posterName);
-            const originalDevicePixelRatio = window.devicePixelRatio;
-            // window.devicePixelRatio = 4;
-            html2canvas(posterElement, { scale: window.devicePixelRatio }).then(canvas => {
-            const posterImage = canvas.toDataURL('image/png');
-            const link = document.createElement('a');
-            link.href = posterImage;
-            link.download = `${this.row.name}分享海报.png`;
-            link.click();
-            window.devicePixelRatio = originalDevicePixelRatio;
-            });
-        },
+    downloadImg() {
+      this.downloadPoster();
     },
+    generateQRCode(url) {
+      return QRCode.toDataURL(url)
+        .then(qrCodeUrl => {
+          this.qrCodeUrl = qrCodeUrl;
+        })
+        .catch(error => {
+          console.error('Failed to generate QR code:', error);
+        });
+    },
+    // 分享功能 下载海报
+    downloadPoster(posterName = 'poster') {
+      const posterElement = document.getElementById(posterName);
+      const originalDevicePixelRatio = window.devicePixelRatio;
+      // window.devicePixelRatio = 4;
+      html2canvas(posterElement, { scale: window.devicePixelRatio }).then(canvas => {
+        const posterImage = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = posterImage;
+        link.download = `分享海报.png`;
+        link.click();
+        window.devicePixelRatio = originalDevicePixelRatio;
+      });
+    },
+  },
+}
+</script>
+
+<style lang="less" scoped>
+.share-btn {
+  border-radius: 12px;
+  padding: auto 16px;
+  margin-right: 16px;
+}
+.share-type {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  margin: 24px;
+  .item {
+    width: 200px;
   }
-  </script>
-  
-  <style lang="less" scoped>
-  .header {
-    height: 64px;
-    padding: 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.09);
-    .logo, .back {
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-    }
-    .title {
-      color: #000;
-      font-size: 24px;
-    }
-    .right {
-      display: flex;
-      align-items: center;
-      .share-btn {
-        border-radius: 12px;
-        padding: auto 16px;
-        margin-right: 16px;
-      }
-      .name-router {
-        text-decoration: underline;
-      }
-      .name {
-        font-weight: bold;
-        text-align: end;
-      }
-      .pointer {
-        cursor: pointer;
-      }
-    }
-  }
-  </style>
+}
+.share1 {
+  background: url('@/assets/person/share1.png') no-repeat center;
+}
+</style>

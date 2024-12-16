@@ -138,5 +138,10 @@ export const validateLogin = (params) => {
 
 // 评论反馈
 export const callbackRate = (params) => {
-  return api.post(`person/callback`, params);
+  return api.post(`callback/emitCallBack`, params);
+};
+
+// 获取评论反馈
+export const getCallback = (params) => {
+  return api.post(`callback/getCallBack`, params);
 };

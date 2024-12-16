@@ -270,7 +270,6 @@ export default {
         },
         // 评价
         onChangeRate(rate) {
-            console.log(this.commitRes)
             if (!this.commitRes || !this.commitRes.paperId) {
                 this.$message.error('提交失败，请重试！');
                 return;
