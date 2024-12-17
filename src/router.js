@@ -139,7 +139,7 @@ router.beforeEach((to, from, next) => {
   } else if (to.path.includes('student') && !localStorage.getItem('student_id')) {
     next({ name: 'studentLogin' });
   } else if (to.path.includes('person') && !localStorage.getItem('person_id')) {
-    next({ name: 'personLogin' });
+    next({ name: 'personWelcome' });
   } else {
     Vue.prototype.$static.school_id = localStorage.getItem('school_id');
     Vue.prototype.$static.student_id = localStorage.getItem('student_id');

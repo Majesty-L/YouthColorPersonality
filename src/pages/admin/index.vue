@@ -33,7 +33,7 @@ export default {
   },
   data() {
     return {
-      easyPassword: 'huangqian',
+      easyPassword: '',
       curTab: 'report',
       windowWidth: window.innerWidth,
     };

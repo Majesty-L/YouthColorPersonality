@@ -9,7 +9,7 @@
     </div>
     <div class="detail" v-if="!paper_id">
       <div class="class-item" v-for="item, index in paperList" :key="index" @click="onClickPaper(item)">
-        <div :class="item.name.includes('（1）')?'history1 img-title':'history2 img-title'">
+        <div :class="(item.name.includes('（1）') || item.name.split('/')[1]<=6)?'history1 img-title':'history2 img-title'">
           {{ item.name.split('（')[0].split('测试')[1] }}
         </div>
         <span class="second-title">{{ item.name }}</span>
@@ -98,7 +98,7 @@ export default {
         justify-content: center;
         align-items: center;
         color: #fff;
-        font-size: 48px;
+        font-size: 36px;
         font-weight: bold;
         margin-bottom: 12px;
         border-radius: 12px;

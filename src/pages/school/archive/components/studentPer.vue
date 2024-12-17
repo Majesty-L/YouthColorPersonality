@@ -27,14 +27,17 @@
     </div>
     <div class="report-list">
       <div class="head">
-        <h2>分析报告</h2>
+        <div class="flex">
+          <h2>分析报告</h2>
+          <div class="cursor" @click="html2report"><img src="@/assets/school/pdfIcon.png" alt="">下载PDF报告</div>
+        </div>
         <div class="all-reports">
           <div v-for="report,index in reportList" :key="index">
             <a-tag :class="{'report': true, 'select': !!(selectReport.paperId === report.paperId)}" @click="onClickReport(report)">{{ report.name }}</a-tag>
           </div>
         </div>
       </div>
-      <div class="background" v-if="reportList.length">
+      <div id="report" class="background" v-if="reportList.length">
         <div class="animal-content">
           <div class="animal">
             <img :src="animals[selectReport.detail?.animal]" alt="">
@@ -108,6 +111,8 @@
 <script>
 import { resultObject, describe } from '@/pages/student/data.js';
 import * as animals from '@/assets/characterIcon'
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 export default {
   data() {
     return {
@@ -164,11 +169,28 @@ export default {
         [num]: num,
       }
     },
+    html2report() {
+      const element = document.getElementById('report');
+
+      html2canvas(element).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF();
+        const width = (canvas.width/canvas.height) * 297;
+        const height = 297;
+
+        pdf.addImage(imgData, 'PNG', (210-width)/2, 0, width, height);
+        pdf.save('个人报告.pdf');
+      });
+    },
   },
 }
 </script>
 
 <style lang="less" scoped>
+.flex {
+  display: flex;
+  gap: 24px;
+}
 .background {
   background-color: #fff;
   padding: 48px;
