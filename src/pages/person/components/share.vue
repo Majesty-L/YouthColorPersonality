@@ -201,7 +201,7 @@ export default {
     width: 50%;
     margin: auto 0;
     white-space: pre-wrap;
-    text-align: left;
+    text-align: justify;
   }
   .foot {
     margin: 48px 0;
@@ -222,7 +222,7 @@ export default {
     display: inline-block;
     width: 50%;
     margin: 36px 0;
-    text-align: left;
+    text-align: justify;
   }
   .foot {
     padding-bottom: 320px;

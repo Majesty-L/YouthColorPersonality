@@ -10,7 +10,8 @@
     <div class="right">
       <share></share>
       <!-- <a-button class="share-btn" icon="share-alt"><span v-html="addPinyin('分享')"></span></a-button> -->
-      <img class="pointer" src="@/assets/student/avator.png" alt="avatar"  @click="routerToReport"/>
+      <img v-if="personId" class="pointer" src="@/assets/student/avator.png" alt="avatar"  @click="routerToReport"/>
+      <a-button v-else class="login-btn" v-html="addPinyin('登录测试')" @click="login"></a-button>
     </div>
   </div>
 </template>
@@ -31,9 +32,13 @@ export default {
   data() {
     return {
       addPinyin: html,
-      personId: this.$static.person_id,
       personInfo: {},
     };
+  },
+  computed: {
+    personId() {
+      return this.$static.person_id || localStorage.getItem('person_id');
+    }
   },
   created() {
     // this.init();
@@ -52,6 +57,9 @@ export default {
     },
     routerToReport() {
       this.$router.push({name: 'personReport'});
+    },
+    login() { 
+      this.$router.push({name: 'personLogin'});
     },
   },
 }
@@ -91,6 +99,11 @@ export default {
     }
     .pointer {
       cursor: pointer;
+    }
+    .login-btn {
+      border-radius: 12px;
+      padding: auto 16px;
+      background-color: #00D9C0;
     }
   }
 }
