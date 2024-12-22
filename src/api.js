@@ -145,3 +145,8 @@ export const callbackRate = (params) => {
 export const getCallback = (params) => {
   return api.post(`callback/getCallBack`, params);
 };
+
+// ------------------ 微信登录 --------------------------
+export const webGetUrl = () => {
+  return api.get(`wxlogin/webGetUrl`);
+};

@@ -6,7 +6,7 @@
         <!-- <div class="cursor" @click="html2report"><img src="@/assets/school/pdfIcon.png" alt="">下载PDF报告</div> -->
         <div class="all-reports">
           <div v-for="report,index in reportList" :key="index">
-            <a-tag :class="{'report-tag': true, 'select': !!(selectReport.paperId === report.paperId)}" @click="onClickReport(report)">{{ report.name }}</a-tag>
+            <a-tag :class="{'report-tag': true, 'select': !!(selectReport.createTime === report.createTime)}" @click="onClickReport(report)">{{ report.name }}</a-tag>
           </div>
         </div>
     </div>

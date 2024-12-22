@@ -8,7 +8,10 @@
       <div class="login">
 
         <div v-if="activeMethod === 'wechat'" class="login-method">
-          <h3 class="head"><img src="@/assets/person/wechat.png" alt="">微信扫码注册/登录</h3>
+          <h3 class="head">
+            <img src="@/assets/person/wechat.png" alt="">
+            微信扫码注册/登录
+          </h3>
           <a-spin :spinning="qrLoading" class="spinning">
             <img class="qr-code" :src="qrCodeUrl" alt="QR Code">
           </a-spin>
@@ -46,6 +49,12 @@
 
 <script>
 import QRCode from 'qrcode';
+import socketApi from '@/utils/socket.js';
+const getStateByUrl = (url) => {
+  let params = url.split('&');
+  let state = params.find(i => i.includes('state')).split('=')[1];
+  return 'http://localhost:8090/websocket/'+state;
+};
 export default {
   data() {
     return {
@@ -61,15 +70,30 @@ export default {
   created() {
     this.init();
   },
+  mounted(){
+  },
+  beforeDestroy(){
+      socketApi.closeWebSocket();
+  },
   methods: {
     init() {
       this.qrLoading = true;
       this.$axios.webGetUrl().then(res=>{
         console.log('webGetUrl', res);
         this.generateQRCode(res);
+        // 建立socket连接， 并设置socket信息返回接受函数和请求地址  
+        socketApi.initWebSocket(this.getsocketResult, getStateByUrl(res));
       }).finally(() => {
         this.qrLoading = false;
       })
+    },
+    getsocketResult(data) {
+      console.log('接收到websocket信息：'+ data);
+      if (data) {
+        this.$message.success('登陆成功');
+        localStorage.setItem('person_id', data);
+        this.$router.push({name: 'personIndex'});
+      }
     },
     // 生成微信登录二维码
     generateQRCode(url) {
