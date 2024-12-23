@@ -117,11 +117,34 @@
               因为我们通过颜色来分析测试，如果有红绿色盲、色弱等眼睛症状，会影响测试结果。不确定是否是这些症状，点击测试。
             </div> -->
             <div class="quick">快购买测试，和孩子一起探索色彩性格的秘密吧！</div>
-            <a-button class="operation btn">购买测试</a-button>
+            <a-button class="operation btn" @click="consume">购买测试</a-button>
           </div>
         </div>
       </div>
     </div>
+    <a-modal
+      :visible="visiblePrePay"
+      title="购买测试"
+      width="800px"
+      :footer="null"
+      @cancel="visiblePrePay = false"
+    >
+      <div class="modal-content">
+        <h2>扫码购买测试</h2>
+        <div class="flex">
+          <div class="left">
+            <h3>购买须知</h3>
+            <p>·本测评为付费测试，一次付费测试一次。</p>
+            <p>·本测评为虚拟内容服务，一概售出概不退款，请谅解。</p>
+          </div>
+          <div class="right">
+            <div>支付金额：<span>¥</span></div>
+            <div class="wxpay-img"><img :src="prepayUrl" alt=""></div>
+            <div><img src="@/assets/person/wxpay.png" alt="" width="20"> 微信支付</div>
+          </div>
+        </div>
+      </div>
+    </a-modal>
   </div>
 </template>
 
@@ -143,6 +166,13 @@ import dimension1 from '@/assets/person/i21.png';
 import dimension2 from '@/assets/person/i22.png';
 import dimension3 from '@/assets/person/i23.png';
 import dimension4 from '@/assets/person/i24.png';
+import QRCode from 'qrcode';
+import socketApi from '@/utils/socket.js';
+const getStateByUrl = (url) => {
+  let params = url?.split('&') || [];
+  let state = params.find(i => i.includes('state'))?.split('=')[1] || 'test';
+  return 'http://localhost:8090/websocket/'+state;
+};
 export default {
   components: {
     headerPart,
@@ -176,17 +206,50 @@ export default {
         { text: ['现实', '理想'], data: -5 },
       ],
       describe,
+      visiblePrePay: false,
+      prepayUrl: '',
     };
   },
   created() {
   },
+  beforeDestroy(){
+    socketApi.closeWebSocket();
+  },
   methods: {
     getStudentInfo() {},
     consume() {
-      // 生成预订单
-      // 弹窗
-      // 扫码支付回调
-      // 一键登录
+      this.visiblePrePay = true;
+      this.$axios.createOrder({type: 1}).then(res => {
+        if (res) {
+          console.log(res);
+          this.generateQRCode(res);
+          // 建立socket连接， 并设置socket信息返回接受函数和请求地址  
+          socketApi.initWebSocket(this.getsocketResult, getStateByUrl(res));
+        } else {
+          this.$message.info('订单生成失败，请重试！');
+        }
+      }).catch(err => {
+        console.error(err);
+      });
+    },
+    // 生成微信登录二维码
+    generateQRCode(url) {
+      QRCode.toDataURL(url)
+        .then(qrCodeUrl => {
+          this.prepayUrl = qrCodeUrl;
+        })
+        .catch(error => {
+          console.error('Failed to generate QR code:', error);
+        });
+    },
+    // 
+    getsocketResult(data) {
+      console.log('接收到websocket信息：'+ data);
+      if (data&&data.personId) {
+        this.$message.success('支付成功！');
+        localStorage.setItem('person_id', data.personId);
+        this.$router.push({name: 'personIndex'});
+      }
     },
     marks(num) {
       return {
@@ -218,7 +281,7 @@ export default {
   .header {
     min-height: 1060px;
     background: url('@/assets/person/headerItems.png') no-repeat center 90% ,#F9F2CC;
-    background-size: 70%;
+    background-size: 60%;
     padding-top: 12rem;
     width: 100%;
     .intro {
@@ -420,6 +483,26 @@ export default {
     }
   }
 }
+
+.modal-content {
+  h2 {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .flex {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+  .right {
+    text-align: center;
+    .wxpay-img {
+      margin: 12px;
+      height: 200px;
+      width: 200px;
+    }
+  }
+}
 </style>
 <style lang="less" scoped>
 @media (max-width: 860px) {
@@ -514,5 +597,33 @@ export default {
       }
     }
   }
+}
+</style>
+
+<style lang="less" scoped>
+@media (min-width: 1567px) {
+@test-theme-color-person: #00D9C0;
+.container {
+  .header {
+    min-height: 1060px;
+    background: url('@/assets/person/headerItems.png') no-repeat center 90% ,#F9F2CC;
+    background-size: 50%;
+    padding-top: 12rem;
+    width: 100%;
+    .intro {
+      .head-title {
+        font-size: 2.4rem;
+        text-align: center;
+      }
+      .head-txt {
+        margin: auto;
+        max-width: 860px;
+        margin-top: 3rem;
+        line-height: 120%;
+        padding: 20px;
+      }
+    }
+  }
+}
 }
 </style>

@@ -50,22 +50,23 @@ export default {
     };
   },
   watch: {
-    studentInfo() {
-      this.init();
-    }
+    // studentInfo() {
+    //   this.init();
+    // }
   },
   created() {
+    this.init();
   },
   methods: {
     init() {
-      this.$axios.personPay({person_id: this.person_id, type: 1, range: 'new'}).then((res) => {
+      this.$axios.personPay({person_id: this.person_id, paper_id: 1, has_used: 0}).then((res) => {
         if (res.fee === 'free') {
           this.newPayId = 'free';
         } else if (res.list.length) {
           this.newPayId = res[0].id;
         }
       });
-      this.$axios.schoolGetPapers({schoolId: this.studentInfo.schoolId}).then((res) => {
+      this.$axios.personReport({ person_id: this.person_id }).then((res) => {
         if (res.length) {
           const paperList = res.sort((a,b)=>{
             let t1 = new Date(Date.parse(a.createTime.replace(/-/g,"/")));

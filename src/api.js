@@ -150,3 +150,8 @@ export const getCallback = (params) => {
 export const webGetUrl = () => {
   return api.get(`wxlogin/webGetUrl`);
 };
+
+// ------------------ 微信支付 --------------------------
+export const createOrder = (params) => {
+  return api.post(`wxpay/createOrder`, params);
+};

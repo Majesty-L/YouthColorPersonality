@@ -1,7 +1,7 @@
 import Vue from 'vue'
-import { Message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 let v = new Vue()
-v.$message = Message;
+v.$message = message;
 let webSocket = null;
 let isConnect = false; //连接状态
 let globalCallback = function(e){ console.log(e) };//定义外部接收数据的回调函数
@@ -50,7 +50,7 @@ function initWebSocket(callback, websocketUrl) {
     if ("WebSocket" in window) {
         webSocket = new WebSocket(websocketUrl);//创建socket对象
     } else {
-        Message.warn('浏览器不支持WebSocket!');
+        message.warn('浏览器不支持WebSocket!');
         return
     }
     //打开
@@ -101,10 +101,7 @@ function webSocketOnClose(e){
             initWebSocket();
             ++reConnectNum;
         }else{
-            v.$message({
-                message: 'websocket连接不上，请刷新页面或联系开发人员!',
-                type: 'warning'
-            });
+            message.warn('websocket连接不上，请刷新页面或联系开发人员!');
         }
     }
 }
