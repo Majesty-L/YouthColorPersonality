@@ -131,15 +131,15 @@ export default {
 .login-container { 
   background-color: #FFF8D4;
   height: 100vh;
-  padding: 54px 48px;
+  padding: 4rem 1rem;
   text-align: center;
   .logo {
     text-align: left;
   }
   .title {
-    font-size: 24px;
+    font-size: 1.5rem;
     color: #000;
-    margin-left: 24px;
+    margin-left: 1.5rem;
   }
   .container {
     display: flex;
@@ -147,32 +147,34 @@ export default {
     justify-content: space-evenly;
     height: 80vh;
     .head {
-      margin-bottom: 24px;
+      margin-bottom: 1.5rem;
       img {
-        margin-right: 16px;
+        margin-right: 1rem;
       }
     }
     .spinning {
-      width: 240px;
-      height: 240px;
+      width: 15rem;
+      height: 15rem;
       /deep/.ant-spin-blur {
         opacity: 0;
       }
     }
     .qr-code {
+      max-width: 100%;
     }
     .login {
       background-color: #fff;
-      padding: 100px 120px;
+      padding: 6rem 8rem;
       border-radius: 10px;
+      margin: 0 1rem;
       .login-method {
         /deep/ .ant-form-item {
           text-align: left;
           border-radius: 24px;
           .ant-input {
             border-radius: 24px;
-            height: 40px;
-            width: 360px;
+            height: 2.5rem;
+            width: 22rem;
           }
         }
       }
@@ -181,16 +183,78 @@ export default {
       background-color: #00D9C0;
       border: none;
       border-radius: 16px;
-      font-size: 18px;
+      font-size: 1.2rem;
       color: #000;
-      height: 48px;
-      margin-bottom: 36px;
+      height: 3rem;
+      margin-bottom: 2rem;
     }
     .change-active {
-      margin-top: 24px;
+      margin-top: 1.5rem;
       display: block;
+    }
+    .img {
+      img {
+        max-width: 100%;
+      }
     }
   }
 }
 
+</style>
+
+<style lang="less" scoped>
+@media (max-width: 1340px) {
+  .login-container { 
+    .container {
+      .login {
+        padding: 3rem 4rem;
+      }
+    }
+  }
+}
+</style>
+
+<style lang="less" scoped>
+@media (max-width: 768px) {
+  .login-container { 
+    .container {
+      flex-wrap: wrap;
+      .login {
+        margin: 2rem 0;
+        max-width: 100%;
+      }
+      .img {
+        max-width: 80%;
+      }
+    }
+  }
+}
+</style>
+<style lang="less" scoped>
+@media (max-width: 425px) {
+  .login-container { 
+    .container {
+      .login {
+        .login-method {
+          /deep/ .ant-form-item {
+            .ant-input {
+              width: 16rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+</style>
+<style lang="less" scoped>
+@media (max-width: 400px) {
+  .login-container { 
+    .container {
+      .login {
+        padding: 2rem 1rem;
+      }
+    }
+  }
+}
 </style>
