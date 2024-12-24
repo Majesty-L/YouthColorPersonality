@@ -80,7 +80,7 @@ export default {
   }
   .title {
     color: #000;
-    font-size: 24px;
+    font-size: 1.5rem;
   }
   .right {
     display: flex;
