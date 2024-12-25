@@ -5,7 +5,7 @@
                 <div class="title">
                     <span :class="{'color-student': from==='student', 'color-person': from==='person'}" v-html="addPinyin('游戏介绍')"></span>
                     <div :class="{speech, 'bc-student': from==='student', 'bc-person': from==='person'}" @click="play(1)">
-                        <video class="video" id="play1" width="120px" height="120px" v-if="showBtn" src="@/assets/speech/1.mp4">
+                        <video class="video" id="play1" width="7rem" height="7rem" v-if="showBtn" src="@/assets/speech/1.mp4">
                         </video>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
         <div v-else-if="current===1" class="step1">
             <div class="title">
                 <div :class="{speech, 'bc-student': from==='student', 'bc-person': from==='person'}" @click="play(2)">
-                    <video class="video" id="play2" width="120px" height="120px" v-if="showBtn" src="@/assets/speech/2.mp4">
+                    <video class="video" id="play2" width="7rem" height="7rem" v-if="showBtn" src="@/assets/speech/2.mp4">
                     </video>
                 </div>
                 <span v-html="addPinyin('选10个你喜欢的颜色')"></span>
@@ -63,11 +63,12 @@
                 </div>
                 <a-button :class="{'btn-student':from==='student', 'btn-person':from==='person', 'end-btn': true}" v-html="addPinyin('完成')" :disabled="selectedColors.length!=10" @click="startTest(2)"></a-button>
             </div>
+            <a-button :class="{'btn-student':from==='student', 'btn-person':from==='person', 'phone-end-btn': true}" v-html="addPinyin('完成')" :disabled="selectedColors.length!=10" @click="startTest(2)"></a-button>
         </div>
         <div v-else-if="current===2" class="step2">
             <div class="title">
                 <div :class="{speech, 'bc-student': from==='student', 'bc-person': from==='person'}" @click="play(3)">
-                    <video class="video" id="play3" width="120px" height="120px" v-if="showBtn" src="@/assets/speech/3.mp4">
+                    <video class="video" id="play3" width="7rem" height="7rem" v-if="showBtn" src="@/assets/speech/3.mp4">
                     </video>
                 </div>
                 <span v-html="addPinyin('选5个你喜欢的组合')"></span>
@@ -93,7 +94,7 @@
         <div v-else-if="current===3" class="step3">
             <div class="title">
                 <div :class="{speech, 'bc-student': from==='student', 'bc-person': from==='person'}" @click="play(4)">
-                    <video class="video" id="play4" width="120px" height="120px" v-if="showBtn" src="@/assets/speech/4.mp4">
+                    <video class="video" id="play4" width="7rem" height="7rem" v-if="showBtn" src="@/assets/speech/4.mp4">
                     </video>
                 </div>
                 <span v-html="addPinyin('选5个你喜欢的图片')"></span>
@@ -293,58 +294,56 @@ export default {
     display: flex;
     align-items: center;
     span {
-        font-size: 36px;
+        font-size: 2rem;
         color: #fff;
-        margin-right: 12px;
+        margin-right: 0.8rem;
     }
     .speech {
-        width: 120px;
-        height: 120px;
+        width: 7rem;
+        height: 7rem;
         cursor: pointer;
         .video {
             opacity: 0;
         }
     }
     .bc-student {
-        background: no-repeat url('@/assets/student/laba.png');
+        background: no-repeat url('@/assets/student/laba.png') 0 0 / cover;
     }
     .bc-person {
-        background: no-repeat url('@/assets/person/laba.png');
+        background: no-repeat url('@/assets/person/laba.png') 0 0 / cover;
     }
 }
 .type-container {
     .step0 {
-        padding: 84px;
+        padding: 5rem;
         .text {
-            margin-top: 64px;
+            margin-top: 4rem;
             display: flex;
             justify-content: space-evenly;
             .title {
-                font-size: 60px;
-                width: 600px;
+                font-size: 4rem;
+                width: 38rem;
                 .speech {
-                    margin-left: 12px;
+                    margin-left: 1rem;
                 }
             }
             .intro {
-                font-size: 32px;
+                font-size: 2rem;
             }
         }
         .content {
-            margin-top: 64px;
+            margin-top: 4rem;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            gap: 48px;
+            // gap: 3rem;
             .icon {
-                position: relative;
-                top: -37px;
-                left: 120px;
-                width: 72px;
-                padding: -6px;
+                margin-top: -4rem;
+                margin-left: 33%;
+                width: 5rem;
                 text-align: center;
                 border-radius: 50%;
-                font-size: 48px;
+                font-size: 3rem;
                 color: #fff;
             }
             .icon1 {
@@ -357,21 +356,29 @@ export default {
                 background-color: #5C9FA8;
             }
             .col {
+                flex: 1 1 20%;
                 box-shadow: 0 8px 18px rgba(0, 0, 0, 0.09);
                 background-color: #fff;
                 border-radius: 24px;
-                height: 370px;
+                height: 22rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
                 .intro-step {
-                    width: 320px;
+                    max-width: 20rem;
                     text-align: center;
                     border-radius: 24px;
-                    font-size: 36px;
-                    padding: 0 24px;
+                    font-size: 2.2rem;
+                    padding: 1rem 1.5rem 0;
                 }
                 img {
-                    margin: 30px 60px;
-                    width: 210px;
+                    margin: 2rem auto;
+                    max-width: 80%;
                 }
+            }
+            .arrow {
+                flex: 0 1 5%;
+                margin: 0 1rem;
             }
         }
         .action {
@@ -392,22 +399,22 @@ export default {
         display: none;
     }
     .step1 {
-        height: calc(100vh - 64px);
-        padding: 32px 84px;
+        min-height: calc(100vh - 64px);
+        padding: 2rem 5rem;
         background-color: rgb(128, 128, 128);
         .color_back {
             display: flex;
             flex-wrap: wrap;
             justify-content: flex-start;
-            padding: 24px 0 12px;
+            padding: 1.5rem 0 0.8rem;
         }
         .hue_class {
-            height: 80px;
+            height: 5rem;
         }
         .hue_class p {
             display: inline-block;
-            width:60px;
-            height:60px;
+            width:4rem;
+            height:4rem;
         }
         @media (any-hover: hover){
             .hue_class p:hover {
@@ -419,23 +426,26 @@ export default {
         }
         .action {
             border: 2px solid #fff;
-            border-radius: 24px;
+            border-radius: 1.5rem;
             display: flex;
             justify-content: space-evenly;
             align-items: center;
             flex-wrap: wrap;
-            padding: 24px 24px 10px;
-            min-height: 146px;
-            gap: 24px;
+            padding: 1.5rem 1.5rem 0.6rem;
+            min-height: 9rem;
+            gap: 1.5rem;
             .selected_class p {
-                width: 80px;
-                height: 80px;
+                width: 5rem;
+                height: 5rem;
                 border-radius: 6px;
             }
             .end-btn {
                 margin-left: auto;
-                width: 180px;
+                width: 12rem;
             }
+        }
+        .phone-end-btn {
+            display: none;
         }
     }
     .step2 {
@@ -566,5 +576,575 @@ export default {
 }
 .color-person {
     color: #00D9C0 !important;
+}
+</style>
+<style lang="less" scoped>
+@media (max-width: 1024px) {
+.title {
+    span {
+        font-size: 1.6rem;
+        margin-right: 0;
+    }
+    .speech {
+        width: 6rem;
+        height: 6rem;
+    }
+}
+.type-container {
+    .step0 {
+        padding: 3rem;
+        .text {
+            margin-top: 3rem;
+            .title {
+                font-size: 3rem;
+                width: 38rem;
+                .speech {
+                    margin-left: 0;
+                }
+            }
+            .intro {
+                font-size: 1.6rem;
+            }
+        }
+        .content {
+            .icon {
+            }
+            .col {
+                height: 20rem;
+                .intro-step {
+                    font-size: 1.8rem;
+                }
+                img {
+                }
+            }
+        }
+    }
+    .step1 {
+        .color_back {
+        }
+        .hue_class {
+        }
+        .hue_class p {
+        }
+        .action {
+            .selected_class p {
+            }
+            .end-btn {
+            }
+        }
+    }
+    .step2 {
+        height: calc(100vh - 64px);
+        padding: 32px 84px;
+        background-color: rgb(128, 128, 128);
+        .content-action {
+            display: flex;
+        }
+        .content {
+            .color_back {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                padding: 24px 0 12px;
+                gap: 24px;
+            }
+            .stripe_class {
+                height: 80px;
+                vertical-align: middle;
+            }
+            .stripe_class img {
+                width:150px;
+                height:70px;
+                border-radius: 9px;
+            }
+            .stripe_class:hover img {
+                border: red solid 3px;
+            }
+            .stripe_class /deep/ .ant-checkbox-wrapper-checked img {
+                border: red solid 4px;
+            }
+        }
+        .action {
+            flex: 0 0 224px;
+            border: 2px solid #fff;
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: center;
+            margin-top: 24px;
+            padding: 24px 24px;
+            gap: 24px;
+            .selected_class img {
+                width: 160px;
+                height: 80px;
+                border-radius: 9px;
+            }
+            .end-btn {
+                margin-top: auto;
+                width: 180px;
+            }
+        }
+    }
+    .step3 {
+        height: calc(100vh - 64px);
+        padding: 84px;
+        background-color: rgb(128, 128, 128);
+        .color_back {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            padding: 24px 0 12px;
+            gap: 24px;
+        }
+        .image_class {
+            height: 80px;
+            vertical-align: middle;
+        }
+        .image_class img {
+            width:90px;
+            height:90px;
+        }
+        .image_class:hover img {
+            border: red solid 3px;
+        }
+        .image_class /deep/ .ant-checkbox-wrapper-checked img {
+            border: red solid 4px;
+        }
+        .action {
+            border: 2px solid #fff;
+            border-radius: 24px;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 64px;
+            padding: 10px 24px 10px;
+            min-height: 146px;
+            gap: 24px;
+            .selected_class img {
+                width: 96px;
+                height: 96px;
+            }
+            .end-btn {
+                margin-left: auto;
+                width: 180px;
+            }
+        }
+    }
+    .step4 {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        .finish-text {
+            margin-left: 48px;
+            font-size: 64px;
+            color: #FA7800;
+        }
+        .btn1 {
+            width: 300px;
+        }
+        .btn2 {
+            width: 300px;
+            background-color: #FA7800;
+        }
+        .btn2:hover {
+            border-color: #FA7800;
+            color: #FA7800;
+            background: none;
+        }
+    }
+}
+}
+</style>
+<style lang="less" scoped>
+@media (max-width: 800px) {
+.title {
+    span {
+        font-size: 1.2rem;
+        margin-right: 0;
+    }
+    .speech {
+        width: 6rem;
+        height: 6rem;
+    }
+}
+.type-container {
+    .step0 {
+        padding: 3rem;
+        .text {
+            margin-top: 3rem;
+            .title {
+                font-size: 3rem;
+                width: 38rem;
+                .speech {
+                    margin-left: 0;
+                }
+            }
+            .intro {
+                font-size: 1.2rem;
+            }
+        }
+        .content {
+            .icon {
+                margin-top: -1rem;
+                width: 3rem;
+                font-size: 2rem;
+            }
+            .col {
+                height: 14rem;
+                .intro-step {
+                    font-size: 1.2rem;
+                }
+                img {
+                }
+            }
+        }
+    }
+    .step1 {
+        .color_back {
+        }
+        .hue_class {
+        }
+        .hue_class p {
+        }
+        .action {
+            .selected_class p {
+            }
+            .end-btn {
+            }
+        }
+    }
+    .step2 {
+        height: calc(100vh - 64px);
+        padding: 32px 84px;
+        background-color: rgb(128, 128, 128);
+        .content-action {
+            display: flex;
+        }
+        .content {
+            .color_back {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                padding: 24px 0 12px;
+                gap: 24px;
+            }
+            .stripe_class {
+                height: 80px;
+                vertical-align: middle;
+            }
+            .stripe_class img {
+                width:150px;
+                height:70px;
+                border-radius: 9px;
+            }
+            .stripe_class:hover img {
+                border: red solid 3px;
+            }
+            .stripe_class /deep/ .ant-checkbox-wrapper-checked img {
+                border: red solid 4px;
+            }
+        }
+        .action {
+            flex: 0 0 224px;
+            border: 2px solid #fff;
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: center;
+            margin-top: 24px;
+            padding: 24px 24px;
+            gap: 24px;
+            .selected_class img {
+                width: 160px;
+                height: 80px;
+                border-radius: 9px;
+            }
+            .end-btn {
+                margin-top: auto;
+                width: 180px;
+            }
+        }
+    }
+    .step3 {
+        height: calc(100vh - 64px);
+        padding: 84px;
+        background-color: rgb(128, 128, 128);
+        .color_back {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            padding: 24px 0 12px;
+            gap: 24px;
+        }
+        .image_class {
+            height: 80px;
+            vertical-align: middle;
+        }
+        .image_class img {
+            width:90px;
+            height:90px;
+        }
+        .image_class:hover img {
+            border: red solid 3px;
+        }
+        .image_class /deep/ .ant-checkbox-wrapper-checked img {
+            border: red solid 4px;
+        }
+        .action {
+            border: 2px solid #fff;
+            border-radius: 24px;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 64px;
+            padding: 10px 24px 10px;
+            min-height: 146px;
+            gap: 24px;
+            .selected_class img {
+                width: 96px;
+                height: 96px;
+            }
+            .end-btn {
+                margin-left: auto;
+                width: 180px;
+            }
+        }
+    }
+    .step4 {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        .finish-text {
+            margin-left: 48px;
+            font-size: 64px;
+            color: #FA7800;
+        }
+        .btn1 {
+            width: 300px;
+        }
+        .btn2 {
+            width: 300px;
+            background-color: #FA7800;
+        }
+        .btn2:hover {
+            border-color: #FA7800;
+            color: #FA7800;
+            background: none;
+        }
+    }
+}
+}
+</style>
+<style lang="less" scoped>
+@media (max-width: 550px) {
+.title {
+    span {
+        font-size: 1.4rem;
+    }
+    .speech {
+        width: 3rem;
+        height: 3rem;
+    }
+}
+.type-container {
+    .step0 {
+        .text {
+            flex-direction: column;
+            .title {
+                width: 14rem;
+                .speech {
+                }
+            }
+            .intro {
+                margin-top: 0.8rem;
+            }
+        }
+        .content {
+            flex-direction: column;
+            gap: 2rem;
+            .icon {
+                margin-left: 40%;
+            }
+            .col {
+                width: 80%;
+                .intro-step {
+                    padding: 2rem 3rem 0;
+                }
+                img {
+                }
+            }
+            .arrow {
+                rotate: 90deg;
+            }
+        }
+        .action {
+            .self-btn {
+                font-size: x-large;
+                width: 220px;
+                height: 60px;
+            }
+        }
+    }
+    .step1 {
+        padding: 2rem 2rem;
+        .color_back {
+            /deep/ .ant-checkbox-wrapper span {
+                padding: 0 0.2rem;
+            }
+        }
+        .hue_class {
+            height: 3rem;
+        }
+        .hue_class p {
+            width:2rem;
+            height:2rem;
+        }
+        .action {
+            gap: 0.5rem;
+            .selected_class p {
+                width: 3rem;
+                height: 3rem;
+            }
+            .end-btn {
+                display: none;
+            }
+        }
+        .phone-end-btn {
+            display: block;
+            margin: 1rem auto 2rem;
+            width: 9rem;
+            font-size: x-large;
+            height: 3rem;
+        }
+    }
+    .step2 {
+        height: calc(100vh - 64px);
+        padding: 32px 84px;
+        background-color: rgb(128, 128, 128);
+        .content-action {
+            display: flex;
+        }
+        .content {
+            .color_back {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                padding: 24px 0 12px;
+                gap: 24px;
+            }
+            .stripe_class {
+                height: 80px;
+                vertical-align: middle;
+            }
+            .stripe_class img {
+                width:150px;
+                height:70px;
+                border-radius: 9px;
+            }
+            .stripe_class:hover img {
+                border: red solid 3px;
+            }
+            .stripe_class /deep/ .ant-checkbox-wrapper-checked img {
+                border: red solid 4px;
+            }
+        }
+        .action {
+            flex: 0 0 224px;
+            border: 2px solid #fff;
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: center;
+            margin-top: 24px;
+            padding: 24px 24px;
+            gap: 24px;
+            .selected_class img {
+                width: 160px;
+                height: 80px;
+                border-radius: 9px;
+            }
+            .end-btn {
+                margin-top: auto;
+                width: 180px;
+            }
+        }
+    }
+    .step3 {
+        height: calc(100vh - 64px);
+        padding: 84px;
+        background-color: rgb(128, 128, 128);
+        .color_back {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            padding: 24px 0 12px;
+            gap: 24px;
+        }
+        .image_class {
+            height: 80px;
+            vertical-align: middle;
+        }
+        .image_class img {
+            width:90px;
+            height:90px;
+        }
+        .image_class:hover img {
+            border: red solid 3px;
+        }
+        .image_class /deep/ .ant-checkbox-wrapper-checked img {
+            border: red solid 4px;
+        }
+        .action {
+            border: 2px solid #fff;
+            border-radius: 24px;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 64px;
+            padding: 10px 24px 10px;
+            min-height: 146px;
+            gap: 24px;
+            .selected_class img {
+                width: 96px;
+                height: 96px;
+            }
+            .end-btn {
+                margin-left: auto;
+                width: 180px;
+            }
+        }
+    }
+    .step4 {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        .finish-text {
+            margin-left: 48px;
+            font-size: 64px;
+            color: #FA7800;
+        }
+        .btn1 {
+            width: 300px;
+        }
+        .btn2 {
+            width: 300px;
+            background-color: #FA7800;
+        }
+        .btn2:hover {
+            border-color: #FA7800;
+            color: #FA7800;
+            background: none;
+        }
+    }
+}
 }
 </style>

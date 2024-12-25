@@ -79,7 +79,7 @@ export default {
 .test-container {
     .content {
         background-color: #FAFAFA;
-        height: calc(100vh - 64px);
+        min-height: calc(100vh - 64px);
     }
 }
 </style>

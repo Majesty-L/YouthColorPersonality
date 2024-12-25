@@ -60,3 +60,34 @@
     }
   }
   </style>
+  <style lang="less" scoped>
+  @media (max-width: 768px) {
+  .header {
+    height: 3rem;
+    padding: 1rem 0.8rem;
+    .back {
+      font-size: 0.8rem;
+    }
+    /deep/ .ant-steps-item-container {
+      width: 6rem;
+    }
+  }
+  }
+  </style>
+  <style lang="less" scoped>
+  @media (max-width: 550px) {
+  .header {
+    height: 3rem;
+    padding: 1rem 0.8rem;
+    .back {
+      font-size: 0.6rem;
+    }
+    /deep/ .ant-steps-item, /deep/ .ant-steps-item-container, /deep/ .ant-steps-item-wait {
+      width: 2rem;
+    }
+    /deep/ .ant-steps {
+      width: 80%;
+    }
+  }
+  }
+  </style>
