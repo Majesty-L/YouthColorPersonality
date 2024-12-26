@@ -90,6 +90,13 @@
                     <a-button :class="{'btn-student':from==='student', 'btn-person':from==='person', 'end-btn': true}" v-html="addPinyin('完成')" :disabled="selectedStripes.length!=5" @click="startTest(3)"></a-button>
                 </div>
             </div>
+            <div class="phone-action">
+                <div v-for="item in selectedStripes" :key="item.id" class="selected_class">
+                    <img :src="stripes[`stripe${item.id}`]"/>
+                </div>
+            </div>
+            <a-button :class="{'btn-student':from==='student', 'btn-person':from==='person', 'phone-end-btn': true}" v-html="addPinyin('完成')" :disabled="selectedStripes.length!=5" @click="startTest(3)"></a-button>
+        
         </div>
         <div v-else-if="current===3" class="step3">
             <div class="title">
@@ -114,12 +121,13 @@
                 </div>
                 <a-button :class="{'btn-student':from==='student', 'btn-person':from==='person', 'end-btn': true}" v-html="addPinyin('完成')" :disabled="selectedImages.length!=5" @click="startTest(99)"></a-button>
             </div>
+            <a-button :class="{'btn-student':from==='student', 'btn-person':from==='person', 'phone-end-btn': true}" v-html="addPinyin('完成')" :disabled="selectedImages.length!=5" @click="startTest(99)"></a-button>
         </div>
         <div v-else-if="current===99" class="step4">
             <div class="showoff">
-                <img src="@/assets/student/success.png" alt="">
-                <div class="finish-text" v-html="addPinyin('完成啦！')"></div>
-                <h3 class="mt" v-html="addPinyin('评价')"></h3>
+                <img class="success-img" src="@/assets/student/success.png" alt="">
+                <h1 class="finish-text" v-html="addPinyin('完成啦！')"></h1>
+                <h3 class="mt" v-html="addPinyin('体验打分')"></h3>
                 <a-rate v-model="grade" style="font-size: 36px" @change="onChangeRate"></a-rate>
             </div>
             <div class="action">
@@ -449,8 +457,8 @@ export default {
         }
     }
     .step2 {
-        height: calc(100vh - 64px);
-        padding: 32px 84px;
+        min-height: calc(100vh - 64px);
+        padding: 2rem 5rem;
         background-color: rgb(128, 128, 128);
         .content-action {
             display: flex;
@@ -460,16 +468,16 @@ export default {
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: flex-start;
-                padding: 24px 0 12px;
-                gap: 24px;
+                padding: 1.5rem 0 0.8rem;
+                gap: 1.5rem;
             }
             .stripe_class {
-                height: 80px;
+                height: 5rem;
                 vertical-align: middle;
             }
             .stripe_class img {
-                width:150px;
-                height:70px;
+                width:9rem;
+                height:5rem;
                 border-radius: 9px;
             }
             .stripe_class:hover img {
@@ -480,45 +488,48 @@ export default {
             }
         }
         .action {
-            flex: 0 0 224px;
+            flex: 0 0 16rem;
             border: 2px solid #fff;
             border-radius: 24px;
             display: flex;
             flex-direction: column;
             justify-content: space-evenly;
             align-items: center;
-            margin-top: 24px;
-            padding: 24px 24px;
-            gap: 24px;
+            margin-top: 1.5rem;
+            padding: 1.5rem 1.5rem;
+            gap: 1.5rem;
             .selected_class img {
-                width: 160px;
-                height: 80px;
+                width: 10rem;
+                height: 5rem;
                 border-radius: 9px;
             }
             .end-btn {
                 margin-top: auto;
-                width: 180px;
+                width: 11rem;
             }
+        }
+        .phone-action, .phone-end-btn {
+            display: none;
         }
     }
     .step3 {
-        height: calc(100vh - 64px);
-        padding: 84px;
+        min-height: calc(100vh - 64px);
+        padding: 5rem;
         background-color: rgb(128, 128, 128);
         .color_back {
             display: flex;
             flex-wrap: wrap;
             justify-content: flex-start;
-            padding: 24px 0 12px;
-            gap: 24px;
+            padding: 1.5rem 0 0.8rem;
+            gap: 1.5rem;
         }
         .image_class {
-            height: 80px;
+            height: 5rem;
             vertical-align: middle;
         }
         .image_class img {
-            width:90px;
-            height:90px;
+            width:5.5rem;
+            height:5.5rem;
         }
         .image_class:hover img {
             border: red solid 3px;
@@ -533,17 +544,17 @@ export default {
             justify-content: space-evenly;
             align-items: center;
             flex-wrap: wrap;
-            margin-top: 64px;
-            padding: 10px 24px 10px;
-            min-height: 146px;
-            gap: 24px;
+            margin-top: 4rem;
+            padding: 0.8rem 1.5rem 0.8rem;
+            min-height: 9rem;
+            gap: 1.5rem;
             .selected_class img {
-                width: 96px;
-                height: 96px;
+                width: 6rem;
+                height: 6rem;
             }
             .end-btn {
                 margin-left: auto;
-                width: 180px;
+                width: 11rem;
             }
         }
     }
@@ -553,21 +564,26 @@ export default {
         align-items: center;
         text-align: center;
         .finish-text {
-            margin-left: 48px;
-            font-size: 64px;
+            margin-left: 3rem;
+            font-size: xxx-large;
             color: #FA7800;
         }
         .btn1 {
-            width: 300px;
+            max-width: 40%;
+            width: 25rem;
         }
         .btn2 {
-            width: 300px;
+            max-width: 40%;
+            width: 25rem;
             background-color: #FA7800;
         }
         .btn2:hover {
             border-color: #FA7800;
             color: #FA7800;
             background: none;
+        }
+        .success-img {
+            max-width: 80%;
         }
     }
 }
@@ -634,125 +650,43 @@ export default {
         }
     }
     .step2 {
-        height: calc(100vh - 64px);
-        padding: 32px 84px;
-        background-color: rgb(128, 128, 128);
         .content-action {
-            display: flex;
         }
         .content {
             .color_back {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: flex-start;
-                padding: 24px 0 12px;
-                gap: 24px;
             }
             .stripe_class {
-                height: 80px;
-                vertical-align: middle;
             }
             .stripe_class img {
-                width:150px;
-                height:70px;
-                border-radius: 9px;
-            }
-            .stripe_class:hover img {
-                border: red solid 3px;
-            }
-            .stripe_class /deep/ .ant-checkbox-wrapper-checked img {
-                border: red solid 4px;
             }
         }
-        .action {
-            flex: 0 0 224px;
-            border: 2px solid #fff;
-            border-radius: 24px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-evenly;
-            align-items: center;
-            margin-top: 24px;
-            padding: 24px 24px;
-            gap: 24px;
+        .phone-action {
             .selected_class img {
-                width: 160px;
-                height: 80px;
-                border-radius: 9px;
             }
-            .end-btn {
-                margin-top: auto;
-                width: 180px;
-            }
+        }
+        .phone-end-btn {
         }
     }
     .step3 {
-        height: calc(100vh - 64px);
-        padding: 84px;
-        background-color: rgb(128, 128, 128);
         .color_back {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            padding: 24px 0 12px;
-            gap: 24px;
         }
         .image_class {
-            height: 80px;
-            vertical-align: middle;
         }
         .image_class img {
-            width:90px;
-            height:90px;
-        }
-        .image_class:hover img {
-            border: red solid 3px;
-        }
-        .image_class /deep/ .ant-checkbox-wrapper-checked img {
-            border: red solid 4px;
         }
         .action {
-            border: 2px solid #fff;
-            border-radius: 24px;
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-top: 64px;
-            padding: 10px 24px 10px;
-            min-height: 146px;
-            gap: 24px;
             .selected_class img {
-                width: 96px;
-                height: 96px;
             }
             .end-btn {
-                margin-left: auto;
-                width: 180px;
             }
         }
     }
     .step4 {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
         .finish-text {
-            margin-left: 48px;
-            font-size: 64px;
-            color: #FA7800;
         }
         .btn1 {
-            width: 300px;
         }
         .btn2 {
-            width: 300px;
-            background-color: #FA7800;
-        }
-        .btn2:hover {
-            border-color: #FA7800;
-            color: #FA7800;
-            background: none;
         }
     }
 }
@@ -817,125 +751,75 @@ export default {
         }
     }
     .step2 {
-        height: calc(100vh - 64px);
-        padding: 32px 84px;
-        background-color: rgb(128, 128, 128);
+        padding: 2rem 2rem;
         .content-action {
-            display: flex;
         }
         .content {
             .color_back {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: flex-start;
-                padding: 24px 0 12px;
-                gap: 24px;
+                padding: 1.5rem 0 0.8rem;
+                gap: 0.5rem;
             }
             .stripe_class {
-                height: 80px;
-                vertical-align: middle;
+                height: 3rem;
             }
             .stripe_class img {
-                width:150px;
-                height:70px;
-                border-radius: 9px;
-            }
-            .stripe_class:hover img {
-                border: red solid 3px;
-            }
-            .stripe_class /deep/ .ant-checkbox-wrapper-checked img {
-                border: red solid 4px;
+                width:6rem;
+                height:2.5rem;
+                border-radius: 0.4rem;
             }
         }
         .action {
-            flex: 0 0 224px;
+            display: none;
+        }
+        .phone-action, .phone-end-btn {
+            display: block;
+        }
+        .phone-action {
             border: 2px solid #fff;
-            border-radius: 24px;
+            border-radius: 1.5rem;
             display: flex;
-            flex-direction: column;
             justify-content: space-evenly;
             align-items: center;
-            margin-top: 24px;
-            padding: 24px 24px;
-            gap: 24px;
+            flex-wrap: wrap;
+            padding: 1.5rem 1.5rem 0.6rem;
+            min-height: 9rem;
+            gap: 0.5rem;
             .selected_class img {
-                width: 160px;
-                height: 80px;
-                border-radius: 9px;
+                width: 6rem;
+                height: 2.5rem;
+                border-radius: 0.4rem;
             }
-            .end-btn {
-                margin-top: auto;
-                width: 180px;
-            }
+        }
+        .phone-end-btn {
+            display: block;
+            margin: 1rem auto 2rem;
+            width: 9rem;
+            font-size: x-large;
+            height: 3rem;
         }
     }
     .step3 {
-        height: calc(100vh - 64px);
-        padding: 84px;
-        background-color: rgb(128, 128, 128);
         .color_back {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            padding: 24px 0 12px;
-            gap: 24px;
         }
         .image_class {
-            height: 80px;
-            vertical-align: middle;
         }
         .image_class img {
-            width:90px;
-            height:90px;
-        }
-        .image_class:hover img {
-            border: red solid 3px;
-        }
-        .image_class /deep/ .ant-checkbox-wrapper-checked img {
-            border: red solid 4px;
         }
         .action {
-            border: 2px solid #fff;
-            border-radius: 24px;
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-top: 64px;
-            padding: 10px 24px 10px;
-            min-height: 146px;
-            gap: 24px;
             .selected_class img {
-                width: 96px;
-                height: 96px;
             }
             .end-btn {
-                margin-left: auto;
-                width: 180px;
             }
         }
     }
     .step4 {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
         .finish-text {
-            margin-left: 48px;
-            font-size: 64px;
-            color: #FA7800;
         }
         .btn1 {
-            width: 300px;
         }
         .btn2 {
-            width: 300px;
-            background-color: #FA7800;
         }
         .btn2:hover {
-            border-color: #FA7800;
-            color: #FA7800;
-            background: none;
         }
     }
 }
@@ -1024,125 +908,65 @@ export default {
         }
     }
     .step2 {
-        height: calc(100vh - 64px);
-        padding: 32px 84px;
-        background-color: rgb(128, 128, 128);
         .content-action {
-            display: flex;
         }
         .content {
             .color_back {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: flex-start;
-                padding: 24px 0 12px;
-                gap: 24px;
             }
             .stripe_class {
-                height: 80px;
-                vertical-align: middle;
             }
             .stripe_class img {
-                width:150px;
-                height:70px;
-                border-radius: 9px;
-            }
-            .stripe_class:hover img {
-                border: red solid 3px;
-            }
-            .stripe_class /deep/ .ant-checkbox-wrapper-checked img {
-                border: red solid 4px;
             }
         }
-        .action {
-            flex: 0 0 224px;
-            border: 2px solid #fff;
-            border-radius: 24px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-evenly;
-            align-items: center;
-            margin-top: 24px;
-            padding: 24px 24px;
-            gap: 24px;
+        .phone-action {
             .selected_class img {
-                width: 160px;
-                height: 80px;
-                border-radius: 9px;
             }
-            .end-btn {
-                margin-top: auto;
-                width: 180px;
-            }
+        }
+        .phone-end-btn {
         }
     }
     .step3 {
-        height: calc(100vh - 64px);
-        padding: 84px;
-        background-color: rgb(128, 128, 128);
+        padding: 2rem 2rem;
         .color_back {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            padding: 24px 0 12px;
-            gap: 24px;
+            gap: 0;
         }
         .image_class {
-            height: 80px;
-            vertical-align: middle;
+            height: 4rem;
         }
         .image_class img {
-            width:90px;
-            height:90px;
-        }
-        .image_class:hover img {
-            border: red solid 3px;
-        }
-        .image_class /deep/ .ant-checkbox-wrapper-checked img {
-            border: red solid 4px;
+            width:3.5rem;
+            height:3.5rem;
         }
         .action {
-            border: 2px solid #fff;
-            border-radius: 24px;
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-top: 64px;
-            padding: 10px 24px 10px;
-            min-height: 146px;
-            gap: 24px;
+            margin-top: 2rem;
+            gap: 0.5rem;
+            padding: 0.8rem;
             .selected_class img {
-                width: 96px;
-                height: 96px;
+                width: 3.5rem;
+                height: 3.5rem;
             }
             .end-btn {
-                margin-left: auto;
-                width: 180px;
+                display: none;
             }
+        }
+        .phone-end-btn {
+            display: block;
+            margin: 1rem auto 2rem;
+            width: 9rem;
+            font-size: x-large;
+            height: 3rem;
         }
     }
     .step4 {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
         .finish-text {
-            margin-left: 48px;
-            font-size: 64px;
-            color: #FA7800;
         }
-        .btn1 {
-            width: 300px;
+        .action {
+            margin-top: 1rem;
         }
-        .btn2 {
-            width: 300px;
-            background-color: #FA7800;
-        }
-        .btn2:hover {
-            border-color: #FA7800;
-            color: #FA7800;
-            background: none;
+        .btn1, .btn2 {
+            height: 4rem;
+            font-size: 1.6rem;
+            max-width: 140px;
         }
     }
 }
