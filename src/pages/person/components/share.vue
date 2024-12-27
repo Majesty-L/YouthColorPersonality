@@ -59,7 +59,7 @@ import * as animals from '@/assets/characterIcon'
 export default {
   props: {
     animal: {
-      type: Number,
+      type: String,
     },
   },
   data() {
@@ -79,6 +79,7 @@ export default {
   watch: {
     animal: {
       handler(val) {
+        console.log(val)
         this.getName(val);
       },
       immediate: true,

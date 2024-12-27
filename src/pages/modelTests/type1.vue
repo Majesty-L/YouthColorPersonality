@@ -347,7 +347,7 @@ export default {
             // gap: 3rem;
             .icon {
                 margin-top: -4rem;
-                margin-left: 33%;
+                margin-left: calc(50% - 2.5rem);
                 width: 5rem;
                 text-align: center;
                 border-radius: 50%;
@@ -377,7 +377,8 @@ export default {
                     text-align: center;
                     border-radius: 24px;
                     font-size: 2.2rem;
-                    padding: 1rem 1.5rem 0;
+                    padding: 1.5rem 1.5rem 0;
+                    margin: 0 auto;
                 }
                 img {
                     margin: 2rem auto;
@@ -557,6 +558,9 @@ export default {
                 width: 11rem;
             }
         }
+        .phone-end-btn {
+            display: none;
+        }
     }
     .step4 {
         display: flex;
@@ -725,6 +729,7 @@ export default {
                 margin-top: -1rem;
                 width: 3rem;
                 font-size: 2rem;
+                margin-left: calc(50% - 1.5rem);
             }
             .col {
                 height: 14rem;
@@ -853,7 +858,6 @@ export default {
             flex-direction: column;
             gap: 2rem;
             .icon {
-                margin-left: 40%;
             }
             .col {
                 width: 80%;

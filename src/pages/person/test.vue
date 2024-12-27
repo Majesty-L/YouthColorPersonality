@@ -1,11 +1,11 @@
 <template>
   <div class="test-container">
     <div class="step">
-      <headerPart v-if="current === 99" :type="2"></headerPart>
+      <headerPart v-if="current === 99" :type="2" :animal="commitRes?.characterId"></headerPart>
       <step-part v-else :current="current" @back="back"></step-part>
     </div>
     <div class="content">
-      <type1 v-if="type === 1" :showBtn="showBtn" :step="current" :commitRes="commitRes" @changeCur="changeCur">
+      <type1 v-if="type === 1" :showBtn="showBtn" :step="current" @changeCur="changeCur">
       </type1>
     </div>
   </div>
@@ -55,6 +55,7 @@ export default {
       this.$axios.personCommit(finalParams).then((res) => {
         this.current = cur;
         this.commitRes = res;
+        console.log(res);
       }).catch(() => {
         this.$message.error('提交失败，请重试');
       });

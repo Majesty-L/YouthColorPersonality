@@ -2,7 +2,7 @@
   <div class="report-container">
     <headerPart :type="2"></headerPart>
     <div class="content">
-      <div class="self-info" v-if="windowWidth>430">
+      <div class="self-info" v-if="windowWidth>800">
         <div class="menu">
           <div class="cursor" @click="curTab='report'"><img src="@/assets/person/menu1.png" alt="" class="mr">性格报告</div>
           <div class="cursor" @click="curTab='info'"><img src="@/assets/person/menu2.png" alt="" class="mr">账号信息</div>

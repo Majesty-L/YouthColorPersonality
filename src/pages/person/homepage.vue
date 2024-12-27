@@ -63,8 +63,8 @@ export default {
       this.$axios.personPay({person_id: this.person_id, paper_id: 1, has_used: 0}).then((res) => {
         if (res?.fee === 'free') {
           this.newPayId = 'free';
-        } else if (res?.list?.length) {
-          this.newPayId = res[0].id;
+        } else if (res?.payList?.length) {
+          this.newPayId = res.payList[0].id;
         }
       });
       this.$axios.personReport({ personId: this.person_id }).then((res) => {

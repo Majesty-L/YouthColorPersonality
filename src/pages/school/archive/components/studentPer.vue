@@ -179,7 +179,7 @@ export default {
         const height = 297;
 
         pdf.addImage(imgData, 'PNG', (210-width)/2, 0, width, height);
-        pdf.save('个人报告.pdf');
+        pdf.save(`${this.baseInfo.name}个人报告.pdf`);
       });
     },
   },

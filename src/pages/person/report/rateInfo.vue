@@ -1,3 +1,4 @@
+<!-- 评价反馈页 -->
 <template>
   <div class="card-detail">
     <div class="head">
@@ -23,7 +24,7 @@ export default {
   data() {
     return {
       addPinyin: html,
-      grade: 0,
+      grade: undefined,
       remark: '',
       personId: this.$static.person_id,
     };
@@ -36,8 +37,8 @@ export default {
   methods: {
     onSaveEdit() {
       const { grade, remark, personId } = this;
-      if ((!grade&&grade!==0) || !remark) {
-        this.$message.error('请填写评价和反馈内容！');
+      if (!grade&&grade!==0) {
+        this.$message.error('请先评价哦！');
         return;
       }
       this.$axios.callbackRate({grade, remark, personId}).then(() => {

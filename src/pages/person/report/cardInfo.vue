@@ -19,7 +19,8 @@
       <div class="pay">
         <h3>账号信息</h3>
         <div class="mtl">注册手机号<a-input class="input" v-model="personInfo.telPhone"/></div>
-        <div class="mbl">账号密码<a-input type="password" class="input" v-model="personInfo.password"/></div>
+        <div class="mb">账号密码<a-input type="password" class="input" v-model="personInfo.password"/></div>
+        <a-button class="btn-person -btn" v-html="addPinyin('保存')" @click="onSaveEdit"></a-button>
         <div class="mb">购买记录</div>
         <div class=""><a-table :dataSource="dataSource" :columns="columns"></a-table></div>
       </div>
@@ -38,10 +39,10 @@ export default {
       personInfo: {},
       dataSource: [],
       columns: [
-        { title: '购买时间', dataIndex: 'name' },
-        { title: '费用', dataIndex: 'sex' },
-        { title: '可测试次数', dataIndex: 'birthday' },
-        { title: '有效性', dataIndex: 'createTime' },
+        { title: '购买时间', dataIndex: 'createTime', customRender: (text, record, index) => { return record.createTime.split(' ')[0] } },
+        { title: '费用', dataIndex: 'fee' },
+        { title: '可测试次数', dataIndex: 'number' },
+        { title: '有效性', dataIndex: 'hasUsed', customRender: (text, record, index) => { return record.hasUsed === 0 ? '待使用' : '已使用' } },
       ],
       person_id: this.$static.person_id,
     };
@@ -54,6 +55,11 @@ export default {
       this.$axios.personInfo({id: this.person_id}).then((res) => {
         if(res.length) {
           this.personInfo = res[0];
+        }
+      });
+      this.$axios.personPay({person_id: this.person_id, paper_id: 1}).then((res) => {
+        if (res?.payList?.length) {
+          this.dataSource = res.payList;
         }
       });
     },
@@ -86,9 +92,14 @@ export default {
     margin-left: 12px;
     margin-bottom: 12px;
   }
+  .pay {
+    .-btn {
+      margin: 0 0 2rem;
+    }
+  }
 }
 .-btn {
-  margin-top: 48px;
+  margin-top: 3rem;
   height: 40px;
   width: 18rem;
   color: #000;

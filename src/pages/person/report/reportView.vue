@@ -58,7 +58,7 @@
                 {{ selectReport.detail ? selectReport?.detail[text.dataIndex[0]] : '' }}
               </div>
             </div>
-            <a-divider v-if="index<2" class="divider" type="vertical" :dashed="false"></a-divider>
+            <a-divider v-if="index<2" class="divider" :type="windowWidth<500?'horizontal':'vertical'" :dashed="false"></a-divider>
             <div class="col" v-if="index<2">
               <span class="sub-header">{{ text.title[1] }}：</span>
               <div class="text">
@@ -113,6 +113,7 @@ export default {
       selectReport: {},
       describe,
       person_id: this.$static.person_id,
+      windowWidth: window.innerWidth,
     };
   },
   created() {
@@ -167,17 +168,19 @@ export default {
     justify-content: space-between;
     .flex {
       display: flex;
-      gap: 24px;
+      gap: 1.5rem;
     }
     .all-reports {
       display: flex;
       align-items: center;
+      overflow-y: auto;
+      max-width: 70vw;
       .report-tag {
         cursor: pointer;
-        border-radius: 20px;
+        border-radius: 1.2rem;
         background: none;
         border: none;
-        padding: 2px 8px;
+        padding: 0.1rem 0.5rem;
       }
       .select {
         background-color: #b9ecff;
@@ -185,86 +188,90 @@ export default {
     }
   }
   .report {
-    padding: 60px;
+    padding: 4rem;
     width: 78vw;
     min-height: 80vh;
     border-radius: 24px;
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.09);
     .animal-content {
       display: flex;
+      justify-content: space-between;
       .animal {
-        padding-top: 24px;
+        flex: 0 1 30%;
+        padding-top: 1.5rem;
         border-radius: 24px;
         box-shadow: 0 8px 18px rgba(0, 0, 0, 0.09);
-        margin: 12px 120px 0 12px;
-        width: 280px;
         text-align: center;
         img {
-          width: 200px;
-          height: 200px;
+          max-height: 100%;
           border-radius: 50%;
         }
         .p1 {
-          font-size: 20px;
+          font-size: 1.2rem;
         }
         .p2 {
-          font-size: 32px;
+          font-size: 2rem;
           font-weight: bold;
-          margin-bottom: 24px;
+          margin-bottom: 1.5rem;
         }
       }
-      .line {
-        display: flex;
-        align-items: center;
-        span {
-          width: 50px;
-          margin: 0 20px;
-        }
-        .slider {
-          width: 600px;
-        }
-        /deep/ .ant-slider-disabled .ant-slider-handle {
-          border-color: @test-theme-color-person !important;
-          background-color: @test-theme-color-person;
-        }
-        /deep/ .ant-slider-rail {
-          background-color: #e5f8ff !important;
-        }
-        /deep/ .ant-slider-dot {
-          display: none;
+      .grade {
+        flex: 0 1 60%;
+        .line {
+          display: flex;
+          align-items: center;
+          span {
+            flex: 0 1 4rem;
+          }
+          span:nth-of-type(2) {
+            margin-left: 2rem;
+          }
+          .slider {
+            width: 30vw;
+          }
+          /deep/ .ant-slider-disabled .ant-slider-handle {
+            border-color: @test-theme-color-person !important;
+            background-color: @test-theme-color-person;
+          }
+          /deep/ .ant-slider-rail {
+            background-color: #e5f8ff !important;
+          }
+          /deep/ .ant-slider-dot {
+            display: none;
+          }
         }
       }
     }
     .text-detail {
       text-align: justify;
       .point {
-        margin-top: 24px;
+        margin-top: 1.5rem;
         .header {
-          font-size: 20px;
+          font-size: 1.2rem;
           font-weight: bold;
           border-bottom: 4px solid #ebebeb;
         }
         .divider {
-          margin: 0 24px;
+          margin: 0 1.5rem;
           position: relative;
-          height: 200px;
+          height: 12rem;
         }
         .sub-header {
           color: @test-theme-color-person;
         }
         .content {
           display: flex;
-          margin-top: 24px;
+          margin-top: 1.5rem;
         }
         .text {
-          margin-top: 8px;
+          margin-top: 0.5rem;
           white-space: pre-line;
         }
         .suggest {
-          margin-top: 24px;
+          margin-top: 1.5rem;
           background-color: #f9f8f8;
-          padding: 12px;
-          border-radius: 12px;
+          padding: 0.8rem;
+          border-radius: 0.8rem;
         }
       }
     }
@@ -275,5 +282,171 @@ export default {
 .popover {
   color: #000;
   font-weight: bold;
+}
+</style>
+<style lang="less" scoped>
+@media (max-width: 1200px) {
+.report-detail {
+  .head {
+    .flex {
+      gap: 1rem;
+    }
+  }
+  .report {
+    padding: 2rem;
+    .animal-content {
+      gap: 1.6rem;
+      .animal {
+        .p1 {
+          font-size: 1rem;
+        }
+        .p2 {
+          font-size: 1.6rem;
+          margin-bottom: 1rem;
+        }
+      }
+    }
+  }
+}
+}
+</style>
+<style lang="less" scoped>
+@media (max-width: 800px) {
+.report-detail {
+  margin: 3rem 0;
+  .head {
+    margin: 0 2rem;
+    .flex {
+      gap: 1rem;
+    }
+    .all-reports {
+    }
+  }
+  .report {
+    border: none;
+    box-shadow: none;
+    width: 100vw;
+    .animal-content {
+      flex-wrap: wrap;
+      gap: 1.6rem;
+      justify-content: center;
+      .animal {
+        flex: 0 1 45%;
+        .p1 {
+          font-size: 1rem;
+        }
+        .p2 {
+          font-size: 1.6rem;
+          margin-bottom: 1rem;
+        }
+      }
+      .grade {
+        h3 {
+          display: inline-block;
+          margin-bottom: 1.5rem;
+          font-size: 1.2rem;
+          border-bottom: 4px solid #ebebeb;
+        }
+        .line {
+          span {
+            flex: 0 1 6rem;
+          }
+          span:nth-of-type(2) {
+            text-align: right;
+          }
+          .slider {
+            width: 80vw;
+          }
+        }
+      }
+    }
+  }
+}
+}
+</style>
+<style lang="less" scoped>
+@media (max-width: 500px) {
+.report-detail {
+  .head {
+    margin: 0 1rem;
+    .flex {
+      justify-content: space-between;
+    }
+    .all-reports {
+      flex: 0 1 60vw;
+      .report-tag {
+        border-radius: 1.2rem;
+        padding: 0.1rem 0.4rem;
+      }
+    }
+    h2 {
+      flex: 1 0 24vw;
+    }
+  }
+  .report {
+    .animal-content {
+      gap: 1.6rem;
+      .animal {
+        flex: 0 1 45%;
+        .p1 {
+          font-size: 0.8rem;
+        }
+        .p2 {
+          font-size: 1.2rem;
+          margin-bottom: 1rem;
+        }
+        img {
+          max-width: 12rem;
+        }
+      }
+      .grade {
+        max-width: 100%;
+        h3 {
+          display: inline-block;
+          margin-bottom: 1.5rem;
+          font-size: 1.2rem;
+          border-bottom: 4px solid #ebebeb;
+        }
+        .line {
+          span {
+            flex: 0 1 4rem;
+          }
+          span:nth-of-type(2) {
+            margin-left: 1rem;
+          }
+          span:nth-of-type(2) {
+            text-align: right;
+          }
+          .slider {
+            width: 80vw;
+          }
+        }
+      }
+    }
+    .text-detail {
+      .point {
+        .header {
+        }
+        .divider {
+          margin: 1rem 0;
+          width: 100%;
+          height: 1px;
+        }
+        .sub-header {
+        }
+        .content {
+          flex-wrap: wrap;
+        }
+        .text {
+        }
+        .suggest {
+          margin: 1.5rem -2rem;
+          padding: 0.8rem 2rem;
+          border-radius: 0;
+        }
+      }
+    }
+  }
+}
 }
 </style>

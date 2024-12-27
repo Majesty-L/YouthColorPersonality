@@ -8,7 +8,7 @@
       <a-icon type="left" @click="back"></a-icon>
     </div>
     <div class="right">
-      <share></share>
+      <share v-bind="$attrs"></share>
       <!-- <a-button class="share-btn" icon="share-alt"><span v-html="addPinyin('分享')"></span></a-button> -->
       <img v-if="personId" class="pointer" src="@/assets/student/avator.png" alt="avatar"  @click="routerToReport"/>
       <a-button v-else class="login-btn" v-html="addPinyin('登录测试')" @click="login"></a-button>
