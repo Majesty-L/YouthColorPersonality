@@ -2,7 +2,7 @@
   <div class="report-container">
     <div class="filter">
       <div class="left">
-        <a-select class="mr" v-model="select.grade" :options="options.gradeOptions"></a-select>
+        <a-select class="mr" v-model="select.grade" :options="options.gradeOptions" @change="onChangeGrade"></a-select>
         <a-select class="mr" v-model="select.classNum" :options="options.classOptions"></a-select>
         <a-select class="mr" v-model="select.sex" :options="options.sexOptions"></a-select>
         <a-select class="mr" v-model="select.province" :options="options.areaOptions"></a-select>
@@ -144,6 +144,7 @@ export default {
       characterIcon,
       animalIntro,
       showIntro: false,
+      gradeClassMap: {}, // 用于年级到班级的映射
     };
   },
   computed: {
@@ -195,18 +196,8 @@ export default {
       });
     },
     transferData(flash) {
-      const sex = {
-        '男': 0,
-        '女': 0,
-      };
-      const grade = {
-        '一': 0,
-        '二': 0,
-        '三': 0,
-        '四': 0,
-        '五': 0,
-        '六': 0,
-      };
+      const sex = { '男': 0, '女': 0 };
+      const grade = { '一': 0, '二': 0, '三': 0, '四': 0, '五': 0, '六': 0 };
       const animals = {};
       const detailData = [];
       let options = {
@@ -225,10 +216,15 @@ export default {
         options.classOptions.add(item.class_num);
         options.areaOptions.add(item.province);
         options.nationOptions.add(item.nation);
+        if (flash) {
+          // 初始化时存储好年级到班级的映射
+          this.gradeClassMap[item.grade] = this.gradeClassMap[item.grade] ? this.gradeClassMap[item.grade].add(item.class_num) : new Set([item.class_num]);
+        }
       })
       this.detailData = detailData;
       this.sexData = sex;
       this.animalsData = animals;
+      // 排序年级
       const gradeNo = Object.entries(grade).sort((a, b) => b[1] - a[1]).map(entry => entry[0]);
       this.gradeNoList = this.gradeNoList.map(i => {
         i.percent = grade[i.id];
@@ -236,7 +232,7 @@ export default {
         return i;
       });
       if (flash) {
-        // 筛选下拉
+        // 筛选下拉初始化
         this.options = {
           gradeOptions: [...options.gradeOptions].map(i => ({value: i, label: i})),
           classOptions: [...options.classOptions].map(i => ({value: i, label: i})),
@@ -479,6 +475,14 @@ export default {
           this.loading = false;
         });
       });
+    },
+    onChangeGrade(val) {
+      if (val === '全部年级') {
+        const allClassNum = Object.keys(this.gradeClassMap).reduce((res,cur) => res.add(this.gradeClassMap[cur]), new Set());
+        this.options = { ...this.options, classOptions: ['全部班级'].concat([...allClassNum]).map(i => ({value: i, label: i})) };
+      } else {
+        this.options = { ...this.options, classOptions: ['全部班级'].concat([...this.gradeClassMap[val]]).map(i => ({value: i, label: i})) };
+      }
     },
   }
 }

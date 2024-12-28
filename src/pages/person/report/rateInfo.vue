@@ -64,18 +64,25 @@ export default {
     border-radius: 24px;
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.09);
   }
-  .input {
-    width: 180px;
-    margin-left: 12px;
-    margin-bottom: 12px;
-  }
 }
 .-btn {
   display: block;
-  margin: 48px auto;
-  height: 40px;
+  margin: 3rem auto;
+  height: 2.5rem;
   width: 18rem;
   color: #000;
-  font-size: 20px;
+  font-size: 1.2rem;
+}
+</style>
+<style lang="less" scoped>
+@media (max-width:800px) {
+.card-detail {
+  .base  {
+    padding: 5rem 2rem;
+  }
+  .-btn {
+    width: 12rem;
+  }
+}
 }
 </style>

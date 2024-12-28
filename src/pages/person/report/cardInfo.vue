@@ -7,10 +7,20 @@
       <div class="base">
         <h3>小朋友基本信息</h3>
         <div class="mtl mb">
-          <img v-if="personInfo.imgUrl" src="personInfo.imgUrl" alt="" width="180px" height="180px"/>
-          <img v-else src="@/assets/person/upload.png" alt=""/>
+          <a-upload
+            class="upload-avator"
+            list-type="picture-card"
+            :show-upload-list="false"
+            action="/api/person/uploadAvatar"
+            :data="{personId: this.person_id}"
+            :before-upload="beforeUpload"
+            @change="handleChangeTitleImg"
+          >
+            <img v-if="personInfo.imgUrl" :src="personInfo.imgUrl" alt="上传成功" width="180px" height="180px"/>
+            <img v-else src="@/assets/person/upload.png" alt=""/>
+            <a-button class="mbl mt" style="width:120px;margin-bottom: 48px;"><a-icon :type="loading ? 'loading' : 'plus'" /> 更换头像</a-button>
+          </a-upload>
         </div>
-        <a-button class="mbl" style="width:120px;margin-bottom: 48px;">+ 更换头像</a-button>
         <div>姓名<a-input class="input" v-model="personInfo.name"/></div>
         <div>出生日期<a-input class="input" v-model="personInfo.birthday"/></div>
         <div>性别<a-input class="input" v-model="personInfo.sex"/></div>
@@ -39,12 +49,14 @@ export default {
       personInfo: {},
       dataSource: [],
       columns: [
-        { title: '购买时间', dataIndex: 'createTime', customRender: (text, record, index) => { return record.createTime.split(' ')[0] } },
+        { title: '购买时间', dataIndex: 'createTime', customRender: (text, record) => { return record.createTime.split(' ')[0] } },
         { title: '费用', dataIndex: 'fee' },
         { title: '可测试次数', dataIndex: 'number' },
-        { title: '有效性', dataIndex: 'hasUsed', customRender: (text, record, index) => { return record.hasUsed === 0 ? '待使用' : '已使用' } },
+        { title: '有效性', dataIndex: 'hasUsed', customRender: (text, record) => { return record.hasUsed === 0 ? '待使用' : '已使用' } },
       ],
       person_id: this.$static.person_id,
+      loading: false,
+      avatorImgUrl: '',
     };
   },
   created() {
@@ -55,6 +67,7 @@ export default {
       this.$axios.personInfo({id: this.person_id}).then((res) => {
         if(res.length) {
           this.personInfo = res[0];
+          this.avatorImgUrl = res[0].imgUrl;
         }
       });
       this.$axios.personPay({person_id: this.person_id, paper_id: 1}).then((res) => {
@@ -69,6 +82,29 @@ export default {
       }).catch((err) => {
         this.$message.error(err);
       })
+    },
+    handleChangeTitleImg(info) {
+      console.log(info)
+      if (info.file.status === 'uploading') {
+        this.loading = true;
+        return;
+      }
+      if (info.file.status === 'done') {
+        this.avatorImgUrl = info.file.response.data;
+        this.loading = false;
+        this.$message.success('更换成功！');
+      }
+    },
+    beforeUpload(file) {
+      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+      if (!isJpgOrPng) {
+        this.$message.error('请上传图片格式!');
+      }
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        this.$message.error('图片大小大于2MB!');
+      }
+      return isJpgOrPng && isLt2M;
     },
   }
 }
@@ -95,6 +131,12 @@ export default {
   .pay {
     .-btn {
       margin: 0 0 2rem;
+    }
+  }
+  .upload-avator {
+    /deep/ .ant-upload {
+      border: none;
+      background: none;
     }
   }
 }

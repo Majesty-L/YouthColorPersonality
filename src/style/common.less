@@ -70,9 +70,19 @@
   font-family: 'Alibaba PuHuiTi 2.0';
   src: url('../assets/puhui.ttf') format('truetype'),
 }
+@font-face {
+  font-family: 'ToneOZ-PinyinW-Light';
+  src: url('../assets/ToneOZ-Pinyin-WenKai-Light.ttf') format('truetype'),
+}
 body {
   font-family: "Alibaba PuHuiTi 2.0";
   background-color: #fff;
+  .py-result-item {
+    font-family: 'ToneOZ-PinyinW-Light';
+    .py-pinyin-item {
+      display: none;
+    }
+  }
 }
 
 .cursor {

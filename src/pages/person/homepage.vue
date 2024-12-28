@@ -1,6 +1,7 @@
 <template>
   <div class="home-container">
-    <headerPart :type="1"></headerPart>
+    <mobileHeader v-if="windowWidth<800"></mobileHeader>
+    <headerPart v-else :type="1"></headerPart>
     <div class="container">
       <div class="ing-test">
         <p class="ing-title" v-html="addPinyin('欢迎来到KH色彩性格研究所')"></p>
@@ -36,8 +37,10 @@ import headerPart from './components/headerPart.vue';
 import { html } from 'pinyin-pro';
 import { resultObject } from './data.js';
 import wxpay from './components/wxpay.vue';
+import mobileHeader from './components/mobileHeader.vue';
 export default {
   components: {
+    mobileHeader,
     headerPart,
     wxpay,
   },
@@ -51,6 +54,7 @@ export default {
       newPayId: '',
       resultObject,
       visiblePrePay: false,
+      windowWidth: window.innerWidth,
     };
   },
   watch: {

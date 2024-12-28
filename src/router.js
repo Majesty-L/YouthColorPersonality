@@ -127,6 +127,24 @@ const router = new VueRouter({
       name: 'personReport',
       path: '/person/report',
       component: () => import('@/pages/person/report/index.vue'), // 个人测试结果页
+      redirect: '/person/report/historyReport',
+      children: [
+        {
+          name: 'personHistoryReport',
+          path: '/person/report/historyReport',
+          component: () => import('@/pages/person/report/reportView.vue'),
+        },
+        {
+          name: 'personCardInfo',
+          path: '/person/report/cardInfo',
+          component: () => import('@/pages/person/report/cardInfo.vue'),
+        },
+        {
+          name: 'personCallback',
+          path: '/person/report/callback',
+          component: () => import('@/pages/person/report/rateInfo.vue'),
+        },
+      ]
     },
   ],
 });

@@ -2,9 +2,9 @@
   <div class="report-container">
     <div class="filter">
       <div class="left">
-        <a-select class="mr" v-model="select.school" :options="options.schoolOptions"></a-select>
-        <a-select class="mr" v-model="select.paper" :options="options.paperOptions"></a-select>
-        <a-select class="mr" v-model="select.grade" :options="options.gradeOptions"></a-select>
+        <a-select class="mr" v-model="select.school" :options="options.schoolOptions" @change="(val)=>onChange(val, 'school_name')"></a-select>
+        <a-select class="mr" v-model="select.paper" :options="options.paperOptions" @change="(val)=>onChange(val, 'paper_name')"></a-select>
+        <a-select class="mr" v-model="select.grade" :options="options.gradeOptions" @change="(val)=>onChange(val, 'grade')"></a-select>
         <a-select class="mr" v-model="select.classNum" :options="options.classOptions"></a-select>
         <a-select class="mr" v-model="select.sex" :options="options.sexOptions"></a-select>
         <a-select class="mr" v-model="select.province" :options="options.areaOptions"></a-select>
@@ -94,7 +94,17 @@ const percent = (zi, mu, len = 0) => {
   return zi ? (zi * 100 / mu).toFixed(len) : 0;
 }
 
-
+const initParams = () => {
+  return {
+    school: '全部学校',
+    paper: '全部问卷',
+    grade: '全部年级',
+    classNum: '全部班级',
+    sex: '全部性别',
+    province: '全部地区',
+    nation: '全部民族',
+  }
+};
 export default {
   components: {
   },
@@ -151,6 +161,7 @@ export default {
       characterIcon,
       animalIntro,
       showIntro: false,
+      schoolClassMap: undefined, // 学校到班级映射
     };
   },
   computed: {
@@ -197,11 +208,11 @@ export default {
         this.loading = true;
         const params = copy;
         this.$axios.getPaperReport({isAdmin: true, ...params}).then((res) => {
-          if (!res || !Object.keys(res).length) {
-            this.$message.info('暂无数据');
-          }
           this.allAnswers = Object.keys(res).reduce((pre, cur) => {return pre.concat(res[cur] || [])}, []);
           this.answerLen = this.allAnswers.length;
+          if (!res || !Object.keys(res).length || !this.answerLen) {
+            this.$message.info('暂无数据');
+          }
           this.transferData(false);
           this.getGradeChart();
           this.getAnimalChart();
@@ -228,18 +239,8 @@ export default {
       });
     },
     transferData(flash) {
-      const sex = {
-        '男': 0,
-        '女': 0,
-      };
-      const grade = {
-        '一': 0,
-        '二': 0,
-        '三': 0,
-        '四': 0,
-        '五': 0,
-        '六': 0,
-      };
+      const sex = { '男': 0, '女': 0 };
+      const grade = { '一': 0, '二': 0, '三': 0, '四': 0, '五': 0, '六': 0 };
       const animals = {};
       const detailData = [];
       let options = {
@@ -251,11 +252,6 @@ export default {
         areaOptions: new Set(['全部地区']),
         nationOptions: new Set(['全部民族']),
       }
-      Object.keys(this.originAnswers).forEach(item => {
-        const [schoolName, paperName] = item.split('_');
-        options.schoolOptions.add(schoolName);
-        options.paperOptions.add(paperName);
-      });
       this.allAnswers.forEach(item => {
         detailData.push({ ...item, sixGrade: sixGradeMap[item.character_id] });
         sex[item.sex]++;
@@ -265,7 +261,12 @@ export default {
         options.classOptions.add(item.class_num);
         options.areaOptions.add(item.province);
         options.nationOptions.add(item.nation);
+        if (flash) {
+          // 初始化时存储好学校到班级的映射
+          this.schoolClassMap = this.schoolClassMap?.add(`${item.school_name}_${item.paper_name}_${item.grade}_${item.class_num}`) || new Set([`${item.school_name}_${item.paper_name}_${item.grade}_${item.class_num}`]);
+        }
       })
+      console.log(this.schoolClassMap)
       this.detailData = detailData;
       this.sexData = sex;
       this.animalsData = animals;
@@ -276,6 +277,11 @@ export default {
         return i;
       });
       if (flash) {
+        Object.keys(this.originAnswers).forEach(item => {
+          const [schoolName, paperName] = item.split('_');
+          options.schoolOptions.add(schoolName);
+          options.paperOptions.add(paperName);
+        });
         // 筛选下拉
         this.options = {
           schoolOptions: [...options.schoolOptions].map(i => ({value: i, label: i})),
@@ -535,6 +541,46 @@ export default {
       const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
       const excelBlob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       saveAs(excelBlob, `源数据.xlsx`);
+    },
+    // 级联
+    onChange(val, type) {
+      const {school, paper, grade} = this.select;
+      const paperList = new Set(['全部问卷']);
+      const gradeList = new Set(['全部年级']);
+      const classList = new Set(['全部班级']);
+      if (type === 'school_name') {
+        [...this.schoolClassMap].forEach((key) => {
+          const list = key.split('_');
+          if (school.includes('全部') || school === list[0]) {
+            paperList.add(list[1]);
+            gradeList.add(list[2]);
+            classList.add(list[3]);
+          }
+        });
+        this.select = {...initParams(), school};
+        this.options = { ...this.options, paperOptions: [...paperList].map(i => ({value: i, label: i})), gradeOptions: [...gradeList].map(i => ({value: i, label: i})), classOptions: [...classList].map(i => ({value: i, label: i}))  }
+      }
+      if (type === 'paper_name') {
+        [...this.schoolClassMap].forEach((key) => {
+          const list = key.split('_');
+          if ((school.includes('全部') || school === list[0]) && (paper.includes('全部') || paper === list[1])) {
+            gradeList.add(list[2]);
+            classList.add(list[3]);
+          }
+        });
+        this.select = {...initParams(), school, paper};
+        this.options = { ...this.options, gradeOptions: [...gradeList].map(i => ({value: i, label: i})), classOptions: [...classList].map(i => ({value: i, label: i}))  }
+      }
+      if (type === 'grade') {
+        [...this.schoolClassMap].forEach((key) => {
+          const list = key.split('_');
+          if ((school.includes('全部') || school === list[0]) && (paper.includes('全部') || paper === list[1]) && (grade.includes('全部') || grade === list[2])) {
+            classList.add(list[3]);
+          }
+        });
+        this.select = {...initParams(), school, paper, grade};
+        this.options = { ...this.options, classOptions: [...classList].map(i => ({value: i, label: i}))  }
+      }
     },
   }
 }

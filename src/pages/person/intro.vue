@@ -1,5 +1,6 @@
 <template>
 <div class="intro-container">
+  <mobileHeader v-if="windowWidth<800"></mobileHeader>
   <headerPart :type="2"></headerPart>
   <div class="container">
     <div class="">
@@ -25,10 +26,12 @@
 </template>
 
 <script>
+import mobileHeader from './components/mobileHeader.vue';
 import headerPart from './components/headerPart.vue';
 import { html } from 'pinyin-pro';
 export default {
   components: {
+    mobileHeader,
     headerPart,
   },
   data() {
@@ -39,6 +42,7 @@ export default {
       id: this.$route.params.id,
       person_id: this.$static.person_id,
       showBtn: true,
+      windowWidth: window.innerWidth,
     };
   },
   created() {

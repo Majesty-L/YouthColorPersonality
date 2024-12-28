@@ -1,6 +1,7 @@
 <template>
   <div class="test-container">
     <div class="step">
+      <mobileHeader v-if="windowWidth<800"></mobileHeader>
       <headerPart v-if="current === 99" :type="2" :animal="commitRes?.characterId"></headerPart>
       <step-part v-else :current="current" @back="back"></step-part>
     </div>
@@ -12,12 +13,14 @@
 </template>
 
 <script>
+import mobileHeader from './components/mobileHeader.vue';
 import headerPart from './components/headerPart.vue';
 import stepPart from './components/stepPart.vue';
 import type1 from '../modelTests/type1.vue';
 export default {
   name: 'TestPage',
   components: {
+    mobileHeader,
     headerPart,
     stepPart,
     type1,
@@ -30,6 +33,7 @@ export default {
       id: this.$route.params.id,
       showBtn: true,
       commitRes: undefined,
+      windowWidth: window.innerWidth,
     };
   },
   created() {

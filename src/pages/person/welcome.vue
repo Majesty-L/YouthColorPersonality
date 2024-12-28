@@ -1,7 +1,8 @@
 <!-- 个人免登录欢迎页 -->
 <template>
   <div class="intro-container">
-    <headerPart :type="2"></headerPart>
+    <mobileHeader v-if="windowWidth<800"></mobileHeader>
+    <headerPart v-else :type="1"></headerPart>
     <div class="container">
       <div class="header">
         <div class="intro">
@@ -145,8 +146,10 @@ import dimension1 from '@/assets/person/i21.png';
 import dimension2 from '@/assets/person/i22.png';
 import dimension3 from '@/assets/person/i23.png';
 import dimension4 from '@/assets/person/i24.png';
+import mobileHeader from './components/mobileHeader.vue';
 export default {
   components: {
+    mobileHeader,
     headerPart,
     wxpay,
   },
@@ -180,6 +183,7 @@ export default {
       ],
       describe,
       visiblePrePay: false,
+      windowWidth: window.innerWidth,
     };
   },
   created() {

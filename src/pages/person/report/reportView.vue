@@ -313,7 +313,6 @@ export default {
 <style lang="less" scoped>
 @media (max-width: 800px) {
 .report-detail {
-  margin: 3rem 0;
   .head {
     margin: 0 2rem;
     .flex {

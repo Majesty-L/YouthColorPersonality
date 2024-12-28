@@ -1,6 +1,7 @@
 <template>
   <div>
-    <a-button class="share-btn" icon="share-alt" @click="showShare=true"><span v-html="addPinyin('分享')"></span></a-button>
+    <a-button v-if="windowWidth>800" class="share-btn" icon="share-alt" @click="showShare=true"><span v-html="addPinyin('分享')"></span></a-button>
+    <a-icon v-else class="phone-share-btn" type="share-alt" @click="showShare=true"></a-icon>
     <a-modal :visible="showShare" title="分享给朋友" width="400px" :footer="null" @cancel="showShare=false">
       <div class="share-type">
         <a-button class="item" icon="link" @click="copyLink()">复制链接</a-button>
@@ -72,6 +73,7 @@ export default {
       describe: '',
       animalType: '',
       animals,
+      windowWidth: window.innerWidth,
     };
   },
   created() {
@@ -149,6 +151,10 @@ export default {
   border-radius: 12px;
   padding: auto 16px;
   margin-right: 16px;
+}
+.phone-share-btn {
+  margin-right: 2rem;
+  font-size: x-large;
 }
 .share-type {
   display: flex;

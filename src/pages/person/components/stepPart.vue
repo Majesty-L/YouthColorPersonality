@@ -58,6 +58,9 @@
     .back {
       cursor: pointer;
     }
+    .step {
+      top: 0.4rem;
+    }
   }
   </style>
   <style lang="less" scoped>

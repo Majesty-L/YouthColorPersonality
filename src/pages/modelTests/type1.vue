@@ -567,6 +567,7 @@ export default {
         flex-direction: column;
         align-items: center;
         text-align: center;
+        background-color: #fff;
         .finish-text {
             margin-left: 3rem;
             font-size: xxx-large;

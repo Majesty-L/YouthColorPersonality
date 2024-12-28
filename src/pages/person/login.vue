@@ -130,7 +130,7 @@ export default {
 <style lang="less" scoped>
 .login-container { 
   background-color: #FFF8D4;
-  height: 100vh;
+  min-height: 100vh;
   padding: 4rem 1rem;
   text-align: center;
   .logo {
@@ -145,7 +145,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    height: 80vh;
+    min-height: 80vh;
     .head {
       margin-bottom: 1.5rem;
       img {

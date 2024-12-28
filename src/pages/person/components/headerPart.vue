@@ -7,10 +7,10 @@
     <div class="back" v-else>
       <a-icon type="left" @click="back"></a-icon>
     </div>
-    <div class="right">
+    <div class="right" v-if="windowWidth>800">
       <share v-bind="$attrs"></share>
-      <!-- <a-button class="share-btn" icon="share-alt"><span v-html="addPinyin('分享')"></span></a-button> -->
-      <img v-if="personId" class="pointer" src="@/assets/student/avator.png" alt="avatar"  @click="routerToReport"/>
+      <img v-if="personInfo?.imgUrl" class="pointer" :src="personInfo.imgUrl" alt="" width="32px" height="32px" @click="routerToReport">
+      <img v-else-if="personId" class="pointer" src="@/assets/student/avator.png" alt="avatar" width="32px" height="32px" @click="routerToReport"/>
       <a-button v-else class="login-btn" v-html="addPinyin('登录测试')" @click="login"></a-button>
     </div>
   </div>
@@ -33,6 +33,7 @@ export default {
     return {
       addPinyin: html,
       personInfo: {},
+      windowWidth: window.innerWidth,
     };
   },
   computed: {
@@ -41,22 +42,21 @@ export default {
     }
   },
   created() {
-    // this.init();
+    this.init();
   },
   methods: {
-    // init () {
-    //   this.$axios.personInfo({id: this.personId}).then((res) => {
-    //     if(res.length) {
-    //       this.personInfo = res[0];
-    //       this.$emit('getPersonInfo', res[0]);
-    //     }
-    //   });
-    // },
+    init () {
+      this.$axios.personInfo({id: this.personId}).then((res) => {
+        if(res.length) {
+          this.personInfo = res[0];
+        }
+      });
+    },
     back() {
-      this.$router.push({name: 'personIndex'});
+      this.$router.push({name: 'personIndex'}).catch(()=>{});
     },
     routerToReport() {
-      this.$router.push({name: 'personReport'});
+      this.$router.push({name: 'personReport'}).catch(()=>{});
     },
     login() { 
       this.$router.push({name: 'personLogin'});
@@ -105,6 +105,13 @@ export default {
       padding: auto 16px;
       background-color: #00D9C0;
     }
+  }
+}
+</style>
+<style lang="less" scoped>
+@media (max-width: 800px) {
+  .header {
+    box-shadow: none;
   }
 }
 </style>
