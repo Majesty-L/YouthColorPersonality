@@ -155,3 +155,8 @@ export const webGetUrl = () => {
 export const createOrder = (params) => {
   return api.post(`wxpay/createOrder`, params);
 };
+
+// ------------------ 手机验证码登录 --------------------------
+export const getVerificationCode = (params) => {
+  return api.post(`person/getVerificationCode`, params);
+};

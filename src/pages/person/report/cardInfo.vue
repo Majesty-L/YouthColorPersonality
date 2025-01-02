@@ -29,7 +29,7 @@
       <div class="pay">
         <h3>账号信息</h3>
         <div class="mtl">注册手机号<a-input class="input" v-model="personInfo.telPhone"/></div>
-        <div class="mb">账号密码<a-input type="password" class="input" v-model="personInfo.password"/></div>
+        <div class="mb">账号密码<a-input-password class="input" v-model="personInfo.password"/></div>
         <a-button class="btn-person -btn" v-html="addPinyin('保存')" @click="onSaveEdit"></a-button>
         <div class="mb">购买记录</div>
         <div class=""><a-table :dataSource="dataSource" :columns="columns"></a-table></div>

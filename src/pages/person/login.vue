@@ -27,7 +27,10 @@
           <a-form-item v-if="activeMethod === 'sms'">
             <a-input v-model="verificationCode" placeholder="短信验证码" >
               <template #suffix>
-                <a @click="getVerificationCode">获取验证码</a>
+                <a-button type="link" :loading="codeLoading" :disabled="codeLoading||hasSendCode" @click="getVerificationCode">
+                  <span v-if="!hasSendCode">获取验证码</span>
+                  <span v-else>{{ second }}s后重新发送</span>
+                </a-button>
               </template>
             </a-input>
             <br/><a @click="activeMethod = 'password'">密码登录</a>
@@ -65,6 +68,10 @@ export default {
       password: '',
       qrCodeUrl: '',
       qrLoading: false,
+      verificationCodeTimer: null,
+      hasSendCode: false,
+      codeLoading: false,
+      second: 60,
     };
   },
   created() {
@@ -74,6 +81,7 @@ export default {
   },
   beforeDestroy(){
       socketApi.closeWebSocket();
+      clearInterval(this.verificationCodeTimer);
   },
   methods: {
     init() {
@@ -108,20 +116,69 @@ export default {
     loginWithPhone() {
       // 实现手机登录逻辑
       if (this.activeMethod === 'password') {
-        if (this.password && this.phoneCode) {
-          this.$axios.validateLogin({phoneCode: this.phoneCode, password: this.password}).then((res) => {
-            this.$message.success('登陆成功');
-            localStorage.setItem('person_id', res);
-            this.$router.push({name: 'personIndex'});
-          }).catch((err) => {
-            this.$message.error(err);
-          })
+        if (!this.phoneCode.trim() || !this.password) {
+          this.$message.warn('账号或密码不能为空！');
+          return;
         }
+        if (!(/^1\d{10}$/).test(this.phoneCode)) {
+          this.$message.warn('手机号格式不对！');
+          return;
+        }
+        this.$axios.validateLogin({phoneCode: this.phoneCode, password: this.password, mode:this.activeMethod}).then((res) => {
+          this.$message.success('登陆成功');
+          localStorage.setItem('person_id', res);
+          this.$router.push({name: 'personIndex'});
+        }).catch((err) => {
+          this.$message.error(err);
+        })
+      } else if (this.activeMethod === 'sms') {
+        if (!this.phoneCode.trim() || !this.verificationCode) {
+          this.$message.warn('账号或验证码不能为空！');
+          return;
+        }
+        if (!(/^1\d{10}$/).test(this.phoneCode)) {
+          this.$message.warn('手机号格式不对！');
+          return;
+        }
+        this.$axios.validateLogin({phoneCode: this.phoneCode, verificationCode: this.verificationCode, mode:this.activeMethod}).then((res) => {
+          this.$message.success('登陆成功');
+          localStorage.setItem('person_id', res);
+          this.$router.push({name: 'personIndex'});
+        }).catch((err) => {
+          this.$message.error(err);
+        })
       }
       console.log('手机登录', this.phoneCode, this.verificationCode);
     },
     getVerificationCode() {
-      // 实现获取验证码逻辑
+      if (!this.phoneCode.trim()) {
+        this.$message.warn('手机号不能为空！');
+        return;
+      }
+      if (!(/^1\d{10}$/).test(this.phoneCode)) {
+        this.$message.warn('手机号格式不对！');
+        return;
+      }
+      this.codeLoading = true;
+      this.$axios.getVerificationCode({phone: this.phoneCode}).then(() => {
+        this.$message.success('发送成功！');
+        this.startMinuteGap();
+      }).catch(() => {
+        this.$message.error('发送失败，请重试！');
+      }).finally(() => {
+        this.codeLoading = false;
+      });
+    },
+    startMinuteGap() {
+      this.hasSendCode = true;
+      this.second = 60;
+      this.verificationCodeTimer = setInterval(() => {
+        if (this.second > 0 && this.second <= 60) {
+          this.second--;
+        } else {
+          clearInterval(this.verificationCode);
+        }
+      }, 1000);
     },
   }
 };

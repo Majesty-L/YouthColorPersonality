@@ -37,7 +37,8 @@ export default {
   },
   data() {
     return {
-      prepayUrl: ''
+      prepayUrl: '',
+      personId: this.$static.person_id || localStorage.getItem('person_id'),
     }
   },
   beforeDestroy(){
@@ -52,7 +53,7 @@ export default {
   },
   methods: {
     consume() {
-      this.$axios.createOrder({type: 1}).then(res => {
+      this.$axios.createOrder({type: 1, personId: this.personId}).then(res => {
         if (res) {
           console.log(res);
           this.generateQRCode(res);
