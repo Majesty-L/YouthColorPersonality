@@ -118,7 +118,7 @@ export default {
   gap: 32px;
   .base, .pay  {
     padding: 3rem;
-    flex: 1 0 400px;
+    flex: 1 1 400px;
     min-height: 80vh;
     border-radius: 24px;
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.09);
@@ -146,5 +146,19 @@ export default {
   width: 18rem;
   color: #000;
   font-size: 20px;
+}
+</style>
+
+<style lang="less" scoped>
+@media (max-width:800px) {
+.content {
+  width: 88vw;
+  .base,.pay  {
+    padding: 2rem;
+  }
+  .-btn {
+    width: 12rem;
+  }
+}
 }
 </style>

@@ -64,13 +64,7 @@ export default {
   },
   methods: {
     init() {
-      this.$axios.personPay({person_id: this.person_id, paper_id: 1, has_used: 0}).then((res) => {
-        if (res?.fee === 'free') {
-          this.newPayId = 'free';
-        } else if (res?.payList?.length) {
-          this.newPayId = res.payList[0].id;
-        }
-      });
+      this.getHasPayList();
       this.$axios.personReport({ personId: this.person_id }).then((res) => {
         if (res.length) {
           const paperList = res.sort((a,b)=>{
@@ -83,6 +77,15 @@ export default {
         }
       });
     },
+    async getHasPayList() {
+      await this.$axios.personPay({person_id: this.person_id, paper_id: 1, has_used: 0}).then((res) => {
+        if (res?.fee === 'free') {
+          this.newPayId = 'free';
+        } else if (res?.payList?.length) {
+          this.newPayId = res.payList[0].id;
+        }
+      });
+    },
     startTest() {
       if (this.newPayId) {
         // 以有效订单号作为主键开启测试
@@ -91,7 +94,8 @@ export default {
         this.visiblePrePay = true;
       }
     },
-    onPaySuccess() {
+    async onPaySuccess() {
+      await this.getHasPayList();
       this.visiblePrePay = false;
     },
     onPayCancel() {

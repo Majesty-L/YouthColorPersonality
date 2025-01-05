@@ -150,6 +150,9 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  Vue.prototype.$static.school_id = localStorage.getItem('school_id');
+  Vue.prototype.$static.student_id = localStorage.getItem('student_id');
+  Vue.prototype.$static.person_id = localStorage.getItem('person_id');
   if (['schoolLogin', 'studentLogin', 'personLogin', 'personWelcome'].includes(to.name)) {
     next();
   } else if (to.path.includes('school') && !localStorage.getItem('school_id')) {
@@ -159,9 +162,6 @@ router.beforeEach((to, from, next) => {
   } else if (to.path.includes('person') && !localStorage.getItem('person_id')) {
     next({ name: 'personWelcome' });
   } else {
-    Vue.prototype.$static.school_id = localStorage.getItem('school_id');
-    Vue.prototype.$static.student_id = localStorage.getItem('student_id');
-    Vue.prototype.$static.person_id = localStorage.getItem('person_id');
     next();
   }
 });

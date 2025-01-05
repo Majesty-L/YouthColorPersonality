@@ -10,9 +10,11 @@
             <p>·本测评为虚拟内容服务，一概售出概不退款，请谅解。</p>
           </div>
           <div class="right">
-            <div>支付金额：<span>¥</span></div>
-            <div class="wxpay-img"><img :src="prepayUrl" alt=""></div>
-            <div><img src="@/assets/person/wxpay.png" alt="" width="20"> 微信支付</div>
+            <div>支付金额：<span>¥ {{ price }}</span></div>
+            <a-spin :spinning="loading" class="spinning">
+              <div class="wxpay-img"><img :src="prepayUrl" alt=""></div>
+            </a-spin>
+            <div class="mb"><img src="@/assets/person/wxpay.png" alt="" width="20"> 微信支付</div>
           </div>
         </div>
       </div>
@@ -23,10 +25,8 @@
 <script>
 import QRCode from 'qrcode';
 import socketApi from '@/utils/socket.js';
-const getStateByUrl = (url) => {
-  let params = url?.split('&') || [];
-  let state = params.find(i => i.includes('state'))?.split('=')[1] || 'test';
-  return 'http://localhost:8090/websocket/'+state;
+const getStateByUrl = (url='test') => {
+  return 'http://localhost:8090/websocket/'+url;
 };
 export default {
   props: {
@@ -39,6 +39,8 @@ export default {
     return {
       prepayUrl: '',
       personId: this.$static.person_id || localStorage.getItem('person_id'),
+      price: '',
+      loading: false,
     }
   },
   beforeDestroy(){
@@ -47,6 +49,7 @@ export default {
   watch: {
     visible(v) {
       if (v) {
+        this.loading = true;
         this.consume();
       }
     },
@@ -54,11 +57,12 @@ export default {
   methods: {
     consume() {
       this.$axios.createOrder({type: 1, personId: this.personId}).then(res => {
-        if (res) {
+        if (res?.payUrlCode) {
           console.log(res);
-          this.generateQRCode(res);
+          this.generateQRCode(res.payUrlCode);
+          this.price = res.price;
           // 建立socket连接， 并设置socket信息返回接受函数和请求地址  
-          socketApi.initWebSocket(this.getsocketResult, getStateByUrl(res));
+          socketApi.initWebSocket(this.getsocketResult, getStateByUrl(res.orderId));
         } else {
           this.$message.info('订单生成失败，请重试！');
         }
@@ -71,18 +75,18 @@ export default {
       QRCode.toDataURL(url)
         .then(qrCodeUrl => {
           this.prepayUrl = qrCodeUrl;
+          this.loading = false;
         })
         .catch(error => {
           console.error('Failed to generate QR code:', error);
         });
     },
-    // 
+    // 接受回调后重新进入页面
     getsocketResult(data) {
       console.log('接收到websocket信息：'+ data);
-      if (data&&data.personId) {
+      if (data) {
         this.$message.success('支付成功！');
-        localStorage.setItem('person_id', data.personId);
-        this.$router.push({name: 'personIndex'});
+        this.$emit('success', data);
       }
     },
     onPayCancel() {
@@ -106,9 +110,9 @@ export default {
   .right {
     text-align: center;
     .wxpay-img {
-      margin: 12px;
-      height: 200px;
-      width: 200px;
+      margin: 12px 12px 0;
+      height: 150px;
+      width: 150px;
     }
   }
 }

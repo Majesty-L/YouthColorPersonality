@@ -184,7 +184,10 @@ export default {
       describe,
       visiblePrePay: false,
       windowWidth: window.innerWidth,
+      personId: this.$static.person_id,
     };
+  },
+  computed: {
   },
   created() {
   },
@@ -200,8 +203,13 @@ export default {
         [num]: num,
       }
     },
-    onPaySuccess() {
+    onPaySuccess(data) {
       this.visiblePrePay = false;
+      if (!this.personId) {
+        localStorage.setItem('person_id', data);
+        this.$message.success('登陆成功！');
+      }
+      this.$router.push({name: 'personIndex'});
     },
     onPayCancel() {
       this.visiblePrePay = false;

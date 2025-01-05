@@ -38,7 +38,7 @@ export default {
   },
   computed: {
     personId() {
-      return this.$static.person_id || localStorage.getItem('person_id');
+      return this.$static.person_id;
     }
   },
   created() {
