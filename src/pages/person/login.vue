@@ -56,7 +56,7 @@ import socketApi from '@/utils/socket.js';
 const getStateByUrl = (url) => {
   let params = url.split('&');
   let state = params.find(i => i.includes('state')).split('=')[1];
-  return 'http://localhost:8090/websocket/'+state;
+  return process.env.VUE_APP_SOCKET_URL+state;
 };
 export default {
   data() {

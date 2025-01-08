@@ -26,7 +26,7 @@
 import QRCode from 'qrcode';
 import socketApi from '@/utils/socket.js';
 const getStateByUrl = (url='test') => {
-  return 'http://localhost:8090/websocket/'+url;
+  return process.env.VUE_APP_SOCKET_URL+url;
 };
 export default {
   props: {

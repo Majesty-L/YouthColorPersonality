@@ -48,6 +48,7 @@ function initWebSocket(callback, websocketUrl) {
         }
     }
     if ("WebSocket" in window) {
+        console.log('url:'+websocketUrl);
         webSocket = new WebSocket(websocketUrl);//创建socket对象
     } else {
         message.warn('浏览器不支持WebSocket!');
