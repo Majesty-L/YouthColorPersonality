@@ -81,7 +81,6 @@ export default {
   watch: {
     animal: {
       handler(val) {
-        console.log(val)
         this.getName(val);
       },
       immediate: true,

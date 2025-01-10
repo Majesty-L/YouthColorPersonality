@@ -73,7 +73,6 @@ export default {
             return t2.getTime()-t1.getTime();
           });
           this.dataSource = paperList;
-          console.log(paperList);
         }
       });
     },

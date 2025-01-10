@@ -212,7 +212,6 @@ export default {
           this.$message.error(err);
         })
       }
-      console.log('手机登录', this.phoneCode, this.verificationCode);
     },
     getVerificationCode() {
       if (!this.phoneCode.trim()) {
@@ -240,6 +239,7 @@ export default {
         if (this.second > 0 && this.second <= 60) {
           this.second--;
         } else {
+          this.hasSendCode = false;
           clearInterval(this.verificationCode);
         }
       }, 1000);

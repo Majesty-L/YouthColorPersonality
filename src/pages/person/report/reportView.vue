@@ -125,7 +125,6 @@ export default {
           const result = res.sort((a, b) => new Date(Date.parse(b.createTime)) - new Date(Date.parse(a.createTime)));
           this.reportList = result.map(item => ({...item, detail: resultObject[item.characterId], name: item.createTime.split(' ')[0]}));
           this.selectReport = this.reportList[0] || {};
-          console.log(this.reportList);
         })
     },
     getSliderValue(report, dataIndex) {

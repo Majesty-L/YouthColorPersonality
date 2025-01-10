@@ -63,7 +63,6 @@ export default {
     consume() {
       this.$axios.createOrder({type: 1, personId: this.personId}).then(res => {
         if (res?.payUrlCode) {
-          console.log(res);
           this.generateQRCode(res.payUrlCode);
           this.price = res.price;
           // 建立socket连接， 并设置socket信息返回接受函数和请求地址  
