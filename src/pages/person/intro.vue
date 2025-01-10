@@ -60,7 +60,7 @@ export default {
     },
     getPersonInfo() {
       this.$axios.personInfo({id: this.person_id}).then((res) => {
-        if(res.length) {
+        if(res?.length) {
           this.personInfo = res[0];
         }
       });

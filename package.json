@@ -23,6 +23,7 @@
     "qrcode": "^1.5.3",
     "vue": "^2.6.14",
     "vue-router": "^3.6.5",
+    "vue-wxlogin": "^1.0.5",
     "vuex": "^3.6.2",
     "xlsx": "^0.18.5"
   },
@@ -40,6 +41,9 @@
     "root": true,
     "env": {
       "node": true
+    },
+    "globals": {
+      "WxLogin": true
     },
     "extends": [
       "plugin:vue/essential",

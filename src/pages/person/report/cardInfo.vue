@@ -16,7 +16,7 @@
             :before-upload="beforeUpload"
             @change="handleChangeTitleImg"
           >
-            <img v-if="personInfo.imgUrl" :src="personInfo.imgUrl" alt="上传成功" width="180px" height="180px"/>
+            <img v-if="avatorImgUrl || personInfo.imgUrl" :src="avatorImgUrl || personInfo.imgUrl" alt="上传成功" width="180px" height="180px"/>
             <img v-else src="@/assets/person/upload.png" alt=""/>
             <a-button class="mbl mt" style="width:120px;margin-bottom: 48px;"><a-icon :type="loading ? 'loading' : 'plus'" /> 更换头像</a-button>
           </a-upload>
@@ -65,7 +65,7 @@ export default {
   methods: {
     getPersonInfo() {
       this.$axios.personInfo({id: this.person_id}).then((res) => {
-        if(res.length) {
+        if(res?.length) {
           this.personInfo = res[0];
           this.avatorImgUrl = res[0].imgUrl;
         }

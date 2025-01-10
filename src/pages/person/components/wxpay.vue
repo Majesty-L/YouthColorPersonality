@@ -49,6 +49,11 @@ export default {
   watch: {
     visible(v) {
       if (v) {
+        if (!this.personId) {
+          this.$message.info('请先登录！');
+          this.$router.push('/person/login');
+          return;
+        }
         this.loading = true;
         this.consume();
       }

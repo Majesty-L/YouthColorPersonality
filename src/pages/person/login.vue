@@ -13,7 +13,7 @@
             微信扫码注册/登录
           </h3>
           <a-spin :spinning="qrLoading" class="spinning">
-            <img class="qr-code" :src="qrCodeUrl" alt="QR Code">
+            <div id="wxqrcode-container" class="qr-code"></div>
           </a-spin>
           <a class="change-active" @click="activeMethod = 'sms'">手机号注册/登录</a>
         </div>
@@ -39,7 +39,7 @@
             <a-input type="password" v-model="password" placeholder="密码" /><br/><a @click="activeMethod = 'sms'">验证码登录</a>
           </a-form-item>
           <a-button class="register" block type="primary" @click="loginWithPhone">登录</a-button>
-          <div class="change-active"><img src="@/assets/person/wechat.png" alt=""><a @click="activeMethod = 'wechat'">手机号注册/登录</a></div>
+          <div class="change-active"><img src="@/assets/person/wechat.png" alt=""><a @click="activeMethod = 'wechat'">微信注册/登录</a></div>
         </div>
       </div>
         
@@ -53,15 +53,17 @@
 <script>
 import QRCode from 'qrcode';
 import socketApi from '@/utils/socket.js';
-const getStateByUrl = (url) => {
-  let params = url.split('&');
-  let state = params.find(i => i.includes('state')).split('=')[1];
-  return process.env.VUE_APP_SOCKET_URL+state;
-};
+// const getStateByUrl = (url) => {
+//   let params = url.split('&');
+//   let state = params.find(i => i.includes('state')).split('=')[1];
+//   return process.env.VUE_APP_SOCKET_URL+state;
+// };
 export default {
+  components: {
+  },
   data() {
     return {
-      activeMethod: 'wechat', // 默认显示微信扫码登录
+      activeMethod: 'sms', // 默认显示验证码
       phoneCode: '',
       verificationCode: '',
       phonePassword: '',
@@ -72,10 +74,50 @@ export default {
       hasSendCode: false,
       codeLoading: false,
       second: 60,
+      wxCode: '',
+      redirect_uri: '/person/login',
     };
   },
+  watch: {
+    activeMethod: {
+      handler(v) {
+        if (v === 'wechat') {
+          this.init();
+        }
+      },
+      immediate: true,
+    },
+    $route: {
+      handler: function(route) {
+        this.wxCode = route.query.code||''
+        //本地存储code是因为从其他页面返回vue页面存在缓存需要自定义刷新
+        if(this.wxCode == localStorage["wxCode"]&&this.wxCode!=''){
+          window.location.href=this.redirect_uri//回调地址
+        }else{
+          localStorage.setItem("wxCode",this.wxCode);
+        }
+        if(this.wxCode){
+          let params = {
+            code:this.wxCode,
+            state:route.query.state,
+          }
+          this.$axios.getPersonId(params).then(res=>{
+            if(res){
+              this.$message.success('登陆成功');
+              localStorage.setItem('person_id', res);
+              this.$router.push({name: 'personIndex'});
+            }
+          }).catch(() => {
+          //返回失败因为二维码已经被使用过所以需要刷新重新获取
+            window.location.href=this.redirect_uri;
+          });
+        }
+      },
+      immediate: true
+    }
+  },
   created() {
-    this.init();
+    // this.init();
   },
   mounted(){
   },
@@ -88,12 +130,34 @@ export default {
       this.qrLoading = true;
       this.$axios.webGetUrl().then(res=>{
         console.log('webGetUrl', res);
-        this.generateQRCode(res);
+        if (!res) {
+          this.$message.error('获取二维码失败！');
+          return;
+        }
+        this.qrCodeUrl = res;
+        // this.generateQRCode(res);
         // 建立socket连接， 并设置socket信息返回接受函数和请求地址  
-        socketApi.initWebSocket(this.getsocketResult, getStateByUrl(res));
+        // socketApi.initWebSocket(this.getsocketResult, getStateByUrl(res));
+        this.getQrImg(res);
       }).finally(() => {
         this.qrLoading = false;
       })
+    },
+    getQrImg(res) {
+      const data = res.split('?')[1].split('&');
+      const APP_ID = data[0].split('=')[1];
+      const STATE = data[2].split('=')[1];
+      const origin = window.location.origin;
+      new WxLogin({
+        self_redirect: false, // 不改
+        id: 'wxqrcode-container', // 二维码容器的id
+        appid: APP_ID, // 网站应用的AppID
+        scope: 'snsapi_login', // 不改
+        redirect_uri: encodeURI(`${origin}/person/login`), // 重定向地址，通常是登录页地址（注意域名必须和网站应用的授权回调域名一致）
+        state: STATE, // 重定向要带的参数，可以防止csrf攻击（加载二维码前从后端拿state值，扫码后再将state和code一起传回后端，后端验证state是否相同）
+        style: 'white', // 文字颜色，只有黑白
+        href: `data:text/css;base64,LmltcG93ZXJCb3ggLnFyY29kZSB7d2lkdGg6IDIwMHB4O30KLmltcG93ZXJCb3ggLnRpdGxlIHtkaXNwbGF5OiBub25lO30KLmltcG93ZXJCb3ggLmluZm8ge3dpZHRoOiAyMDBweDt9Ci5zdGF0dXNfaWNvbiB7ZGlzcGxheTogbm9uZX0KLmltcG93ZXJCb3ggLnN0YXR1cyB7dGV4dC1hbGlnbjogY2VudGVyO30g`, // 二维码的样式文件
+      });
     },
     getsocketResult(data) {
       console.log('接收到websocket信息：'+ data);
@@ -218,6 +282,10 @@ export default {
     }
     .qr-code {
       max-width: 100%;
+      /deep/ iframe {
+        width: 240px;
+        height: 240px;
+      }
     }
     .login {
       background-color: #fff;

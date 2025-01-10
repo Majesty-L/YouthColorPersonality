@@ -150,6 +150,9 @@ export const getCallback = (params) => {
 export const webGetUrl = () => {
   return api.get(`wxlogin/webGetUrl`);
 };
+export const getPersonId = (params) => {
+  return api.post(`wxlogin/callback`, params);
+};
 
 // ------------------ 微信支付 --------------------------
 export const createOrder = (params) => {

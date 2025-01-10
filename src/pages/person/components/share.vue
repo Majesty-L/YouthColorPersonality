@@ -15,7 +15,7 @@
           <img src="@/assets/school/pageIcon.png" alt="avatar" />
           <span class="title">Little Mood</span>
         </div>
-        <h2>{{ name }}的性格类型是</h2>
+        <h2>{{ name || '我' }}的性格类型是</h2>
         <div class="mt">
           <div class="animal">
             <img :src="animals[animalType]" alt="">
@@ -135,7 +135,7 @@ export default {
     getName(val) {
       if (!val) return;
       this.$axios.personInfo({id: this.person_id}).then((res) => {
-        if(res.length) {
+        if(res?.length) {
           this.name = res[0]?.name || '';
           this.describe = resultObject[val]?.person_1 || '';
           this.animalType = resultObject[val]?.animal || '';
