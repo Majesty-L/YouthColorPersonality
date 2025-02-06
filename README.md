@@ -23,3 +23,8 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
+
+## 说明
+这个分支只有学校学生管理端的业务代码
+个人端的业务代码在forPerson分支
+

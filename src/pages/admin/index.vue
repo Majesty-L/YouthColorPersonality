@@ -41,17 +41,11 @@ export default {
   created() {
   },
   methods: {
-    deleteLocal() {
-      this.$static.person_id = null;
-      localStorage.removeItem('person_id');
-      this.$router.push({ name: 'personLogin' });
-    },
   }
 }
 </script>
 
 <style lang="less" scoped>
-@test-theme-color-person: #00D9C0;
 
 .report-container {
   .content {

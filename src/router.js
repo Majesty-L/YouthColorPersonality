@@ -98,69 +98,18 @@ const router = new VueRouter({
         },
       ]
     },
-    {
-      name: 'personLogin',
-      path: '/person/login',
-      component: () => import('@/pages/person/login.vue'), // 个人登录
-    },
-    {
-      name: 'personWelcome',
-      path: '/person/welcome',
-      component: () => import('@/pages/person/welcome.vue'), // 个人未登录欢迎页
-    },
-    {
-      name: 'personIndex',
-      path: '/person/index',
-      component: () => import('@/pages/person/homepage.vue'), // 个人已登录主页
-    },
-    {
-      name: 'personIntro',
-      path: '/person/intro',
-      component: () => import('@/pages/person/intro.vue'),
-    },
-    {
-      name: 'personTest',
-      path: '/person/test',
-      component: () => import('@/pages/person/test.vue'),
-    },
-    {
-      name: 'personReport',
-      path: '/person/report',
-      component: () => import('@/pages/person/report/index.vue'), // 个人测试结果页
-      redirect: '/person/report/historyReport',
-      children: [
-        {
-          name: 'personHistoryReport',
-          path: '/person/report/historyReport',
-          component: () => import('@/pages/person/report/reportView.vue'),
-        },
-        {
-          name: 'personCardInfo',
-          path: '/person/report/cardInfo',
-          component: () => import('@/pages/person/report/cardInfo.vue'),
-        },
-        {
-          name: 'personCallback',
-          path: '/person/report/callback',
-          component: () => import('@/pages/person/report/rateInfo.vue'),
-        },
-      ]
-    },
   ],
 });
 
 router.beforeEach((to, from, next) => {
   Vue.prototype.$static.school_id = localStorage.getItem('school_id');
   Vue.prototype.$static.student_id = localStorage.getItem('student_id');
-  Vue.prototype.$static.person_id = localStorage.getItem('person_id');
-  if (['schoolLogin', 'studentLogin', 'personLogin', 'personWelcome'].includes(to.name)) {
+  if (['schoolLogin', 'studentLogin'].includes(to.name)) {
     next();
   } else if (to.path.includes('school') && !localStorage.getItem('school_id')) {
     next({ name: 'schoolLogin' });
   } else if (to.path.includes('student') && !localStorage.getItem('student_id')) {
     next({ name: 'studentLogin' });
-  } else if (to.path.includes('person') && !localStorage.getItem('person_id')) {
-    next({ name: 'personWelcome' });
   } else {
     next();
   }
