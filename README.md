@@ -23,3 +23,6 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
+## 说明
+这个分支上只有个人维度的业务代码
+学校端等查看forStudent分支

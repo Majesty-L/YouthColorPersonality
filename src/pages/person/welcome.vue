@@ -155,7 +155,6 @@ export default {
   },
   data() {
     return {
-      studentInfo: {},
       addPinyin: html,
       type: this.$route.params.type,
       id: this.$route.params.id,

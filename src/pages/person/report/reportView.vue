@@ -93,7 +93,6 @@ export default {
   data() {
     return {
       addPinyin: html,
-      studentInfo: {},
       reportList: [],
       animals,
       gradeList: [

@@ -48,7 +48,6 @@ export default {
     return {
       addPinyin: html,
       person_id: this.$static.person_id,
-      studentInfo: {},
       ingTestObject: {},
       dataSource: [],
       newPayId: '',

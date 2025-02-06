@@ -3,8 +3,8 @@
         <div v-if="current===0" class="step0">
             <div class="text">
                 <div class="title">
-                    <span :class="{'color-student': from==='student', 'color-person': from==='person'}" v-html="addPinyin('游戏介绍')"></span>
-                    <div :class="{speech, 'bc-student': from==='student', 'bc-person': from==='person'}" @click="play(1)">
+                    <span :class="{'color-person': true}" v-html="addPinyin('游戏介绍')"></span>
+                    <div :class="{speech, 'bc-person': true}" @click="play(1)">
                         <video class="video" id="play1" width="7rem" height="7rem" v-if="showBtn" src="@/assets/speech/1.mp4">
                         </video>
                     </div>
@@ -42,7 +42,7 @@
         </div>
         <div v-else-if="current===1" class="step1">
             <div class="title">
-                <div :class="{speech, 'bc-student': from==='student', 'bc-person': from==='person'}" @click="play(2)">
+                <div :class="{speech, 'bc-person': true}" @click="play(2)">
                     <video class="video" id="play2" width="7rem" height="7rem" v-if="showBtn" src="@/assets/speech/2.mp4">
                     </video>
                 </div>
@@ -61,13 +61,13 @@
                 <div v-for="item in selectedColors" :key="item.id" class="selected_class">
                     <p :style="{backgroundColor:item.color}" />
                 </div>
-                <a-button :class="{'btn-student':from==='student', 'btn-person':from==='person', 'end-btn': true}" v-html="addPinyin('完成')" :disabled="selectedColors.length!=10" @click="startTest(2)"></a-button>
+                <a-button :class="{'btn-person':true, 'end-btn': true}" v-html="addPinyin('完成')" :disabled="selectedColors.length!=10" @click="startTest(2)"></a-button>
             </div>
-            <a-button :class="{'btn-student':from==='student', 'btn-person':from==='person', 'phone-end-btn': true}" v-html="addPinyin('完成')" :disabled="selectedColors.length!=10" @click="startTest(2)"></a-button>
+            <a-button :class="{'btn-person':true, 'phone-end-btn': true}" v-html="addPinyin('完成')" :disabled="selectedColors.length!=10" @click="startTest(2)"></a-button>
         </div>
         <div v-else-if="current===2" class="step2">
             <div class="title">
-                <div :class="{speech, 'bc-student': from==='student', 'bc-person': from==='person'}" @click="play(3)">
+                <div :class="{speech, 'bc-person': true}" @click="play(3)">
                     <video class="video" id="play3" width="7rem" height="7rem" v-if="showBtn" src="@/assets/speech/3.mp4">
                     </video>
                 </div>
@@ -87,7 +87,7 @@
                     <div v-for="item in selectedStripes" :key="item.id" class="selected_class">
                         <img :src="stripes[`stripe${item.id}`]"/>
                     </div>
-                    <a-button :class="{'btn-student':from==='student', 'btn-person':from==='person', 'end-btn': true}" v-html="addPinyin('完成')" :disabled="selectedStripes.length!=5" @click="startTest(3)"></a-button>
+                    <a-button :class="{'btn-person':true, 'end-btn': true}" v-html="addPinyin('完成')" :disabled="selectedStripes.length!=5" @click="startTest(3)"></a-button>
                 </div>
             </div>
             <div class="phone-action">
@@ -95,12 +95,12 @@
                     <img :src="stripes[`stripe${item.id}`]"/>
                 </div>
             </div>
-            <a-button :class="{'btn-student':from==='student', 'btn-person':from==='person', 'phone-end-btn': true}" v-html="addPinyin('完成')" :disabled="selectedStripes.length!=5" @click="startTest(3)"></a-button>
+            <a-button :class="{'btn-person':true, 'phone-end-btn': true}" v-html="addPinyin('完成')" :disabled="selectedStripes.length!=5" @click="startTest(3)"></a-button>
         
         </div>
         <div v-else-if="current===3" class="step3">
             <div class="title">
-                <div :class="{speech, 'bc-student': from==='student', 'bc-person': from==='person'}" @click="play(4)">
+                <div :class="{speech, 'bc-person': true}" @click="play(4)">
                     <video class="video" id="play4" width="7rem" height="7rem" v-if="showBtn" src="@/assets/speech/4.mp4">
                     </video>
                 </div>
@@ -119,9 +119,9 @@
                 <div v-for="item in selectedImages" :key="item.id" class="selected_class">
                     <img :src="images[`image${item.id}`]"/>
                 </div>
-                <a-button :class="{'btn-student':from==='student', 'btn-person':from==='person', 'end-btn': true}" v-html="addPinyin('完成')" :disabled="selectedImages.length!=5" @click="startTest(99)"></a-button>
+                <a-button :class="{'btn-person':true, 'end-btn': true}" v-html="addPinyin('完成')" :disabled="selectedImages.length!=5" @click="startTest(99)"></a-button>
             </div>
-            <a-button :class="{'btn-student':from==='student', 'btn-person':from==='person', 'phone-end-btn': true}" v-html="addPinyin('完成')" :disabled="selectedImages.length!=5" @click="startTest(99)"></a-button>
+            <a-button :class="{'btn-person':true, 'phone-end-btn': true}" v-html="addPinyin('完成')" :disabled="selectedImages.length!=5" @click="startTest(99)"></a-button>
         </div>
         <div v-else-if="current===99" class="step4">
             <div class="showoff">
@@ -131,7 +131,7 @@
                 <a-rate v-model="grade" style="font-size: 36px" @change="onChangeRate"></a-rate>
             </div>
             <div class="action">
-                <a-button :class="{'btn-student':from==='student', 'btn-person':from==='person', btn1: true, mr: true}" v-html="addPinyin('返回首页')" @click="backHome"></a-button>
+                <a-button :class="{'btn-person':true, btn1: true, mr: true}" v-html="addPinyin('返回首页')" @click="backHome"></a-button>
                 <a-button class="btn-student btn2 ml mt" v-html="addPinyin('查看结果')" @click="viewReport"></a-button>
             </div>
         </div>
@@ -165,7 +165,6 @@ export default {
     data() {
         return {
             current: 0,
-            type: this.$route.params.type || 1,
             addPinyin: html,
             shuffleColor,
             shuffleStripe,
@@ -176,8 +175,6 @@ export default {
             stripes,
             images,
             speechBtn: true,
-            from: this.$route.path.includes('student') ? 'student' : 'person',
-            imageUrl: `${this.from}laba`,
             grade: 0,
         };
     },
@@ -313,9 +310,6 @@ export default {
         .video {
             opacity: 0;
         }
-    }
-    .bc-student {
-        background: no-repeat url('@/assets/student/laba.png') 0 0 / cover;
     }
     .bc-person {
         background: no-repeat url('@/assets/person/laba.png') 0 0 / cover;
@@ -591,9 +585,6 @@ export default {
             max-width: 80%;
         }
     }
-}
-.color-student {
-    color: #63C5E9 !important;
 }
 .color-person {
     color: #00D9C0 !important;
